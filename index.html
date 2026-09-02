@@ -51,7 +51,7 @@
       .profile input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 15px; font-weight: 700; }
       .profile input::placeholder { color: #a4aeba; font-weight: 500; }
       .class-field { max-width: 98px; padding-left: 13px; border-left: 1px solid #e2e8f0; }
-      .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+      .tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 20px; }
       .tab { min-height: 72px; display: flex; align-items: center; gap: 11px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 17px; background: #ffffffe0; color: #4d5c72; text-align: left; transition: .18s ease; }
       .tab:hover { transform: translateY(-1px); border-color: #b8cfdf; }
       .tab.active { border-color: var(--blue); color: var(--deep); box-shadow: 0 10px 28px #087fbd1f; }
@@ -161,7 +161,7 @@
         .shell { width: min(100% - 20px, 1420px); }
         main { padding-top: 17px; }
         .teacher { display: none; }
-        .tabs { gap: 7px; }
+        .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
         .tab { min-height: 64px; padding: 9px 8px; gap: 7px; }
         .tab-number { width: 31px; height: 31px; border-radius: 10px; font-size: 11px; }
         .tab strong { font-size: 12px; }
@@ -200,7 +200,7 @@
     <main class="shell">
       <section class="intro">
         <div>
-          <div class="eyebrow">✦ 3 คลิป · 9 ภารกิจคำไวพจน์</div>
+          <div class="eyebrow">✦ 4 คลิป · 12 ภารกิจคำไวพจน์</div>
           <h2>ดูคลิป แล้วจิ้มคำตอบที่ถูกให้ครบ</h2>
           <p>ดูคลิปให้จบ แล้วเลือกโหมดฝึกที่เหมาะกับตัวเอง</p>
         </div>
@@ -255,6 +255,16 @@
           explanation: "คำตอบจากคลิป ได้แก่ อริ ดัสกร ไพรี ไพริน ข้าศึก และเวรี",
           meaning: "ศัตรู",
           context: { sentence: "กองทัพเตรียมรับมือกับ ______", options: ["ไพรี", "วิหค", "พนา", "อัมพร"], answer: "ไพรี", explanation: "ไพรี หมายถึงศัตรู จึงเติมในประโยคนี้ได้ถูกต้อง" }
+        },
+        {
+          id: "horse-poem", number: "04", title: "กลอนคำไวพจน์ ม้า", short: "กลอนม้า", format: "กลอนคำไวพจน์", duration: "1:18 นาที",
+          video: "videos/horse-poem.mp4", poster: "images/cover-horse.jpg", accent: "#a33c67",
+          question: "คำใดเป็นคำไวพจน์ที่มีความหมายว่า “ม้า” จากคลิปเพิ่มเติม",
+          correct: ["พาชี", "อาชาไนย", "สินธพ", "แสะ", "อัศวะ"],
+          incorrect: ["สกุณา", "คชสาร", "พยัคฆา", "มีนา", "วิหค", "มฤค", "วานร", "อุรค", "มยุรา", "สุกร"],
+          explanation: "คำไวพจน์ของม้า ได้แก่ พาชี อาชาไนย สินธพ แสะ และอัศวะ",
+          meaning: "ม้า",
+          context: { sentence: "กวีพรรณนาว่า ______ ควบผ่านทุ่งกว้าง", options: ["พาชี", "สกุณา", "นที", "คีรี"], answer: "พาชี", explanation: "พาชี เป็นคำไวพจน์ของม้า จึงเหมาะกับประโยคนี้" }
         }
       ];
 
