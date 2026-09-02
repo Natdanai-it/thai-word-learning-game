@@ -84,6 +84,36 @@
       .game-head span { color: #7c899a; font-size: 11px; font-weight: 850; letter-spacing: .08em; }
       .game-head h3 { margin: 3px 0 0; color: var(--deep); font-size: 20px; }
       .game-body { flex: 1; padding: 18px 20px 20px; }
+      .mode-switch { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+      .mode-button { min-height: 36px; padding: 7px 11px; border: 1px solid #d8e2eb; border-radius: 10px; background: #f8fafc; color: #5d6d82; font-size: 12px; font-weight: 850; }
+      .mode-button.active { border-color: var(--lesson-accent); background: color-mix(in srgb, var(--lesson-accent) 11%, white); color: var(--lesson-accent); }
+      .context-card { margin-top: 14px; padding: 18px; border: 1px solid #dce5ef; border-radius: 18px; background: #f8fbfd; }
+      .context-label { margin: 0 0 8px; color: #68778b; font-size: 12px; font-weight: 800; }
+      .context-sentence { margin: 0; color: var(--deep); font-size: 20px; line-height: 1.55; font-weight: 900; }
+      .context-options { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 13px; }
+      .context-option { min-height: 50px; padding: 10px 13px; border: 1px solid #d8e2eb; border-radius: 13px; background: white; color: #34445a; text-align: left; font-size: 15px; font-weight: 850; }
+      .context-option.selected { border-color: var(--lesson-accent); background: color-mix(in srgb, var(--lesson-accent) 11%, white); color: var(--lesson-accent); }
+      .context-option.correct { border-color: #28a76d; background: #e9f9f1; color: #117348; }
+      .context-option.wrong { border-color: #df5363; background: #fff0f2; color: #ad2538; }
+      .context-option.muted { opacity: .5; }
+      .context-feedback { margin-top: 12px; padding: 12px 13px; border-radius: 13px; background: #effaf5; color: #126f48; font-size: 13px; line-height: 1.5; }
+      .speed-card { margin-top: 14px; padding: 18px; border-radius: 18px; background: linear-gradient(135deg, #172f5a, #126d82); color: white; }
+      .speed-intro { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+      .speed-intro h4 { margin: 0; font-size: 20px; }
+      .speed-intro p { margin: 4px 0 0; color: #bde8f3; font-size: 12px; }
+      .speed-time { min-width: 59px; padding: 9px 10px; border: 1px solid #ffffff42; border-radius: 13px; color: #fff3b8; text-align: center; font-size: 24px; font-weight: 950; }
+      .speed-question { margin: 17px 0 10px; color: #e4f8ff; font-size: 14px; }
+      .speed-question strong { display: block; margin-top: 3px; color: white; font-size: 22px; }
+      .speed-words { display: flex; flex-wrap: wrap; gap: 8px; }
+      .speed-word { min-height: 42px; padding: 8px 13px; border: 1px solid #ffffff5c; border-radius: 999px; background: #ffffff18; color: white; font-size: 14px; font-weight: 850; }
+      .speed-word:hover { background: #ffffff32; }
+      .speed-start { width: 100%; min-height: 47px; margin-top: 15px; border: 0; border-radius: 12px; background: var(--gold); color: #473400; font-size: 14px; font-weight: 950; }
+      .speed-meta { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; color: #bde8f3; font-size: 12px; font-weight: 800; }
+      .overview { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 14px 17px; border: 1px solid #dce5ef; border-radius: 17px; background: #ffffffe8; box-shadow: 0 8px 24px #1f3f5c0c; }
+      .overview strong, .overview small { display: block; }
+      .overview strong { color: var(--deep); font-size: 15px; }
+      .overview small { margin-top: 3px; color: #718096; font-size: 12px; }
+      .overview-score { padding: 7px 10px; border-radius: 10px; background: #eef7fb; color: var(--blue); font-size: 13px; font-weight: 900; }
       .locked, .result { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; text-align: center; }
       .lock-art, .trophy { width: 78px; height: 78px; display: grid; place-items: center; border-radius: 27px; background: #eef3f8; color: #8694a7; font-size: 38px; transform: rotate(-4deg); }
       .locked h4, .result h4 { margin: 18px 0 4px; color: var(--deep); font-size: 22px; }
@@ -141,6 +171,11 @@
         .profile input { font-size: 13px; }
         .card-head, .game-head { padding-inline: 14px; }
         .watch, .game-body { padding-inline: 14px; }
+        .context-options { grid-template-columns: 1fr; }
+        .context-sentence { font-size: 18px; }
+        .speed-intro h4 { font-size: 18px; }
+        .overview { align-items: flex-start; }
+        .overview-score { flex: 0 0 auto; }
         .answer-result { grid-template-columns: auto 1fr; }
         .answer-result .again { grid-column: 1 / -1; width: 100%; }
         .history-item { grid-template-columns: 8px 1fr auto; }
@@ -165,9 +200,9 @@
     <main class="shell">
       <section class="intro">
         <div>
-          <div class="eyebrow">✦ 3 คลิป · 3 ภารกิจคำไวพจน์</div>
+          <div class="eyebrow">✦ 3 คลิป · 9 ภารกิจคำไวพจน์</div>
           <h2>ดูคลิป แล้วจิ้มคำตอบที่ถูกให้ครบ</h2>
-          <p>แต่ละด่านเลือกได้หลายคำ ตรวจคำตอบและดูคะแนนได้ทันที</p>
+          <p>ดูคลิปให้จบ แล้วเลือกโหมดฝึกที่เหมาะกับตัวเอง</p>
         </div>
         <div class="profile" aria-label="ข้อมูลผู้เล่น">
           <div class="profile-icon">👤</div>
@@ -175,6 +210,8 @@
           <label class="class-field"><span>ชั้น/ห้อง</span><input id="playerClass" placeholder="ม.4/1" /></label>
         </div>
       </section>
+
+      <section class="overview" id="overview"></section>
 
       <nav id="lessonTabs" class="tabs" aria-label="เลือกบทเรียน"></nav>
 
@@ -195,7 +232,9 @@
           question: "คำใดปรากฏในคลิปและใช้แทนคำว่า “ม้า”",
           correct: ["พาชี", "อาชาไนย", "สินธพ", "แสะ", "อัศวะ"],
           incorrect: ["ดุรงค์", "สกุณา", "คชสาร", "พยัคฆา", "มีนา", "กุญชร", "วิหค", "มฤค", "วานร", "อุรค", "มยุรา", "สุกร"],
-          explanation: "คำตอบจากคลิป ได้แก่ พาชี อาชาไนย สินธพ แสะ และอัศวะ"
+          explanation: "คำตอบจากคลิป ได้แก่ พาชี อาชาไนย สินธพ แสะ และอัศวะ",
+          meaning: "ม้า",
+          context: { sentence: "เจ้าชายทรง ______ ออกศึก", options: ["อาชาไนย", "สกุณา", "นที", "คีรี"], answer: "อาชาไนย", explanation: "อาชาไนย เป็นคำไวพจน์ที่หมายถึงม้า และใช้ในบริบทนี้ได้ถูกต้อง" }
         },
         {
           id: "legend", number: "02", title: "ตำนานเรื่องเล่า", short: "ตำนานเรื่องเล่า", format: "เรื่องเล่า", duration: "2:50 นาที",
@@ -203,7 +242,9 @@
           question: "ข้อใดเป็นคำไวพจน์ที่มีความหมายว่า “ศัตรู” ในคลิปวิดีโอ",
           correct: ["อริราช", "ปัจนึก", "อริชน", "ไพรี", "ปรปักษ์", "ปัจจามิตร", "อริ"],
           incorrect: ["ไพร่พล", "โยธา", "พล", "เสนา", "อำมาตย์", "ภูมินทร์", "นฤบดี", "ราษฎร", "ประชา", "จอมทัพ", "กองทัพ", "ขุนพล", "บริวาร", "เสนาบดี"],
-          explanation: "คำตอบจากคลิป ได้แก่ อริราช ปัจนึก อริชน ไพรี ปรปักษ์ ปัจจามิตร และอริ"
+          explanation: "คำตอบจากคลิป ได้แก่ อริราช ปัจนึก อริชน ไพรี ปรปักษ์ ปัจจามิตร และอริ",
+          meaning: "ศัตรู",
+          context: { sentence: "ทหารช่วยกันป้องกันเมืองจาก ______", options: ["ปรปักษ์", "มาลี", "คีรี", "ธารา"], answer: "ปรปักษ์", explanation: "ปรปักษ์ หมายถึงศัตรูหรือฝ่ายตรงข้าม จึงเหมาะกับประโยคนี้" }
         },
         {
           id: "song", number: "03", title: "เพลงคำไวพจน์", short: "เพลง", format: "บทเพลง", duration: "4:13 นาที",
@@ -211,7 +252,9 @@
           question: "ข้อใดเป็นคำไวพจน์ที่มีความหมายว่า “ศัตรู” ในคลิปวิดีโอ",
           correct: ["อริ", "ดัสกร", "ไพรี", "ไพริน", "ข้าศึก", "เวรี"],
           incorrect: ["ดุรงค์", "สกุณา", "คชสาร", "พยัคฆา", "มีนา", "วิหค", "กุญชร", "มฤค", "วานร", "มัจฉา", "วารี", "นภา", "บุปผา"],
-          explanation: "คำตอบจากคลิป ได้แก่ อริ ดัสกร ไพรี ไพริน ข้าศึก และเวรี"
+          explanation: "คำตอบจากคลิป ได้แก่ อริ ดัสกร ไพรี ไพริน ข้าศึก และเวรี",
+          meaning: "ศัตรู",
+          context: { sentence: "กองทัพเตรียมรับมือกับ ______", options: ["ไพรี", "วิหค", "พนา", "อัมพร"], answer: "ไพรี", explanation: "ไพรี หมายถึงศัตรู จึงเติมในประโยคนี้ได้ถูกต้อง" }
         }
       ];
 
@@ -223,7 +266,17 @@
         submitted: false,
         score: 0,
         options: [],
-        attempts: JSON.parse(localStorage.getItem("thai-game-attempts") || "[]")
+        attempts: JSON.parse(localStorage.getItem("thai-game-attempts") || "[]"),
+        mode: "multi",
+        contextChoice: "",
+        contextSubmitted: false,
+        speedStarted: false,
+        speedFinished: false,
+        speedRound: 0,
+        speedHits: 0,
+        speedSeconds: 30,
+        speedOptions: [],
+        speedTimer: null
       };
       const nameInput = document.getElementById("playerName");
       const classInput = document.getElementById("playerClass");
@@ -236,6 +289,49 @@
         localStorage.setItem("thai-game-progress", JSON.stringify(state.progress));
         localStorage.setItem("thai-game-unlocked", JSON.stringify(state.unlocked));
       };
+      const clearSpeedTimer = () => {
+        if (state.speedTimer) { clearInterval(state.speedTimer); state.speedTimer = null; }
+      };
+      const modeLabels = { multi: "คลังคำ", context: "เติมบริบท", speed: "ท้าทาย 30 วิ" };
+      const recordAttempt = (item, score, mode) => {
+        const attempt = { id: Date.now(), name: nameInput.value.trim(), classroom: classInput.value.trim(), lesson: item.short, mode, score, date: new Intl.DateTimeFormat("th-TH", { dateStyle: "short", timeStyle: "short" }).format(new Date()) };
+        state.attempts = [attempt, ...state.attempts].slice(0, 12);
+        localStorage.setItem("thai-game-attempts", JSON.stringify(state.attempts));
+      };
+      const resetMode = (mode) => {
+        clearSpeedTimer();
+        state.mode = mode;
+        state.selected = [];
+        state.submitted = false;
+        state.score = 0;
+        state.contextChoice = "";
+        state.contextSubmitted = false;
+        state.speedStarted = false;
+        state.speedFinished = false;
+        state.speedRound = 0;
+        state.speedHits = 0;
+        state.speedSeconds = 30;
+        state.speedOptions = [];
+        state.options = shuffle([...lesson().correct, ...lesson().incorrect]);
+      };
+      const startSpeedRound = () => {
+        const item = lesson();
+        state.speedOptions = shuffle([
+          ...item.correct.slice(0, Math.min(3, item.correct.length)),
+          ...item.incorrect.slice(0, 5),
+        ]);
+      };
+      const finishSpeed = () => {
+        if (state.speedFinished) return;
+        clearSpeedTimer();
+        state.speedFinished = true;
+        state.speedStarted = false;
+        state.score = Math.round((state.speedHits / 5) * 100);
+        recordAttempt(lesson(), state.score, "ท้าทาย 30 วิ");
+        renderGame();
+        renderOverview();
+        renderHistory();
+      };
 
       function renderTabs() {
         document.getElementById("lessonTabs").innerHTML = lessons.map((item, index) => `
@@ -245,10 +341,7 @@
           </button>`).join("");
         document.querySelectorAll(".tab").forEach((button) => button.addEventListener("click", () => {
           state.active = Number(button.dataset.index);
-          state.selected = [];
-          state.submitted = false;
-          state.score = 0;
-          state.options = shuffle([...lesson().correct, ...lesson().incorrect]);
+          resetMode(state.mode);
           renderAll();
         }));
       }
@@ -278,16 +371,85 @@
         video.addEventListener("ended", () => { state.unlocked[item.id] = true; saveProgress(); renderAll(); });
       }
 
+      function attachModeButtons(game) {
+        game.querySelectorAll(".mode-button").forEach((button) => button.addEventListener("click", () => {
+          if (button.dataset.mode === state.mode) return;
+          resetMode(button.dataset.mode);
+          renderGame();
+        }));
+      }
+
+      function renderModeButtons() {
+        return `<div class="mode-switch" aria-label="เลือกโหมดเกม">${Object.entries(modeLabels).map(([key, label]) => `<button class="mode-button ${state.mode === key ? "active" : ""}" data-mode="${key}">${key === "multi" ? "☷" : key === "context" ? "✎" : "⏱"} ${label}</button>`).join("")}</div>`;
+      }
+
       function renderGame() {
         const item = lesson();
         const game = document.getElementById("gameCard");
         game.style.setProperty("--lesson-accent", item.accent);
         const ready = profileReady() && state.unlocked[item.id];
-        const title = `<div class="game-head"><div class="game-title"><span class="game-icon">🎮</span><div><span>ภารกิจหลังดูคลิป</span><h3>จิ้มคำที่ถูกทั้งหมด</h3></div></div><div class="pill">เลือกได้หลายคำ</div></div>`;
+        const modeTitle = { multi: "จิ้มคำที่ถูกทั้งหมด", context: "เติมคำในบริบท", speed: "ภารกิจจับเวลา" }[state.mode];
+        const title = `<div class="game-head"><div class="game-title"><span class="game-icon">🎮</span><div><span>ภารกิจหลังดูคลิป</span><h3>${modeTitle}</h3></div></div><div class="pill">${modeLabels[state.mode]}</div></div>`;
+        const frame = (body) => { game.innerHTML = title + renderModeButtons() + body; attachModeButtons(game); };
         if (!ready) {
-          game.innerHTML = title + `<div class="locked"><div class="lock-art">🔒</div><h4>เกมยังไม่ปลดล็อก</h4><p>ทำสองขั้นตอนด้านล่างให้ครบ แล้วเริ่มภารกิจได้ทันที</p><div class="requirements"><div class="requirement ${profileReady() ? "done" : ""}">${profileReady() ? "✓" : "👤"}<span>กรอกชื่อและชั้นเรียน</span></div><div class="requirement ${state.unlocked[item.id] ? "done" : ""}">${state.unlocked[item.id] ? "✓" : "▶"}<span>รับชมวิดีโอให้จบ</span></div></div></div>`;
+          frame(`<div class="locked"><div class="lock-art">🔒</div><h4>เกมยังไม่ปลดล็อก</h4><p>ทำสองขั้นตอนด้านล่างให้ครบ แล้วเริ่มภารกิจได้ทันที</p><div class="requirements"><div class="requirement ${profileReady() ? "done" : ""}">${profileReady() ? "✓" : "👤"}<span>กรอกชื่อและชั้นเรียน</span></div><div class="requirement ${state.unlocked[item.id] ? "done" : ""}">${state.unlocked[item.id] ? "✓" : "▶"}<span>รับชมวิดีโอให้จบ</span></div></div></div>`);
           return;
         }
+
+        if (state.mode === "context") {
+          const context = item.context;
+          const contextOptions = context.options.map((word) => {
+            const selected = state.contextChoice === word;
+            let status = selected ? "selected" : "";
+            if (state.contextSubmitted) status = word === context.answer ? "correct" : (selected ? "wrong" : "muted");
+            return `<button class="context-option ${status}" data-context-word="${word}" ${state.contextSubmitted ? "disabled" : ""}>${word}${state.contextSubmitted && word === context.answer ? " ✓" : ""}</button>`;
+          }).join("");
+          const contextBody = `<div class="game-body"><div class="score-strip"><span>✎ เลือกคำที่เหมาะกับประโยค</span><span>1 ข้อต่อด่าน</span></div><div class="context-card"><p class="context-label">เติมคำไวพจน์ให้ได้ใจความ</p><p class="context-sentence">${context.sentence}</p><div class="context-options">${contextOptions}</div></div>${state.contextSubmitted ? `<div class="context-feedback">${state.contextChoice === context.answer ? "✓ ถูกต้อง! " : `ยังไม่ถูก คำตอบคือ “${context.answer}” `}${context.explanation}</div><button class="submit again-context">↻ เล่นอีกครั้ง</button>` : `<button class="submit context-submit" ${state.contextChoice ? "" : "disabled"}>ตรวจคำตอบ</button>`}</div>`;
+          frame(contextBody);
+          game.querySelectorAll("[data-context-word]").forEach((button) => button.addEventListener("click", () => { state.contextChoice = button.dataset.contextWord; renderGame(); }));
+          const contextSubmit = game.querySelector(".context-submit");
+          if (contextSubmit) contextSubmit.addEventListener("click", () => { state.contextSubmitted = true; state.score = state.contextChoice === context.answer ? 100 : 0; recordAttempt(item, state.score, modeLabels.context); renderGame(); renderOverview(); renderHistory(); });
+          const contextAgain = game.querySelector(".again-context");
+          if (contextAgain) contextAgain.addEventListener("click", () => { state.contextChoice = ""; state.contextSubmitted = false; state.score = 0; renderGame(); });
+          return;
+        }
+
+        if (state.mode === "speed") {
+          if (!state.speedStarted && !state.speedFinished) {
+            frame(`<div class="game-body"><div class="speed-card"><div class="speed-intro"><div><h4>ท้าทาย 30 วินาที</h4><p>ตอบให้ได้ 5 ข้อก่อนหมดเวลา</p></div><div class="speed-time">30</div></div><button class="speed-start">▶ เริ่มภารกิจ</button></div></div>`);
+            game.querySelector(".speed-start").addEventListener("click", () => {
+              state.speedStarted = true;
+              state.speedSeconds = 30;
+              state.speedRound = 0;
+              state.speedHits = 0;
+              startSpeedRound();
+              renderGame();
+              clearSpeedTimer();
+              state.speedTimer = setInterval(() => {
+                state.speedSeconds -= 1;
+                const timer = document.querySelector(".speed-time");
+                if (timer) timer.textContent = state.speedSeconds;
+                if (state.speedSeconds <= 0) finishSpeed();
+              }, 1000);
+            });
+            return;
+          }
+          if (state.speedFinished) {
+            frame(`<div class="game-body"><div class="speed-card"><div class="speed-intro"><div><h4>จบภารกิจแล้ว</h4><p>ตอบถูก ${state.speedHits} จาก 5 ข้อ</p></div><div class="speed-time">${state.score}</div></div><div class="context-feedback">คะแนนท้าทาย: <strong>${state.score}/100</strong> · ฝึกซ้ำเพื่อเพิ่มความคล่องในการจำคำ</div><button class="speed-start speed-again">↻ เริ่มใหม่</button></div></div>`);
+            game.querySelector(".speed-again").addEventListener("click", () => { resetMode("speed"); renderGame(); });
+            return;
+          }
+          const speedWords = state.speedOptions.map((word) => `<button class="speed-word" data-speed-word="${word}">${word}</button>`).join("");
+          frame(`<div class="game-body"><div class="speed-card"><div class="speed-intro"><div><h4>เลือกคำไวพจน์</h4><p>ตอบให้ไว แล้วไปข้อต่อไป</p></div><div class="speed-time">${state.speedSeconds}</div></div><p class="speed-question">คำใดมีความหมายว่า <strong>“${item.meaning}”</strong></p><div class="speed-words">${speedWords}</div><div class="speed-meta"><span>ข้อ ${state.speedRound + 1}/5</span><span>ตอบถูก ${state.speedHits} ข้อ</span></div></div></div>`);
+          game.querySelectorAll("[data-speed-word]").forEach((button) => button.addEventListener("click", () => {
+            if (item.correct.includes(button.dataset.speedWord)) state.speedHits += 1;
+            state.speedRound += 1;
+            if (state.speedRound >= 5) finishSpeed();
+            else { startSpeedRound(); renderGame(); }
+          }));
+          return;
+        }
+
         if (!state.options.length) state.options = shuffle([...item.correct, ...item.incorrect]);
         const words = state.options.map((word) => {
           const chosen = state.selected.includes(word);
@@ -300,33 +462,30 @@
         const wrongSelected = state.selected.filter((word) => item.incorrect.includes(word)).length;
         const perfect = correctSelected === item.correct.length && wrongSelected === 0;
         const body = `<div class="game-body"><div class="score-strip"><span>✓ เลือกแล้ว ${state.selected.length} คำ</span><span>✦ คำตอบถูกมีมากกว่า 1 คำ</span></div><div class="question"><p>จิ้มเลือกทุกคำที่ถูกต้อง แล้วกดตรวจคำตอบ</p><h4>${item.question}</h4></div><div class="words">${words}</div>${state.submitted ? `<div class="answer-result ${perfect ? "perfect" : ""}"><div class="answer-score"><small>คะแนนด่านนี้</small><strong>${state.score}/100</strong></div><div><strong>${perfect ? "ถูกต้องครบทุกคำ!" : `เลือกถูก ${correctSelected} จาก ${item.correct.length} คำ`}</strong><p>${item.explanation}</p></div><button class="again">↻ เล่นอีกครั้ง</button></div>` : `<button class="submit" ${state.selected.length ? "" : "disabled"}>ตรวจคำตอบ (${state.selected.length} คำ)</button>`}</div>`;
-        game.innerHTML = title + body;
-        document.querySelectorAll(".word").forEach((button) => button.addEventListener("click", () => {
-          const word = button.dataset.word;
-          state.selected = state.selected.includes(word) ? state.selected.filter((item) => item !== word) : [...state.selected, word];
-          renderGame();
-        }));
+        frame(body);
+        game.querySelectorAll(".word").forEach((button) => button.addEventListener("click", () => { const word = button.dataset.word; state.selected = state.selected.includes(word) ? state.selected.filter((item) => item !== word) : [...state.selected, word]; renderGame(); }));
         const submit = game.querySelector(".submit");
-        if (submit) submit.addEventListener("click", () => {
-          state.score = Math.max(0, Math.round(((correctSelected - wrongSelected) / item.correct.length) * 100));
-          state.submitted = true;
-          const attempt = { id: Date.now(), name: nameInput.value.trim(), classroom: classInput.value.trim(), lesson: item.short, score: state.score, date: new Intl.DateTimeFormat("th-TH", { dateStyle: "short", timeStyle: "short" }).format(new Date()) };
-          state.attempts = [attempt, ...state.attempts].slice(0, 8);
-          localStorage.setItem("thai-game-attempts", JSON.stringify(state.attempts));
-          renderGame(); renderHistory();
-        });
+        if (submit) submit.addEventListener("click", () => { state.score = Math.max(0, Math.round(((correctSelected - wrongSelected) / item.correct.length) * 100)); state.submitted = true; recordAttempt(item, state.score, modeLabels.multi); renderGame(); renderOverview(); renderHistory(); });
         const again = game.querySelector(".again");
-        if (again) again.addEventListener("click", () => { state.selected = []; state.submitted = false; state.score = 0; state.options = shuffle([...item.correct, ...item.incorrect]); renderGame(); });
+        if (again) again.addEventListener("click", () => { resetMode("multi"); renderGame(); });
+      }
+
+      function renderOverview() {
+        const overview = document.getElementById("overview");
+        const unlockedCount = lessons.filter((item) => state.unlocked[item.id]).length;
+        const completedLessons = new Set(state.attempts.map((attempt) => attempt.lesson)).size;
+        const average = state.attempts.length ? Math.round(state.attempts.reduce((sum, attempt) => sum + attempt.score, 0) / state.attempts.length) : 0;
+        overview.innerHTML = `<div><strong>เส้นทางการเรียนรู้</strong><small>ดูคลิปแล้ว ${unlockedCount}/${lessons.length} ด่าน · ผ่านภารกิจแล้ว ${completedLessons}/${lessons.length} ด่าน</small></div><div class="overview-score">เฉลี่ย ${average}/100</div>`;
       }
 
       function renderHistory() {
         const history = document.getElementById("history");
         if (!state.attempts.length) { history.hidden = true; return; }
         history.hidden = false;
-        history.innerHTML = `<div class="eyebrow">▣ ผลการเรียนรู้ล่าสุด</div><h3>ประวัติการเล่นบนอุปกรณ์นี้</h3><div class="history-list">${state.attempts.slice(0, 4).map((attempt) => `<div class="history-item"><span class="history-dot"></span><div><strong>${attempt.name}</strong><small>${attempt.classroom} · ${attempt.lesson}</small></div><b>${attempt.score}/100</b><time>${attempt.date}</time></div>`).join("")}</div>`;
+        history.innerHTML = `<div class="eyebrow">▣ ผลการเรียนรู้ล่าสุด</div><h3>ประวัติการเล่นบนอุปกรณ์นี้</h3><div class="history-list">${state.attempts.slice(0, 4).map((attempt) => `<div class="history-item"><span class="history-dot"></span><div><strong>${attempt.name}</strong><small>${attempt.classroom} · ${attempt.lesson} · ${attempt.mode || "คลังคำ"}</small></div><b>${attempt.score}/100</b><time>${attempt.date}</time></div>`).join("")}</div>`;
       }
 
-      function renderAll() { renderTabs(); renderVideo(); renderGame(); renderHistory(); }
+      function renderAll() { renderTabs(); renderVideo(); renderGame(); renderOverview(); renderHistory(); }
       nameInput.addEventListener("input", () => { localStorage.setItem("thai-game-name", nameInput.value); renderGame(); });
       classInput.addEventListener("input", () => { localStorage.setItem("thai-game-class", classInput.value); renderGame(); });
       state.options = shuffle([...lesson().correct, ...lesson().incorrect]);
