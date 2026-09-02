@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#087fbd" />
     <title>คลังคำไทย | วิดีโอและเกมคำไวพจน์ ม.4</title>
-    <meta name="description" content="เรียนรู้คำไวพจน์ผ่านวิดีโอสั้นและเกมจิ้มคำที่ถูก" />
+    <meta name="description" content="เรียนรู้คำไวพจน์ผ่านวิดีโอ เกมฝึกทักษะ และ WebAR ล่าคำด้วยกล้องมือถือ" />
     <style>
       :root {
         --bg: #f5f7fb;
@@ -42,6 +42,9 @@
       .header-tools { display: flex; align-items: center; gap: 12px; }
       .teacher { color: #526177; text-align: right; font-size: 13px; line-height: 1.5; }
       .teacher strong { display: block; color: #263c5a; }
+      .teacher-dashboard-button { min-height: 42px; display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border: 1px solid #bcd7e8; border-radius: 13px; background: #eef8fd; color: var(--blue); font-size: 12px; font-weight: 900; white-space: nowrap; box-shadow: 0 5px 16px #1f3f5c10; transition: .18s ease; }
+      .teacher-dashboard-button:hover { transform: translateY(-2px); border-color: var(--blue); background: #e5f5fc; }
+      .teacher-dashboard-button.connected::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #159968; box-shadow: 0 0 0 3px #1599681f; }
       .theme-toggle { width: 42px; height: 42px; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 13px; background: #ffffffdd; color: var(--deep); font-size: 19px; box-shadow: 0 5px 16px #1f3f5c10; transition: .18s ease; }
       .theme-toggle:hover { transform: translateY(-2px); border-color: var(--blue); color: var(--blue); }
       main { padding: 24px 0 42px; }
@@ -51,13 +54,14 @@
       .eyebrow { display: inline-flex; align-items: center; gap: 7px; color: var(--blue); font-size: 13px; font-weight: 900; letter-spacing: .04em; }
       .intro h2 { margin: 8px 0 5px; color: var(--deep); font-size: clamp(27px, 4vw, 44px); line-height: 1.15; letter-spacing: -.035em; }
       .intro p { margin-bottom: 0; color: var(--muted); font-size: 16px; }
-      .profile { display: flex; align-items: center; gap: 13px; min-width: 460px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 18px; background: #ffffffe8; box-shadow: 0 10px 34px #1f3f5c12; }
+      .profile { display: flex; align-items: center; gap: 13px; min-width: 520px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 18px; background: #ffffffe8; box-shadow: 0 10px 34px #1f3f5c12; }
       .profile-icon { font-size: 24px; }
       .profile label { display: grid; gap: 3px; flex: 1; }
       .profile label span { color: #6b7789; font-size: 12px; font-weight: 800; }
       .profile input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 15px; font-weight: 700; }
       .profile input::placeholder { color: #a4aeba; font-weight: 500; }
       .class-field { max-width: 98px; padding-left: 13px; border-left: 1px solid #e2e8f0; }
+      .number-field { max-width: 70px; padding-left: 13px; border-left: 1px solid #e2e8f0; }
       .lesson-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding: 10px; border: 1px solid var(--line); border-radius: 17px; background: #ffffffb8; box-shadow: 0 8px 24px #1f3f5c09; }
       .lesson-search { min-width: 250px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid #d8e2eb; border-radius: 11px; background: #f8fafc; color: #8793a4; }
       .lesson-search input { width: 100%; min-width: 0; height: 36px; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 13px; }
@@ -158,6 +162,97 @@
       .speed-word:hover { background: #ffffff32; }
       .speed-start { width: 100%; min-height: 47px; margin-top: 15px; border: 0; border-radius: 12px; background: var(--gold); color: #473400; font-size: 14px; font-weight: 950; }
       .speed-meta { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; color: #bde8f3; font-size: 12px; font-weight: 800; }
+      .ar-launch-card { position: relative; min-height: 365px; margin-top: 14px; overflow: hidden; padding: 22px; border: 1px solid #96d7e7; border-radius: 20px; background: radial-gradient(circle at 86% 12%, #55d8ff42, transparent 13rem), linear-gradient(145deg, #092c51, #075e81 62%, #087fbd); color: white; box-shadow: inset 0 1px #ffffff29, 0 16px 36px #087fbd22; }
+      .ar-launch-card::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(#ffffff0d 1px, transparent 1px), linear-gradient(90deg, #ffffff0d 1px, transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to bottom, #000, transparent 85%); pointer-events: none; }
+      .ar-launch-content { position: relative; z-index: 1; max-width: 440px; }
+      .ar-launch-badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid #94e8ff70; border-radius: 999px; background: #52d5ff1c; color: #bcefff; font-size: 11px; font-weight: 950; letter-spacing: .08em; }
+      .ar-launch-card h4 { margin: 14px 0 5px; font-size: 25px; line-height: 1.25; }
+      .ar-launch-card p { max-width: 400px; margin-bottom: 0; color: #ccebf6; font-size: 13px; line-height: 1.65; }
+      .ar-feature-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+      .ar-feature { padding: 7px 9px; border: 1px solid #ffffff30; border-radius: 10px; background: #ffffff12; color: #e4f8ff; font-size: 11px; font-weight: 800; }
+      .ar-launch-actions { display: flex; gap: 8px; margin-top: 20px; }
+      .ar-start-camera, .ar-start-fallback { min-height: 48px; padding: 10px 15px; border-radius: 13px; font-size: 13px; font-weight: 950; }
+      .ar-start-camera { flex: 1; border: 0; background: linear-gradient(135deg, #f6c534, #ffdd69); color: #423000; box-shadow: 0 11px 24px #061b2e52; }
+      .ar-start-fallback { border: 1px solid #ffffff4a; background: #ffffff16; color: white; }
+      .ar-start-camera:hover, .ar-start-fallback:hover { transform: translateY(-1px); }
+      .ar-privacy { position: relative; z-index: 1; display: flex; gap: 7px; margin-top: 15px; color: #a9d7e8; font-size: 10px; line-height: 1.5; }
+      .ar-orbit-art { position: absolute; right: -14px; bottom: -25px; width: 205px; height: 205px; border: 1px solid #8be9ff55; border-radius: 50%; box-shadow: 0 0 0 24px #66ddff0b, 0 0 0 48px #66ddff08; }
+      .ar-orbit-art::before { content: "AR"; position: absolute; inset: 42px; display: grid; place-items: center; border: 1px solid #ffffff4f; border-radius: 50%; background: #ffffff14; color: #dff8ff; font-size: 36px; font-weight: 950; letter-spacing: .05em; backdrop-filter: blur(5px); }
+      .ar-orbit-art::after { content: ""; position: absolute; top: 19px; left: 50%; width: 13px; height: 13px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 22px #ffd966; animation: arOrbit 4s linear infinite; transform-origin: 0 83px; }
+      @keyframes arOrbit { to { transform: rotate(360deg); } }
+      body.ar-open { overflow: hidden; overscroll-behavior: none; }
+      .ar-experience { position: fixed; inset: 0; z-index: 100; height: 100vh; height: 100dvh; overflow: hidden; background: #07131f; color: white; touch-action: none; user-select: none; }
+      .ar-experience[hidden] { display: none; }
+      .ar-camera-stage, .ar-camera, .ar-camera-fallback, .ar-camera-tint, .ar-scan-grid { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .ar-camera { object-fit: cover; background: #07131f; }
+      .ar-camera.mirror { transform: scaleX(-1); }
+      .ar-camera-fallback { display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #126988 0, #0b3c5c 30%, #071928 68%, #050d16 100%); }
+      .ar-camera-fallback[hidden] { display: none; }
+      .ar-fallback-core { width: min(48vw, 260px); aspect-ratio: 1; display: grid; place-items: center; border: 1px solid #79dfff54; border-radius: 50%; background: #0f6e8e2e; box-shadow: 0 0 0 28px #4bd9ff0a, 0 0 0 56px #4bd9ff08, 0 0 70px #19bfe72b; color: #bceeff; font-size: clamp(38px, 8vw, 72px); font-weight: 950; letter-spacing: .06em; }
+      .ar-camera-tint { background: linear-gradient(180deg, #071a2b7d 0, transparent 32%, transparent 65%, #06101bd6 100%), radial-gradient(circle at center, transparent 30%, #04111e4d 100%); pointer-events: none; }
+      .ar-scan-grid { opacity: .2; background-image: linear-gradient(#8ce8ff22 1px, transparent 1px), linear-gradient(90deg, #8ce8ff22 1px, transparent 1px); background-size: 54px 54px; mask-image: radial-gradient(circle, #000 15%, transparent 77%); pointer-events: none; }
+      .ar-scan-grid::after { content: ""; position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #7eeaff, transparent); box-shadow: 0 0 18px #62dcff; animation: arScan 3.6s ease-in-out infinite; }
+      @keyframes arScan { 0%, 100% { top: 14%; opacity: 0; } 20%, 80% { opacity: .7; } 50% { top: 84%; } }
+      .ar-topbar { position: absolute; z-index: 8; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
+      .ar-topbar > * { pointer-events: auto; }
+      .ar-stage-label { display: flex; align-items: center; gap: 9px; min-width: 0; padding: 8px 11px 8px 8px; border: 1px solid #ffffff31; border-radius: 15px; background: #071a2bc9; box-shadow: 0 8px 30px #0005; backdrop-filter: blur(12px); }
+      .ar-stage-number { width: 34px; height: 34px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 10px; background: linear-gradient(145deg, #1ab4db, #087fbd); color: white; font-size: 11px; font-weight: 950; }
+      .ar-stage-label small, .ar-stage-label strong { display: block; }
+      .ar-stage-label small { color: #8edcf0; font-size: 9px; font-weight: 900; letter-spacing: .06em; }
+      .ar-stage-label strong { max-width: 190px; overflow: hidden; margin-top: 1px; color: white; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+      .ar-top-actions { display: flex; gap: 7px; }
+      .ar-icon-button { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid #ffffff35; border-radius: 13px; background: #071a2bc9; color: white; box-shadow: 0 8px 30px #0005; font-size: 17px; backdrop-filter: blur(12px); }
+      .ar-icon-button:hover { border-color: #88e7ff; color: #aeeeff; }
+      .ar-hud { position: absolute; z-index: 7; top: max(70px, calc(env(safe-area-inset-top) + 67px)); left: 12px; display: flex; gap: 7px; }
+      .ar-hud-chip { min-width: 74px; padding: 7px 10px; border: 1px solid #ffffff2c; border-radius: 12px; background: #071a2bbd; box-shadow: 0 8px 24px #0004; backdrop-filter: blur(10px); }
+      .ar-hud-chip small, .ar-hud-chip strong { display: block; }
+      .ar-hud-chip small { color: #91c7d8; font-size: 8px; font-weight: 900; letter-spacing: .05em; }
+      .ar-hud-chip strong { margin-top: 2px; font-size: 15px; }
+      .ar-hud-chip.time strong { color: #ffe27a; }
+      .ar-target-card { position: absolute; z-index: 6; top: 18%; left: 50%; width: min(580px, calc(100% - 42px)); padding: 13px 16px 15px; border: 1px solid #81e5ff84; border-radius: 22px; background: linear-gradient(135deg, #071b2fe8, #0a4662dc); box-shadow: 0 18px 50px #0007, inset 0 1px #ffffff2c; text-align: center; backdrop-filter: blur(13px); transform: translateX(-50%); transition: .18s ease; }
+      .ar-target-card.target-hover { border-color: #ffe166; box-shadow: 0 0 0 5px #ffd95b24, 0 18px 50px #0007; transform: translateX(-50%) scale(1.025); }
+      .ar-target-kicker { color: #82ddf4; font-size: 9px; font-weight: 950; letter-spacing: .1em; }
+      .ar-target-card p { margin: 4px 0 9px; color: #e8f9ff; font-size: clamp(13px, 2vw, 16px); font-weight: 800; }
+      .ar-target-word { min-height: 48px; display: grid; place-items: center; border: 1px dashed #ffe073b5; border-radius: 14px; background: #ffdc5f17; color: #ffe47d; font-size: clamp(21px, 4vw, 29px); font-weight: 950; text-shadow: 0 0 20px #ffdc5650; }
+      .ar-target-hint { display: block; margin-top: 7px; color: #9cc9d7; font-size: 9px; font-weight: 750; }
+      .ar-word-field { --ar-shift-x: 0px; --ar-shift-y: 0px; position: absolute; z-index: 5; inset: 0; transform: translate3d(var(--ar-shift-x), var(--ar-shift-y), 0); transition: transform .12s linear; }
+      .ar-word-field.dragging-active { z-index: 9; }
+      .ar-word-bubble { position: absolute; left: var(--ar-x); top: var(--ar-y); min-width: 88px; min-height: 54px; padding: 10px 15px; border: 2px solid #d9f7ff; border-radius: 999px; background: linear-gradient(145deg, #158ecee8, #174faee8); color: white; box-shadow: 0 10px 30px #0010218c, inset 0 1px #ffffff70, 0 0 0 5px #9fefff1c; font-size: clamp(15px, 2.2vw, 21px); font-weight: 950; text-shadow: 0 2px 5px #00305680; touch-action: none; transform: translate(-50%, -50%); animation: arFloat var(--ar-duration, 3.8s) ease-in-out infinite; animation-delay: var(--ar-delay, 0s); transition: opacity .24s ease, filter .2s ease; }
+      .ar-word-bubble:nth-child(3n+2) { background: linear-gradient(145deg, #e67a2ce8, #c84c43e8); border-color: #ffe7c8; box-shadow: 0 10px 30px #2109007a, inset 0 1px #ffffff70, 0 0 0 5px #ffc06e1c; }
+      .ar-word-bubble:nth-child(3n) { background: linear-gradient(145deg, #7b60d4e8, #4f4bb9e8); border-color: #eee6ff; box-shadow: 0 10px 30px #10082880, inset 0 1px #ffffff70, 0 0 0 5px #d2c3ff1c; }
+      .ar-word-bubble:focus-visible { outline: 4px solid #ffe168; outline-offset: 4px; }
+      .ar-word-bubble.dragging { z-index: 12; animation: none; box-shadow: 0 18px 44px #0009, 0 0 0 7px #ffe2713d; transform: translate(-50%, -50%) scale(1.08); }
+      .ar-word-bubble.collected { pointer-events: none; animation: arCollect .48s ease forwards; background: #159968; border-color: #c6ffe5; }
+      .ar-word-bubble.wrong { pointer-events: none; animation: arReject .55s ease forwards; background: #df4052; border-color: #ffd2d8; }
+      @keyframes arFloat { 0%, 100% { transform: translate(-50%, -50%) translateY(-4px) rotate(-1deg); } 50% { transform: translate(-50%, -50%) translateY(7px) rotate(1deg); } }
+      @keyframes arCollect { 60% { transform: translate(-50%, -50%) scale(1.35); opacity: 1; filter: brightness(1.35); } 100% { transform: translate(-50%, -50%) scale(.1); opacity: 0; } }
+      @keyframes arReject { 0%, 100% { transform: translate(-50%, -50%); } 20% { transform: translate(-57%, -50%) rotate(-6deg); } 40% { transform: translate(-43%, -50%) rotate(6deg); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(.7); } }
+      .ar-feedback { position: absolute; z-index: 14; left: 50%; bottom: calc(116px + env(safe-area-inset-bottom)); max-width: calc(100% - 32px); padding: 10px 15px; border: 1px solid #bfffe0; border-radius: 999px; background: #0d624de8; color: white; box-shadow: 0 10px 35px #0007; font-size: 12px; font-weight: 900; opacity: 0; pointer-events: none; transform: translate(-50%, 12px); transition: .2s ease; white-space: nowrap; }
+      .ar-feedback.show { opacity: 1; transform: translate(-50%, 0); }
+      .ar-feedback.error { border-color: #ffc5cd; background: #962d3de8; }
+      .ar-bottom-bar { position: absolute; z-index: 8; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); left: 12px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #ffffff2d; border-radius: 17px; background: #071a2bd9; box-shadow: 0 10px 38px #0007; backdrop-filter: blur(12px); }
+      .ar-progress-label { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #b3d7e3; font-size: 10px; font-weight: 850; }
+      .ar-progress-label strong { color: #fff; font-size: 12px; }
+      .ar-progress-track { height: 7px; margin-top: 7px; overflow: hidden; border-radius: 99px; background: #ffffff17; }
+      .ar-progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fd2f2, #61e5ae, #ffe069); box-shadow: 0 0 15px #58dff6; transition: width .25s ease; }
+      .ar-camera-note { color: #8fb9c6; font-size: 9px; font-weight: 750; text-align: right; }
+      .ar-complete { position: absolute; z-index: 30; inset: 0; display: grid; place-items: center; padding: 18px; background: #06111cba; backdrop-filter: blur(11px); }
+      .ar-complete[hidden] { display: none; }
+      .ar-complete-card { width: min(470px, 100%); padding: 28px; border: 1px solid #86e8ff73; border-radius: 27px; background: linear-gradient(145deg, #09263fea, #0a4861ed); box-shadow: 0 28px 90px #000a, inset 0 1px #ffffff2b; text-align: center; }
+      .ar-complete-mark { width: 76px; height: 76px; display: grid; place-items: center; margin: 0 auto; border: 1px solid #ffe78e; border-radius: 25px; background: #ffdf6721; color: #ffe47d; box-shadow: 0 0 35px #ffda5538; font-size: 38px; }
+      .ar-complete-card h3 { margin: 15px 0 3px; color: white; font-size: 25px; }
+      .ar-complete-card p { margin-bottom: 0; color: #b6dce8; font-size: 13px; }
+      .ar-result-score { margin: 17px 0; color: #ffe47a; font-size: 46px; line-height: 1; font-weight: 950; }
+      .ar-result-score small { color: #95bfcc; font-size: 14px; }
+      .ar-result-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .ar-result-meta div { padding: 10px; border: 1px solid #ffffff1f; border-radius: 12px; background: #ffffff0c; }
+      .ar-result-meta span, .ar-result-meta strong { display: block; }
+      .ar-result-meta span { color: #8fc3d3; font-size: 9px; }
+      .ar-result-meta strong { margin-top: 2px; font-size: 17px; }
+      .ar-complete-actions { display: flex; gap: 8px; margin-top: 18px; }
+      .ar-complete-actions button { min-height: 47px; flex: 1; border-radius: 12px; font-size: 12px; font-weight: 950; }
+      .ar-complete-actions button:first-child { border: 0; background: #ffe064; color: #423100; }
+      .ar-complete-actions button:last-child { border: 1px solid #ffffff38; background: #ffffff12; color: white; }
       .overview { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; margin-top: 18px; padding: 15px 17px; border: 1px solid #dce5ef; border-radius: 19px; background: #ffffffe8; box-shadow: 0 8px 24px #1f3f5c0c; }
       .overview-main { min-width: 0; }
       .overview-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -272,7 +367,22 @@
       .word-modal-actions button:hover { transform: translateY(-1px); }
       body.modal-open { overflow: hidden; }
       .history { margin-top: 22px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: #ffffffe8; }
+      .history-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
       .history h3 { margin: 3px 0 0; color: var(--deep); font-size: 21px; }
+      .score-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+      .score-action { min-height: 38px; padding: 8px 11px; border: 1px solid #d8e2eb; border-radius: 10px; background: #f8fafc; color: #617087; font-size: 11px; font-weight: 900; }
+      .score-action.primary { border-color: var(--blue); background: var(--blue); color: white; }
+      .score-action:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--blue); color: var(--blue); }
+      .score-action.primary:hover:not(:disabled) { background: #086fa5; color: white; }
+      .score-action:disabled { cursor: not-allowed; opacity: .42; }
+      .score-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 15px; }
+      .score-summary-item { padding: 11px 12px; border: 1px solid #e0e8ef; border-radius: 13px; background: #f8fafc; }
+      .score-summary-item span, .score-summary-item strong { display: block; }
+      .score-summary-item span { color: #7b8797; font-size: 10px; font-weight: 850; }
+      .score-summary-item strong { margin-top: 3px; color: var(--deep); font-size: 17px; }
+      .score-sync-note { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; padding: 9px 11px; border-radius: 11px; background: #eef7fb; color: #376883; font-size: 11px; font-weight: 800; }
+      .score-sync-note.connected { background: #effaf5; color: #16734c; }
+      .score-sync-note.pending { background: #fff8e7; color: #745c1b; }
       .history-list { display: grid; gap: 8px; margin-top: 13px; }
       .history-item { display: grid; grid-template-columns: 10px 1fr auto auto; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: #f7f9fb; font-size: 13px; }
       .history-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
@@ -301,7 +411,7 @@
       body[data-theme="dark"] { --bg: #0e1727; --ink: #e8f0fb; --muted: #a9b7ca; --line: #2b3d55; --deep: #dbeaff; background: radial-gradient(circle at 10% 5%, #f6bd2714, transparent 23rem), radial-gradient(circle at 94% 20%, #087fbd20, transparent 27rem), var(--bg); }
       body[data-theme="dark"] .header, body[data-theme="dark"] .profile, body[data-theme="dark"] .tab, body[data-theme="dark"] .card, body[data-theme="dark"] .overview, body[data-theme="dark"] .history { background: #142237ee; border-color: #2b3d55; }
       body[data-theme="dark"] .teacher, body[data-theme="dark"] .teacher strong, body[data-theme="dark"] .intro p, body[data-theme="dark"] .tab small, body[data-theme="dark"] .profile label span, body[data-theme="dark"] .watch-note, body[data-theme="dark"] .watch-row, body[data-theme="dark"] .overview small, body[data-theme="dark"] .overview-complete, body[data-theme="dark"] footer, body[data-theme="dark"] .history-item small, body[data-theme="dark"] .history-item time { color: #a5b5c9; }
-      body[data-theme="dark"] .theme-toggle, body[data-theme="dark"] .mode-button, body[data-theme="dark"] .context-option, body[data-theme="dark"] .word, body[data-theme="dark"] .match-word, body[data-theme="dark"] .video-rate, body[data-theme="dark"] .reset-progress, body[data-theme="dark"] .share-result, body[data-theme="dark"] .requirement, body[data-theme="dark"] .history-item { background: #1a2c43; border-color: #39516b; color: #dce9f7; }
+      body[data-theme="dark"] .theme-toggle, body[data-theme="dark"] .mode-button, body[data-theme="dark"] .context-option, body[data-theme="dark"] .word, body[data-theme="dark"] .match-word, body[data-theme="dark"] .video-rate, body[data-theme="dark"] .reset-progress, body[data-theme="dark"] .share-result, body[data-theme="dark"] .requirement, body[data-theme="dark"] .history-item, body[data-theme="dark"] .score-action, body[data-theme="dark"] .score-summary-item { background: #1a2c43; border-color: #39516b; color: #dce9f7; }
       body[data-theme="dark"] .context-card, body[data-theme="dark"] .match-card { background: #172a40; border-color: #334b67; }
       body[data-theme="dark"] .lesson-tools, body[data-theme="dark"] .lesson-search, body[data-theme="dark"] .filter-chip, body[data-theme="dark"] .empty-filter { background: #142237; border-color: #39516b; color: #dce9f7; }
       body[data-theme="dark"] .lesson-search input { color: #e8f0fb; }
@@ -324,11 +434,16 @@
       body[data-theme="dark"] .word-modal-example { background: #123d55; color: #b8e9ff; }
       body[data-theme="dark"] .word-modal-note { background: #4b3d18; color: #ffe8a1; }
       body[data-theme="dark"] .info-button { background: #1a2c43; border-color: #39516b; color: #aabbd0; }
+      body[data-theme="dark"] .score-summary-item strong { color: #e8f0fb; }
+      body[data-theme="dark"] .score-sync-note { background: #123d55; color: #b8e9ff; }
+      body[data-theme="dark"] .score-sync-note.connected { background: #143c35; color: #86e0b4; }
+      body[data-theme="dark"] .score-sync-note.pending { background: #4b3d18; color: #ffe8a1; }
       body[data-theme="dark"] .context-label, body[data-theme="dark"] .match-card > p, body[data-theme="dark"] .match-column-title, body[data-theme="dark"] .match-status, body[data-theme="dark"] .context-feedback, body[data-theme="dark"] .score-strip span { color: #aabbd0; }
       body[data-theme="dark"] .overview-score { background: #123d55; color: #8cdbff; }
       body[data-theme="dark"] .overview-action-buttons .reset-progress, body[data-theme="dark"] .overview-action-buttons .print-report-button { background: #1a2c43; border-color: #39516b; color: #dce9f7; }
       body[data-theme="dark"] .badge { background: #1a2c43; border-color: #39516b; color: #aabbd0; }
       body[data-theme="dark"] .badge.earned { background: #143c35; border-color: #2c7a64; color: #86e0b4; }
+      body[data-theme="dark"] .teacher-dashboard-button { background: #123d55; border-color: #2f6680; color: #8cdbff; }
       @media (max-width: 900px) {
         .intro, .workspace { grid-template-columns: 1fr; }
         .profile { min-width: 0; }
@@ -338,6 +453,8 @@
         main { padding-top: 17px; }
         .teacher { display: none; }
         .header-tools { gap: 4px; }
+        .teacher-dashboard-button { width: 38px; height: 38px; min-height: 38px; justify-content: center; padding: 0; border-radius: 11px; }
+        .teacher-dashboard-button-label, .teacher-dashboard-button.connected::after { display: none; }
         .theme-toggle { width: 38px; height: 38px; border-radius: 11px; }
         .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
         .tab { min-height: 64px; padding: 9px 8px; gap: 7px; }
@@ -345,8 +462,9 @@
         .tab strong { font-size: 12px; }
         .tab small { font-size: 9px; }
         .tab-status { font-size: 14px; }
-        .profile { display: grid; grid-template-columns: auto 1fr 90px; gap: 9px; padding: 11px; }
+        .profile { display: grid; grid-template-columns: auto minmax(90px, 1fr) 74px 58px; gap: 8px; padding: 11px; }
         .profile input { font-size: 13px; }
+        .class-field, .number-field { max-width: none; padding-left: 8px; }
         .card-head, .game-head { padding-inline: 14px; }
         .watch, .game-body { padding-inline: 14px; }
         .context-options { grid-template-columns: 1fr; }
@@ -379,8 +497,48 @@
         .review-options { grid-template-columns: 1fr; }
         .word-facts { grid-template-columns: 1fr; }
         .word-modal { padding: 22px 17px 17px; }
+        .ar-launch-card { min-height: 405px; padding: 18px; }
+        .ar-launch-content { max-width: 100%; }
+        .ar-launch-card h4 { max-width: 78%; font-size: 22px; }
+        .ar-launch-card p { max-width: 82%; }
+        .ar-orbit-art { right: -72px; bottom: -34px; opacity: .72; }
+        .ar-launch-actions { align-items: stretch; flex-direction: column; }
+        .ar-start-camera, .ar-start-fallback { width: 100%; }
+        .ar-stage-label strong { max-width: 125px; }
+        .ar-hud-chip { min-width: 64px; padding-inline: 8px; }
+        .ar-target-card { top: 19%; width: calc(100% - 24px); padding: 11px 12px 13px; border-radius: 18px; }
+        .ar-target-word { min-height: 44px; }
+        .ar-word-bubble { min-width: 78px; min-height: 49px; padding: 8px 12px; }
+        .ar-bottom-bar { grid-template-columns: 1fr; gap: 6px; padding: 10px 12px; }
+        .ar-camera-note { display: none; }
+        .ar-feedback { bottom: calc(100px + env(safe-area-inset-bottom)); font-size: 11px; }
+        .ar-complete-card { padding: 24px 18px; }
         .history-item { grid-template-columns: 8px 1fr auto; }
         .history-item time { display: none; }
+        .history-head { flex-direction: column; }
+        .score-actions { width: 100%; justify-content: stretch; }
+        .score-action { flex: 1; }
+        .score-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .score-sync-note { align-items: flex-start; flex-direction: column; }
+      }
+      @media (max-width: 420px) {
+        .profile { grid-template-columns: minmax(90px, 1fr) 72px 56px; }
+        .profile-icon { display: none; }
+      }
+      @media (orientation: landscape) and (max-height: 620px) {
+        .ar-target-card { top: 14%; width: min(500px, 52vw); padding-block: 9px 10px; }
+        .ar-target-card p { margin-bottom: 5px; }
+        .ar-target-word { min-height: 38px; font-size: 20px; }
+        .ar-target-hint { display: none; }
+        .ar-hud { top: 65px; }
+        .ar-bottom-bar { padding-block: 8px; }
+        .ar-complete-card { padding: 18px 22px; }
+        .ar-complete-mark { width: 58px; height: 58px; border-radius: 18px; font-size: 29px; }
+        .ar-complete-card h3 { margin-top: 9px; font-size: 21px; }
+        .ar-result-score { margin: 10px 0; font-size: 36px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
       }
     </style>
   </head>
@@ -396,6 +554,7 @@
         </div>
         <div class="header-tools">
           <div class="teacher"><strong>นางสาวกรรณาภรณ์ พุฒชงค์</strong>โรงเรียนขลุงรัชดาภิเษก จังหวัดจันทบุรี</div>
+          <button id="teacherDashboard" class="teacher-dashboard-button" type="button" aria-label="เปิดแดชบอร์ดครู" title="เปิดแดชบอร์ดครู"><span aria-hidden="true">▦</span><span class="teacher-dashboard-button-label">แดชบอร์ดครู</span></button>
           <button id="themeToggle" class="theme-toggle" type="button" aria-label="สลับโหมดการแสดงผล">☾</button>
         </div>
       </div>
@@ -404,7 +563,7 @@
     <main class="shell">
       <section class="intro">
         <div>
-          <div class="eyebrow">✦ 4 คลิป · 16 ภารกิจ + ห้องทบทวนเฉพาะบุคคล</div>
+          <div class="eyebrow">✦ 4 คลิป · 20 ภารกิจ + WebAR และห้องทบทวนเฉพาะบุคคล</div>
           <h2>ดูคลิป แล้วจิ้มคำตอบที่ถูกให้ครบ</h2>
           <p>ดูคลิปให้จบ แล้วเลือกโหมดฝึกที่เหมาะกับตัวเอง</p>
         </div>
@@ -412,6 +571,7 @@
           <div class="profile-icon">👤</div>
           <label><span>ชื่อ–นามสกุล</span><input id="playerName" placeholder="กรอกชื่อผู้เล่น" /></label>
           <label class="class-field"><span>ชั้น/ห้อง</span><input id="playerClass" placeholder="ม.4/1" /></label>
+          <label class="number-field"><span>เลขที่</span><input id="playerNumber" inputmode="numeric" placeholder="01" /></label>
         </div>
       </section>
 
@@ -455,8 +615,53 @@
         <div class="word-modal-actions"><button id="speakWordButton" type="button">🔊 ฟังเสียงคำนี้</button><button id="closeWordModalButton" type="button">ปิดหน้าต่าง</button></div>
       </section>
     </div>
+    <section id="arExperience" class="ar-experience" aria-label="เกม AR ล่าคำไวพจน์" hidden>
+      <div class="ar-camera-stage" aria-hidden="true">
+        <video id="arCamera" class="ar-camera" autoplay muted playsinline></video>
+        <div id="arCameraFallback" class="ar-camera-fallback"><div class="ar-fallback-core">AR</div></div>
+        <div class="ar-camera-tint"></div>
+        <div class="ar-scan-grid"></div>
+      </div>
+      <div class="ar-topbar">
+        <div class="ar-stage-label"><span id="arStageNumber" class="ar-stage-number">01</span><div><small>WEBAR · คลังคำไทย</small><strong id="arStageTitle">ฉ่อยม้า</strong></div></div>
+        <div class="ar-top-actions">
+          <button id="arSoundButton" class="ar-icon-button" type="button" aria-label="เปิดหรือปิดเสียง" title="เปิดหรือปิดเสียง">🔊</button>
+          <button id="arFlipCameraButton" class="ar-icon-button" type="button" aria-label="สลับกล้องหน้าและกล้องหลัง" title="สลับกล้องหน้าและกล้องหลัง">⇄</button>
+          <button id="arFullscreenButton" class="ar-icon-button" type="button" aria-label="แสดงเต็มหน้าจอ" title="แสดงเต็มหน้าจอ">⛶</button>
+          <button id="arCloseButton" class="ar-icon-button" type="button" aria-label="ออกจากเกม AR" title="ออกจากเกม AR">×</button>
+        </div>
+      </div>
+      <div class="ar-hud">
+        <div class="ar-hud-chip time"><small>เวลาที่เหลือ</small><strong id="arTime">45</strong></div>
+        <div class="ar-hud-chip"><small>คะแนนสด</small><strong id="arLiveScore">0</strong></div>
+        <div class="ar-hud-chip"><small>พลาด</small><strong id="arMisses">0</strong></div>
+      </div>
+      <div id="arTargetCard" class="ar-target-card">
+        <div class="ar-target-kicker">ภารกิจค้นหาคำ</div>
+        <p>แตะคำ หรือโยนคำลงช่องที่มีความหมายว่า</p>
+        <div id="arTargetMeaning" class="ar-target-word">“ม้า”</div>
+        <span class="ar-target-hint">หมุนหรือเอียงโทรศัพท์เพื่อสำรวจคำรอบตัว</span>
+      </div>
+      <div id="arWordField" class="ar-word-field" aria-live="polite"></div>
+      <div id="arFeedback" class="ar-feedback" role="status"></div>
+      <div class="ar-bottom-bar">
+        <div><div class="ar-progress-label"><span>รวบรวมคำไวพจน์ที่ถูกต้อง</span><strong id="arProgressText">0/4 คำ</strong></div><div class="ar-progress-track"><div id="arProgressFill" class="ar-progress-fill"></div></div></div>
+        <div id="arCameraNote" class="ar-camera-note">กล้องใช้แสดงผลบนเครื่องเท่านั้น<br>ไม่มีการบันทึกหรือส่งภาพ</div>
+      </div>
+      <div id="arComplete" class="ar-complete" hidden>
+        <div class="ar-complete-card">
+          <div class="ar-complete-mark">★</div>
+          <h3 id="arCompleteTitle">ภารกิจสำเร็จ!</h3>
+          <p id="arCompleteText">รวบรวมคำไวพจน์ครบแล้ว</p>
+          <div class="ar-result-score"><span id="arFinalScore">100</span><small>/100</small></div>
+          <div class="ar-result-meta"><div><span>คำที่เก็บได้</span><strong id="arFinalHits">4/4</strong></div><div><span>คำที่เลือกผิด</span><strong id="arFinalMisses">0</strong></div></div>
+          <div class="ar-complete-actions"><button id="arReturnButton" type="button">กลับหน้าเกม</button><button id="arReplayButton" type="button">เล่น AR อีกครั้ง</button></div>
+        </div>
+      </div>
+    </section>
     <footer class="shell">สื่อการเรียนรู้ภาษาไทย ระดับชั้นมัธยมศึกษาปีที่ 4 · โรงเรียนขลุงรัชดาภิเษก</footer>
 
+    <script src="score-config.js"></script>
     <script>
       const lessons = [
         {
@@ -556,6 +761,7 @@
         speedHits: 0,
         speedSeconds: 30,
         speedOptions: [],
+        speedMistakes: [],
         speedTimer: null,
         matchLeft: "",
         matchRight: "",
@@ -565,6 +771,7 @@
         matchSubmitted: false,
         matchError: "",
         matchBusy: false,
+        matchMistakes: [],
         reviewWords: [],
         reviewRound: 0,
         reviewHits: 0,
@@ -572,17 +779,60 @@
         reviewAnswered: false,
         reviewOptions: [],
         reviewFinished: false,
+        arStarted: false,
+        arFinished: false,
+        arSeconds: 45,
+        arHits: 0,
+        arWrongCount: 0,
+        arTargetWords: [],
+        arOptions: [],
+        arCollected: [],
+        arMistakes: [],
+        arTimer: null,
+        arUseCamera: true,
         lessonQuery: "",
         lessonFilter: "all"
       };
       const nameInput = document.getElementById("playerName");
       const classInput = document.getElementById("playerClass");
+      const numberInput = document.getElementById("playerNumber");
       const themeToggle = document.getElementById("themeToggle");
+      const teacherDashboard = document.getElementById("teacherDashboard");
+      const arExperience = document.getElementById("arExperience");
+      const arCamera = document.getElementById("arCamera");
+      const arCameraFallback = document.getElementById("arCameraFallback");
+      const arWordField = document.getElementById("arWordField");
+      const arTargetCard = document.getElementById("arTargetCard");
+      let arStream = null;
+      let arOrientationHandler = null;
+      let arFeedbackTimer = null;
+      let arSoundEnabled = true;
+      let arAudioContext = null;
+      let arFacingMode = "user";
       const videoRates = JSON.parse(localStorage.getItem("thai-video-rates") || "{}");
+      const scoreApiUrl = String(window.THAI_GAME_SCORE_API_URL || "").trim();
+      const scoreApiConfigured = () => /^https:\/\//i.test(scoreApiUrl);
+      teacherDashboard.classList.toggle("connected", scoreApiConfigured());
+      teacherDashboard.addEventListener("click", () => {
+        if (!scoreApiConfigured()) {
+          alert("ยังไม่ได้เชื่อมระบบคะแนนออนไลน์ กรุณาตั้งค่า Web app URL ในไฟล์ score-config.js ก่อน");
+          return;
+        }
+        window.open(scoreApiUrl, "_blank", "noopener,noreferrer");
+      });
+      let scoreSyncBusy = false;
       nameInput.value = localStorage.getItem("thai-game-name") || "";
       classInput.value = localStorage.getItem("thai-game-class") || "";
+      numberInput.value = localStorage.getItem("thai-game-number") || "";
+      state.attempts = Array.isArray(state.attempts) ? state.attempts.map((attempt) => ({
+        ...attempt,
+        total: Number(attempt.total) || 100,
+        studentNumber: attempt.studentNumber || "",
+        wrongWords: Array.isArray(attempt.wrongWords) ? attempt.wrongWords : [],
+        syncStatus: attempt.syncStatus || "local"
+      })) : [];
       const lesson = () => lessons[state.active];
-      const profileReady = () => nameInput.value.trim().length > 1 && classInput.value.trim().length > 0;
+      const profileReady = () => nameInput.value.trim().length > 1 && classInput.value.trim().length > 0 && numberInput.value.trim().length > 0;
       const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);
       const visibleLessons = () => lessons.map((item, index) => ({ item, index })).filter(({ item }) => {
         const query = state.lessonQuery.trim().toLowerCase();
@@ -618,8 +868,11 @@
       const clearSpeedTimer = () => {
         if (state.speedTimer) { clearInterval(state.speedTimer); state.speedTimer = null; }
       };
-      const modeLabels = { multi: "คลังคำ", context: "เติมบริบท", speed: "ท้าทาย 30 วิ", match: "จับคู่ความหมาย", review: "ทบทวนคำที่ผิด" };
-      const modeIcons = { multi: "☷", context: "✎", speed: "⏱", match: "⟷", review: "↺" };
+      const clearArTimer = () => {
+        if (state.arTimer) { clearInterval(state.arTimer); state.arTimer = null; }
+      };
+      const modeLabels = { multi: "คลังคำ", context: "เติมบริบท", speed: "ท้าทาย 30 วิ", match: "จับคู่ความหมาย", ar: "AR ล่าคำ", review: "ทบทวนคำที่ผิด" };
+      const modeIcons = { multi: "☷", context: "✎", speed: "⏱", match: "⟷", ar: "◉", review: "↺" };
       const applyTheme = (theme) => {
         document.body.dataset.theme = theme;
         themeToggle.textContent = theme === "dark" ? "☀" : "☾";
@@ -645,16 +898,97 @@
       };
       const speakPrompt = (item, mode) => {
         if (!speechSupported) return;
-        const text = mode === "context" ? item.context.sentence : mode === "match" ? "จับคู่คำไวพจน์กับความหมายที่ตรงกัน" : mode === "review" ? "ทบทวนคำที่ยังไม่แม่น เลือกความหมายที่ถูกต้อง" : `${item.question} คำสำคัญคือ ${item.meaning}`;
+        const text = mode === "context" ? item.context.sentence : mode === "match" ? "จับคู่คำไวพจน์กับความหมายที่ตรงกัน" : mode === "review" ? "ทบทวนคำที่ยังไม่แม่น เลือกความหมายที่ถูกต้อง" : mode === "ar" ? `ภารกิจ AR ค้นหาและเลือกคำที่มีความหมายว่า ${item.meaning}` : `${item.question} คำสำคัญคือ ${item.meaning}`;
         speakText(text);
       };
-      const recordAttempt = (item, score, mode) => {
-        const attempt = { id: Date.now(), name: nameInput.value.trim(), classroom: classInput.value.trim(), lesson: item.short, mode, score, date: new Intl.DateTimeFormat("th-TH", { dateStyle: "short", timeStyle: "short" }).format(new Date()) };
-        state.attempts = [attempt, ...state.attempts].slice(0, 12);
-        localStorage.setItem("thai-game-attempts", JSON.stringify(state.attempts));
+      const saveAttempts = () => localStorage.setItem("thai-game-attempts", JSON.stringify(state.attempts));
+      const setAttemptSyncStatus = (attemptId, syncStatus, refresh = true) => {
+        state.attempts = state.attempts.map((attempt) => attempt.id === attemptId ? { ...attempt, syncStatus } : attempt);
+        saveAttempts();
+        if (refresh) { renderOverview(); renderHistory(); }
+      };
+      const syncAttempt = async (attempt, refresh = true) => {
+        if (!scoreApiConfigured()) return false;
+        setAttemptSyncStatus(attempt.id, "sending", refresh);
+        const controller = "AbortController" in window ? new AbortController() : null;
+        const timeout = window.setTimeout(() => controller?.abort(), 12000);
+        try {
+          await fetch(scoreApiUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=UTF-8" },
+            body: JSON.stringify({
+              attemptId: String(attempt.id),
+              clientTime: attempt.timestamp || attempt.date,
+              studentName: attempt.name,
+              classroom: attempt.classroom,
+              studentNumber: attempt.studentNumber || "",
+              lessonId: attempt.lessonId || "",
+              lesson: attempt.lesson,
+              mode: attempt.mode,
+              score: attempt.score,
+              total: attempt.total || 100,
+              wrongWords: attempt.wrongWords || []
+            }),
+            signal: controller?.signal
+          });
+          setAttemptSyncStatus(attempt.id, "sent", refresh);
+          return true;
+        } catch (error) {
+          setAttemptSyncStatus(attempt.id, "queued", refresh);
+          return false;
+        } finally {
+          window.clearTimeout(timeout);
+        }
+      };
+      const syncPendingScores = async (manual = false) => {
+        if (!scoreApiConfigured()) {
+          if (manual) alert("ยังไม่ได้เชื่อม Google Sheets กรุณาตั้งค่า URL ในไฟล์ score-config.js ก่อน");
+          return;
+        }
+        if (scoreSyncBusy) return;
+        const pending = state.attempts.filter((attempt) => attempt.syncStatus !== "sent");
+        if (!pending.length) {
+          if (manual) alert("คะแนนทั้งหมดส่งไป Google Sheets แล้ว");
+          return;
+        }
+        scoreSyncBusy = true;
+        let sentCount = 0;
+        for (const attempt of [...pending].reverse()) {
+          if (await syncAttempt(attempt, false)) sentCount += 1;
+        }
+        scoreSyncBusy = false;
+        renderOverview();
+        renderHistory();
+        if (manual) alert(sentCount === pending.length ? `ส่งคะแนนสำเร็จ ${sentCount} รายการ` : `ส่งสำเร็จ ${sentCount}/${pending.length} รายการ รายการที่เหลือจะลองใหม่เมื่อออนไลน์`);
+      };
+      const recordAttempt = (item, score, mode, details = {}) => {
+        const now = new Date();
+        const attempt = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          timestamp: now.toISOString(),
+          name: nameInput.value.trim(),
+          classroom: classInput.value.trim(),
+          studentNumber: numberInput.value.trim(),
+          lessonId: item.id,
+          lesson: item.short,
+          mode,
+          score,
+          total: 100,
+          wrongWords: [...new Set(details.wrongWords || [])],
+          correctCount: Number(details.correctCount) || 0,
+          totalQuestions: Number(details.totalQuestions) || 0,
+          syncStatus: scoreApiConfigured() ? "sending" : "local",
+          date: new Intl.DateTimeFormat("th-TH", { dateStyle: "short", timeStyle: "short" }).format(now)
+        };
+        state.attempts = [attempt, ...state.attempts].slice(0, 200);
+        saveAttempts();
+        if (scoreApiConfigured()) syncAttempt(attempt);
+        return attempt;
       };
       const resetMode = (mode) => {
         clearSpeedTimer();
+        clearArTimer();
         state.mode = mode;
         state.selected = [];
         state.submitted = false;
@@ -667,6 +1001,7 @@
         state.speedHits = 0;
         state.speedSeconds = 30;
         state.speedOptions = [];
+        state.speedMistakes = [];
         state.matchLeft = "";
         state.matchRight = "";
         state.matchMatched = [];
@@ -675,6 +1010,7 @@
         state.matchSubmitted = false;
         state.matchError = "";
         state.matchBusy = false;
+        state.matchMistakes = [];
         state.reviewWords = [];
         state.reviewRound = 0;
         state.reviewHits = 0;
@@ -682,6 +1018,16 @@
         state.reviewAnswered = false;
         state.reviewOptions = [];
         state.reviewFinished = false;
+        state.arStarted = false;
+        state.arFinished = false;
+        state.arSeconds = 45;
+        state.arHits = 0;
+        state.arWrongCount = 0;
+        state.arTargetWords = [];
+        state.arOptions = [];
+        state.arCollected = [];
+        state.arMistakes = [];
+        state.arUseCamera = true;
         state.options = shuffle([...lesson().correct, ...lesson().incorrect]);
       };
       const startSpeedRound = () => {
@@ -703,7 +1049,8 @@
         if (state.reviewFinished) return;
         state.reviewFinished = true;
         state.score = Math.round((state.reviewHits / Math.max(1, state.reviewWords.length)) * 100);
-        recordAttempt(lesson(), state.score, modeLabels.review);
+        const remainingReviewWords = state.reviewWords.filter((word) => currentMistakes(lesson()).some((entry) => entry.word === word));
+        recordAttempt(lesson(), state.score, modeLabels.review, { correctCount: state.reviewHits, totalQuestions: state.reviewWords.length, wrongWords: remainingReviewWords });
         renderGame();
         renderOverview();
         renderHistory();
@@ -714,10 +1061,292 @@
         state.speedFinished = true;
         state.speedStarted = false;
         state.score = Math.round((state.speedHits / 5) * 100);
-        recordAttempt(lesson(), state.score, "ท้าทาย 30 วิ");
+        recordAttempt(lesson(), state.score, "ท้าทาย 30 วิ", { correctCount: state.speedHits, totalQuestions: 5, wrongWords: state.speedMistakes });
         renderGame();
         renderOverview();
         renderHistory();
+      };
+      const arSupportsCamera = () => Boolean(window.isSecureContext && navigator.mediaDevices?.getUserMedia);
+      const showArFeedback = (message, isError = false) => {
+        const feedback = document.getElementById("arFeedback");
+        window.clearTimeout(arFeedbackTimer);
+        feedback.textContent = message;
+        feedback.classList.toggle("error", isError);
+        feedback.classList.add("show");
+        arFeedbackTimer = window.setTimeout(() => feedback.classList.remove("show"), 1500);
+      };
+      const playArTone = (correct) => {
+        if (!arSoundEnabled) return;
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          arAudioContext = arAudioContext || new AudioContext();
+          const oscillator = arAudioContext.createOscillator();
+          const gain = arAudioContext.createGain();
+          oscillator.type = correct ? "sine" : "triangle";
+          oscillator.frequency.setValueAtTime(correct ? 620 : 190, arAudioContext.currentTime);
+          if (correct) oscillator.frequency.exponentialRampToValueAtTime(880, arAudioContext.currentTime + .13);
+          gain.gain.setValueAtTime(.0001, arAudioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(.18, arAudioContext.currentTime + .015);
+          gain.gain.exponentialRampToValueAtTime(.0001, arAudioContext.currentTime + .2);
+          oscillator.connect(gain).connect(arAudioContext.destination);
+          oscillator.start();
+          oscillator.stop(arAudioContext.currentTime + .22);
+        } catch (error) {
+          // เสียงเป็นลูกเล่นเสริม เกมยังเล่นต่อได้หากเบราว์เซอร์ไม่รองรับ
+        }
+      };
+      const stopArStream = () => {
+        if (arStream) {
+          arStream.getTracks().forEach((track) => track.stop());
+          arStream = null;
+        }
+        arCamera.pause();
+        arCamera.srcObject = null;
+        arCameraFallback.hidden = false;
+      };
+      const stopArHardware = () => {
+        stopArStream();
+        if (arOrientationHandler) {
+          window.removeEventListener("deviceorientation", arOrientationHandler);
+          arOrientationHandler = null;
+        }
+        arWordField.style.setProperty("--ar-shift-x", "0px");
+        arWordField.style.setProperty("--ar-shift-y", "0px");
+      };
+      const enableArOrientation = async () => {
+        try {
+          const OrientationEvent = window.DeviceOrientationEvent;
+          if (!OrientationEvent) return false;
+          if (typeof OrientationEvent.requestPermission === "function") {
+            const permission = await OrientationEvent.requestPermission();
+            if (permission !== "granted") return false;
+          }
+          arOrientationHandler = (event) => {
+            const gamma = Math.max(-30, Math.min(30, Number(event.gamma) || 0));
+            const beta = Math.max(-30, Math.min(30, (Number(event.beta) || 0) - 45));
+            arWordField.style.setProperty("--ar-shift-x", `${gamma * -.7}px`);
+            arWordField.style.setProperty("--ar-shift-y", `${beta * -.45}px`);
+          };
+          window.addEventListener("deviceorientation", arOrientationHandler, { passive: true });
+          return true;
+        } catch (error) {
+          return false;
+        }
+      };
+      const openArCamera = async () => {
+        stopArStream();
+        try {
+          arStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: arFacingMode }, width: { ideal: 1280 }, height: { ideal: 720 } } });
+          if (!state.arStarted || arExperience.hidden) {
+            stopArStream();
+            return false;
+          }
+          arCamera.classList.toggle("mirror", arFacingMode === "user");
+          arCamera.srcObject = arStream;
+          await arCamera.play();
+          arCameraFallback.hidden = true;
+          return true;
+        } catch (error) {
+          stopArStream();
+          return false;
+        }
+      };
+      const currentArScore = () => {
+        const total = Math.max(1, state.arTargetWords.length);
+        return Math.max(0, Math.min(100, Math.round(state.arHits / total * 100 - state.arWrongCount * 10)));
+      };
+      const updateArHud = () => {
+        const total = Math.max(1, state.arTargetWords.length);
+        document.getElementById("arTime").textContent = state.arSeconds;
+        document.getElementById("arLiveScore").textContent = currentArScore();
+        document.getElementById("arMisses").textContent = state.arWrongCount;
+        document.getElementById("arProgressText").textContent = `${state.arHits}/${total} คำ`;
+        document.getElementById("arProgressFill").style.width = `${Math.round(state.arHits / total * 100)}%`;
+      };
+      const arAnchors = () => {
+        const landscape = window.innerWidth > window.innerHeight;
+        return landscape ? [
+          [8, 39], [92, 39], [11, 59], [89, 59], [18, 78], [82, 78], [34, 70], [66, 70], [50, 83]
+        ] : [
+          [14, 44], [86, 44], [12, 58], [88, 58], [18, 72], [82, 72], [34, 81], [66, 81], [50, 66]
+        ];
+      };
+      const bindArWord = (button, word, origin) => {
+        let pointerId = null;
+        let startX = 0;
+        let startY = 0;
+        let moved = false;
+        const resetPosition = () => {
+          button.style.setProperty("--ar-x", `${origin[0]}%`);
+          button.style.setProperty("--ar-y", `${origin[1]}%`);
+          button.classList.remove("dragging");
+        };
+        button.addEventListener("pointerdown", (event) => {
+          if (button.dataset.resolved) return;
+          pointerId = event.pointerId;
+          startX = event.clientX;
+          startY = event.clientY;
+          moved = false;
+          button.setPointerCapture?.(event.pointerId);
+          button.classList.add("dragging");
+          arWordField.classList.add("dragging-active");
+        });
+        button.addEventListener("pointermove", (event) => {
+          if (pointerId !== event.pointerId || button.dataset.resolved) return;
+          if (Math.hypot(event.clientX - startX, event.clientY - startY) > 8) moved = true;
+          if (!moved) return;
+          button.style.setProperty("--ar-x", `${event.clientX / window.innerWidth * 100}%`);
+          button.style.setProperty("--ar-y", `${event.clientY / window.innerHeight * 100}%`);
+          const target = arTargetCard.getBoundingClientRect();
+          arTargetCard.classList.toggle("target-hover", event.clientX >= target.left && event.clientX <= target.right && event.clientY >= target.top && event.clientY <= target.bottom);
+        });
+        button.addEventListener("pointerup", (event) => {
+          if (pointerId !== event.pointerId || button.dataset.resolved) return;
+          const target = arTargetCard.getBoundingClientRect();
+          const droppedOnTarget = event.clientX >= target.left && event.clientX <= target.right && event.clientY >= target.top && event.clientY <= target.bottom;
+          pointerId = null;
+          arTargetCard.classList.remove("target-hover");
+          button.classList.remove("dragging");
+          arWordField.classList.remove("dragging-active");
+          if (!moved || droppedOnTarget) resolveArWord(button, word);
+          else resetPosition();
+        });
+        button.addEventListener("pointercancel", () => {
+          pointerId = null;
+          arTargetCard.classList.remove("target-hover");
+          arWordField.classList.remove("dragging-active");
+          resetPosition();
+        });
+        button.addEventListener("keydown", (event) => {
+          if ((event.key === "Enter" || event.key === " ") && !button.dataset.resolved) {
+            event.preventDefault();
+            resolveArWord(button, word);
+          }
+        });
+      };
+      const renderArWords = () => {
+        arWordField.innerHTML = "";
+        const anchors = shuffle(arAnchors());
+        state.arOptions.forEach((word, index) => {
+          const origin = anchors[index % anchors.length];
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "ar-word-bubble";
+          button.textContent = word;
+          button.setAttribute("aria-label", `เลือกคำ ${word}`);
+          button.style.setProperty("--ar-x", `${origin[0]}%`);
+          button.style.setProperty("--ar-y", `${origin[1]}%`);
+          button.style.setProperty("--ar-delay", `${(index % 5) * -.42}s`);
+          button.style.setProperty("--ar-duration", `${3.1 + (index % 4) * .45}s`);
+          bindArWord(button, word, origin);
+          arWordField.appendChild(button);
+        });
+      };
+      const resolveArWord = (button, word) => {
+        if (state.arFinished || button.dataset.resolved) return;
+        button.dataset.resolved = "true";
+        const item = lesson();
+        const correct = state.arTargetWords.includes(word);
+        if (correct) {
+          state.arCollected.push(word);
+          state.arHits += 1;
+          forgetMistake(item, word);
+          button.classList.add("collected");
+          showArFeedback(`✓ เก็บ “${word}” สำเร็จ +${Math.round(100 / state.arTargetWords.length)}`);
+          navigator.vibrate?.(35);
+        } else {
+          state.arWrongCount += 1;
+          state.arMistakes = [...new Set([...state.arMistakes, word])];
+          rememberMistakes(item, [word]);
+          button.classList.add("wrong");
+          showArFeedback(`ยังไม่ถูก “${word}” หมายถึง ${getWordDetail(word).meaning}`, true);
+          navigator.vibrate?.([35, 45, 35]);
+        }
+        playArTone(correct);
+        updateArHud();
+        window.setTimeout(() => button.remove(), 560);
+        if (state.arHits >= state.arTargetWords.length) window.setTimeout(() => finishArMission(true), 620);
+      };
+      const finishArMission = (completed) => {
+        if (state.arFinished || !state.arStarted) return;
+        clearArTimer();
+        state.arFinished = true;
+        state.score = currentArScore();
+        stopArHardware();
+        recordAttempt(lesson(), state.score, modeLabels.ar, { correctCount: state.arHits, totalQuestions: state.arTargetWords.length, wrongWords: state.arMistakes });
+        document.getElementById("arCompleteTitle").textContent = completed ? "ภารกิจ AR สำเร็จ!" : "หมดเวลาแล้ว";
+        document.getElementById("arCompleteText").textContent = completed ? `คุณรวบรวมคำที่หมายถึง “${lesson().meaning}” ได้ครบ` : `รวบรวมได้ ${state.arHits} จาก ${state.arTargetWords.length} คำ ลองฝึกอีกครั้งได้เลย`;
+        document.getElementById("arFinalScore").textContent = state.score;
+        document.getElementById("arFinalHits").textContent = `${state.arHits}/${state.arTargetWords.length}`;
+        document.getElementById("arFinalMisses").textContent = state.arWrongCount;
+        document.getElementById("arComplete").hidden = false;
+        if (completed) {
+          playArTone(true);
+          navigator.vibrate?.([40, 50, 80]);
+        }
+        renderOverview();
+        renderHistory();
+      };
+      const closeArExperience = (force = false) => {
+        if (!force && state.arStarted && !state.arFinished && (state.arHits > 0 || state.arWrongCount > 0) && !window.confirm("ออกจากภารกิจ AR ตอนนี้หรือไม่? ความคืบหน้ารอบนี้จะไม่ถูกบันทึก")) return;
+        clearArTimer();
+        stopArHardware();
+        arExperience.hidden = true;
+        document.body.classList.remove("ar-open");
+        document.getElementById("arComplete").hidden = true;
+        if (document.fullscreenElement === arExperience) {
+          const exitFullscreen = document.exitFullscreen?.();
+          exitFullscreen?.catch(() => {});
+        }
+        if (!state.arFinished) resetMode("ar");
+        else state.arStarted = false;
+        renderGame();
+      };
+      const startArMission = async (useCamera = true) => {
+        const item = lesson();
+        clearArTimer();
+        stopArHardware();
+        state.arStarted = true;
+        state.arFinished = false;
+        state.arSeconds = 45;
+        state.arHits = 0;
+        state.arWrongCount = 0;
+        state.arCollected = [];
+        state.arMistakes = [];
+        state.arUseCamera = Boolean(useCamera && arSupportsCamera());
+        state.arTargetWords = shuffle([...item.correct]).slice(0, Math.min(4, item.correct.length));
+        state.arOptions = shuffle([...state.arTargetWords, ...shuffle([...item.incorrect]).slice(0, 5)]);
+        document.getElementById("lessonVideo")?.pause();
+        document.getElementById("arStageNumber").textContent = item.number;
+        document.getElementById("arStageTitle").textContent = item.title;
+        document.getElementById("arTargetMeaning").textContent = `“${item.meaning}”`;
+        document.getElementById("arComplete").hidden = true;
+        document.getElementById("arCameraNote").innerHTML = state.arUseCamera ? "กล้องใช้แสดงผลบนเครื่องเท่านั้น<br>ไม่มีการบันทึกหรือส่งภาพ" : "โหมด AR จำลอง<br>ไม่ใช้กล้อง";
+        arCameraFallback.hidden = false;
+        arExperience.hidden = false;
+        document.body.classList.add("ar-open");
+        renderArWords();
+        updateArHud();
+        await enableArOrientation();
+        if (state.arUseCamera) {
+          if (await openArCamera()) {
+            showArFeedback("เปิดกล้องแล้ว เริ่มล่าคำได้เลย");
+          } else {
+            state.arUseCamera = false;
+            arCameraFallback.hidden = false;
+            document.getElementById("arCameraNote").innerHTML = "เปิดโหมด AR จำลองแล้ว<br>กล้องไม่ได้รับอนุญาต";
+            showArFeedback("เปิดกล้องไม่ได้ จึงเปลี่ยนเป็นโหมด AR จำลอง", true);
+          }
+        } else {
+          showArFeedback("โหมด AR จำลองพร้อมแล้ว");
+        }
+        state.arTimer = window.setInterval(() => {
+          if (state.arFinished) return;
+          state.arSeconds = Math.max(0, state.arSeconds - 1);
+          updateArHud();
+          if (state.arSeconds <= 0) finishArMission(false);
+        }, 1000);
       };
       const shareResult = async (item, score, mode) => {
         const player = nameInput.value.trim() || "ผู้เล่น";
@@ -740,6 +1369,48 @@
         if (button) button.addEventListener("click", () => shareResult(item, state.score, modeLabels[state.mode]));
       };
       const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
+      const csvCell = (value) => {
+        let text = String(value == null ? "" : value);
+        if (/^[=+\-@]/.test(text)) text = `'${text}`;
+        return `"${text.replace(/"/g, '""')}"`;
+      };
+      const scoreStatusLabel = (status) => status === "sent" ? "ส่งไป Google Sheets แล้ว" : status === "queued" ? "รอส่งเมื่อออนไลน์" : status === "sending" ? "กำลังส่ง" : "เก็บในเครื่อง";
+      const buildScoresCsv = () => {
+        const headers = ["รหัสรายการ", "ชื่อ-นามสกุล", "ชั้น/ห้อง", "เลขที่", "บทเรียน", "โหมดเกม", "คะแนนที่ได้", "คะแนนเต็ม", "ตอบถูก", "จำนวนข้อ", "คำที่ยังไม่แม่น", "วันที่เวลา", "สถานะ"];
+        const rows = state.attempts.map((attempt) => [attempt.id, attempt.name, attempt.classroom, attempt.studentNumber || "", attempt.lesson, attempt.mode || "คลังคำ", attempt.score, attempt.total || 100, attempt.correctCount || "", attempt.totalQuestions || "", (attempt.wrongWords || []).join(" | "), attempt.date, scoreStatusLabel(attempt.syncStatus)]);
+        return `\ufeff${[headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n")}`;
+      };
+      const scoreFileName = () => {
+        const identity = `${classInput.value.trim() || "ไม่ระบุห้อง"}-${nameInput.value.trim() || "คะแนนนักเรียน"}`.replace(/[\\/:*?"<>|\s]+/g, "-");
+        return `คะแนน-คลังคำไทย-${identity}.csv`;
+      };
+      const createScoreFile = () => new File([buildScoresCsv()], scoreFileName(), { type: "text/csv;charset=utf-8" });
+      const downloadScores = () => {
+        if (!state.attempts.length) { alert("ยังไม่มีคะแนนสำหรับดาวน์โหลด"); return; }
+        const blob = new Blob([buildScoresCsv()], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = scoreFileName();
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      };
+      const shareScores = async () => {
+        if (!state.attempts.length) { alert("ยังไม่มีคะแนนสำหรับส่งให้ครู"); return; }
+        try {
+          const file = createScoreFile();
+          if (navigator.share && navigator.canShare?.({ files: [file] })) {
+            await navigator.share({ title: "คะแนนเกมคลังคำไทย", text: `${nameInput.value.trim()} ${classInput.value.trim()} เลขที่ ${numberInput.value.trim()}`, files: [file] });
+          } else {
+            downloadScores();
+            alert("ดาวน์โหลดไฟล์คะแนนแล้ว สามารถแนบไฟล์ส่งให้ครูได้ทันที");
+          }
+        } catch (error) {
+          if (error && error.name !== "AbortError") { downloadScores(); alert("ระบบดาวน์โหลดไฟล์คะแนนให้แทน กรุณาแนบไฟล์ส่งให้ครู"); }
+        }
+      };
       let modalWord = "";
       const wordModal = document.getElementById("wordModal");
       const closeWordModal = () => {
@@ -769,19 +1440,51 @@
       document.getElementById("closeWordModal").addEventListener("click", closeWordModal);
       document.getElementById("closeWordModalButton").addEventListener("click", closeWordModal);
       wordModal.addEventListener("click", (event) => { if (event.target === wordModal) closeWordModal(); });
-      document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !wordModal.hidden) closeWordModal(); });
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (!wordModal.hidden) closeWordModal();
+        else if (!arExperience.hidden) closeArExperience();
+      });
       document.getElementById("speakWordButton").addEventListener("click", () => {
         if (modalWord) speakText(modalWord);
       });
+      document.getElementById("arCloseButton").addEventListener("click", () => closeArExperience());
+      document.getElementById("arReturnButton").addEventListener("click", () => closeArExperience(true));
+      document.getElementById("arReplayButton").addEventListener("click", () => startArMission(state.arUseCamera));
+      document.getElementById("arSoundButton").addEventListener("click", (event) => {
+        arSoundEnabled = !arSoundEnabled;
+        event.currentTarget.textContent = arSoundEnabled ? "🔊" : "🔇";
+        event.currentTarget.setAttribute("aria-label", arSoundEnabled ? "ปิดเสียง" : "เปิดเสียง");
+      });
+      document.getElementById("arFlipCameraButton").addEventListener("click", async () => {
+        if (!state.arStarted || state.arFinished || !state.arUseCamera || !arStream || !arSupportsCamera()) return showArFeedback("สลับกล้องได้เมื่อเปิดโหมดกล้อง", true);
+        arFacingMode = arFacingMode === "user" ? "environment" : "user";
+        state.arUseCamera = true;
+        if (await openArCamera()) showArFeedback(arFacingMode === "user" ? "เปลี่ยนเป็นกล้องหน้าแล้ว" : "เปลี่ยนเป็นกล้องหลังแล้ว");
+        else {
+          state.arUseCamera = false;
+          showArFeedback("อุปกรณ์ไม่สามารถสลับกล้องได้", true);
+        }
+      });
+      document.getElementById("arFullscreenButton").addEventListener("click", async () => {
+        try {
+          if (document.fullscreenElement === arExperience) await document.exitFullscreen();
+          else if (arExperience.requestFullscreen) await arExperience.requestFullscreen();
+        } catch (error) {
+          showArFeedback("อุปกรณ์นี้ไม่รองรับปุ่มเต็มหน้าจอ", true);
+        }
+      });
+      window.addEventListener("beforeunload", stopArHardware);
       const printReport = () => {
         const report = document.getElementById("printReport");
         const player = escapeHtml(nameInput.value.trim() || "ไม่ได้ระบุชื่อ");
         const classroom = escapeHtml(classInput.value.trim() || "ไม่ได้ระบุชั้น/ห้อง");
+        const studentNumber = escapeHtml(numberInput.value.trim() || "ไม่ได้ระบุ");
         const average = state.attempts.length ? Math.round(state.attempts.reduce((sum, attempt) => sum + attempt.score, 0) / state.attempts.length) : 0;
         const lessonRows = lessons.map((item) => `<tr><td>${item.number}. ${escapeHtml(item.short)}</td><td>${state.unlocked[item.id] ? "รับชมแล้ว" : "ยังไม่รับชม"}</td><td>${state.attempts.filter((attempt) => attempt.lesson === item.short).length} ครั้ง</td></tr>`).join("");
         const mistakeRows = lessons.map((item) => `<tr><td>${item.number}. ${escapeHtml(item.short)}</td><td>${currentMistakes(item).map(({ word, count }) => `${escapeHtml(word)} (${count})`).join(", ") || "—"}</td></tr>`).join("");
         const attemptRows = state.attempts.slice(0, 12).map((attempt) => `<tr><td>${escapeHtml(attempt.lesson)}</td><td>${escapeHtml(attempt.mode || "คลังคำ")}</td><td>${attempt.score}/100</td><td>${escapeHtml(attempt.date)}</td></tr>`).join("") || `<tr><td colspan="4">ยังไม่มีประวัติการเล่น</td></tr>`;
-        report.innerHTML = `<div class="print-report-head"><div><h1>คลังคำไทย</h1><h2>รายงานผลการเรียนรู้คำไวพจน์ ม.4</h2><p>โรงเรียนขลุงรัชดาภิเษก จังหวัดจันทบุรี</p></div><div class="print-report-badge">${player}</div></div><p>ชั้น/ห้อง: ${classroom} · วันที่พิมพ์: ${escapeHtml(new Intl.DateTimeFormat("th-TH", { dateStyle: "long" }).format(new Date()))}</p><div class="print-report-stats"><div class="print-report-stat"><span>คลิปที่ปลดล็อก</span><strong>${lessons.filter((item) => state.unlocked[item.id]).length}/${lessons.length}</strong></div><div class="print-report-stat"><span>ภารกิจที่ทำ</span><strong>${state.attempts.length} ครั้ง</strong></div><div class="print-report-stat"><span>คะแนนเฉลี่ย</span><strong>${average}/100</strong></div></div><h2>ความก้าวหน้ารายด่าน</h2><table class="print-report-table"><thead><tr><th>ด่าน</th><th>สถานะวิดีโอ</th><th>จำนวนครั้ง</th></tr></thead><tbody>${lessonRows}</tbody></table><h2 style="margin-top:24px">คลังคำที่ควรทบทวน</h2><table class="print-report-table"><thead><tr><th>ด่าน</th><th>คำที่ตอบผิดและจำนวนครั้ง</th></tr></thead><tbody>${mistakeRows}</tbody></table><h2 style="margin-top:24px">ประวัติการเล่นล่าสุด</h2><table class="print-report-table"><thead><tr><th>ด่าน</th><th>โหมด</th><th>คะแนน</th><th>เวลา</th></tr></thead><tbody>${attemptRows}</tbody></table>`;
+        report.innerHTML = `<div class="print-report-head"><div><h1>คลังคำไทย</h1><h2>รายงานผลการเรียนรู้คำไวพจน์ ม.4</h2><p>โรงเรียนขลุงรัชดาภิเษก จังหวัดจันทบุรี</p></div><div class="print-report-badge">${player}</div></div><p>ชั้น/ห้อง: ${classroom} · เลขที่: ${studentNumber} · วันที่พิมพ์: ${escapeHtml(new Intl.DateTimeFormat("th-TH", { dateStyle: "long" }).format(new Date()))}</p><div class="print-report-stats"><div class="print-report-stat"><span>คลิปที่ปลดล็อก</span><strong>${lessons.filter((item) => state.unlocked[item.id]).length}/${lessons.length}</strong></div><div class="print-report-stat"><span>ภารกิจที่ทำ</span><strong>${state.attempts.length} ครั้ง</strong></div><div class="print-report-stat"><span>คะแนนเฉลี่ย</span><strong>${average}/100</strong></div></div><h2>ความก้าวหน้ารายด่าน</h2><table class="print-report-table"><thead><tr><th>ด่าน</th><th>สถานะวิดีโอ</th><th>จำนวนครั้ง</th></tr></thead><tbody>${lessonRows}</tbody></table><h2 style="margin-top:24px">คลังคำที่ควรทบทวน</h2><table class="print-report-table"><thead><tr><th>ด่าน</th><th>คำที่ตอบผิดและจำนวนครั้ง</th></tr></thead><tbody>${mistakeRows}</tbody></table><h2 style="margin-top:24px">ประวัติการเล่นล่าสุด</h2><table class="print-report-table"><thead><tr><th>ด่าน</th><th>โหมด</th><th>คะแนน</th><th>เวลา</th></tr></thead><tbody>${attemptRows}</tbody></table>`;
         report.hidden = false;
         const finishPrint = () => { report.hidden = true; window.removeEventListener("afterprint", finishPrint); };
         window.addEventListener("afterprint", finishPrint, { once: true });
@@ -791,6 +1494,8 @@
       const clearAllProgress = () => {
         if (!confirm("ล้างคะแนน ประวัติ และการปลดล็อกทั้งหมดบนอุปกรณ์นี้ใช่ไหม?")) return;
         clearSpeedTimer();
+        clearArTimer();
+        stopArHardware();
         state.progress = {};
         state.unlocked = {};
         state.attempts = [];
@@ -887,8 +1592,8 @@
         const game = document.getElementById("gameCard");
         game.style.setProperty("--lesson-accent", item.accent);
         const ready = profileReady() && state.unlocked[item.id];
-        const modeTitle = { multi: "จิ้มคำที่ถูกทั้งหมด", context: "เติมคำในบริบท", speed: "ภารกิจจับเวลา", match: "จับคู่ความหมาย", review: "ทบทวนคำที่ยังไม่แม่น" }[state.mode];
-        const title = `<div class="game-head"><div class="game-title"><span class="game-icon">🎮</span><div><span>ภารกิจหลังดูคลิป</span><h3>${modeTitle}</h3></div></div><div class="game-head-actions"><button class="speak-button" type="button" aria-label="อ่านคำถามออกเสียง" title="อ่านคำถามออกเสียง">🔊</button><div class="pill">${modeLabels[state.mode]}</div></div></div>`;
+        const modeTitle = { multi: "จิ้มคำที่ถูกทั้งหมด", context: "เติมคำในบริบท", speed: "ภารกิจจับเวลา", match: "จับคู่ความหมาย", ar: "WebAR ล่าคำไวพจน์", review: "ทบทวนคำที่ยังไม่แม่น" }[state.mode];
+        const title = `<div class="game-head"><div class="game-title"><span class="game-icon">${state.mode === "ar" ? "◉" : "🎮"}</span><div><span>ภารกิจหลังดูคลิป</span><h3>${modeTitle}</h3></div></div><div class="game-head-actions"><button class="speak-button" type="button" aria-label="อ่านคำถามออกเสียง" title="อ่านคำถามออกเสียง">🔊</button><div class="pill">${modeLabels[state.mode]}</div></div></div>`;
         const frame = (body) => {
           game.innerHTML = title + renderModeButtons() + body;
           attachModeButtons(game);
@@ -901,7 +1606,20 @@
           }
         };
         if (!ready) {
-          frame(`<div class="locked"><div class="lock-art">🔒</div><h4>เกมยังไม่ปลดล็อก</h4><p>ทำสองขั้นตอนด้านล่างให้ครบ แล้วเริ่มภารกิจได้ทันที</p><div class="requirements"><div class="requirement ${profileReady() ? "done" : ""}">${profileReady() ? "✓" : "👤"}<span>กรอกชื่อและชั้นเรียน</span></div><div class="requirement ${state.unlocked[item.id] ? "done" : ""}">${state.unlocked[item.id] ? "✓" : "▶"}<span>รับชมวิดีโอให้จบ</span></div></div></div>`);
+          frame(`<div class="locked"><div class="lock-art">🔒</div><h4>เกมยังไม่ปลดล็อก</h4><p>ทำสองขั้นตอนด้านล่างให้ครบ แล้วเริ่มภารกิจได้ทันที</p><div class="requirements"><div class="requirement ${profileReady() ? "done" : ""}">${profileReady() ? "✓" : "👤"}<span>กรอกชื่อ ชั้น/ห้อง และเลขที่</span></div><div class="requirement ${state.unlocked[item.id] ? "done" : ""}">${state.unlocked[item.id] ? "✓" : "▶"}<span>รับชมวิดีโอให้จบ</span></div></div></div>`);
+          return;
+        }
+
+        if (state.mode === "ar") {
+          if (state.arFinished) {
+            frame(`<div class="game-body"><div class="result"><div class="trophy">◉</div><h4>จบภารกิจ WebAR แล้ว!</h4><p>เก็บคำถูก ${state.arHits} จาก ${state.arTargetWords.length} คำ · เลือกผิด ${state.arWrongCount} ครั้ง</p><div class="score-strip"><span>คะแนน AR</span><span>${state.score}/100</span></div><div class="context-actions"><button class="submit ar-again">↻ เล่น AR อีกครั้ง</button><button class="share-result" type="button">↗ แชร์ผล</button></div></div></div>`);
+            game.querySelector(".ar-again").addEventListener("click", () => { resetMode("ar"); renderGame(); });
+            return;
+          }
+          const cameraReady = arSupportsCamera();
+          frame(`<div class="game-body"><div class="ar-launch-card"><div class="ar-launch-content"><div class="ar-launch-badge">◉ WEBAR MISSION</div><h4>ล่าคำไวพจน์ในพื้นที่จริง</h4><p>ค้นหาคำลอยรอบตัว แตะคำเพื่อเก็บทันที หรือลากคำลงช่องภารกิจให้ครบก่อนหมดเวลา 45 วินาที</p><div class="ar-feature-row"><span class="ar-feature">📷 กล้องสด</span><span class="ar-feature">↗ เอียงเครื่องสำรวจ</span><span class="ar-feature">☝ แตะหรือลากคำ</span><span class="ar-feature">☁ ส่งคะแนนออนไลน์</span></div><div class="ar-launch-actions"><button class="ar-start-camera" type="button">${cameraReady ? "◉ เปิดกล้องและเริ่ม AR" : "◉ เริ่มโหมด AR จำลอง"}</button><button class="ar-start-fallback" type="button">เล่นโดยไม่ใช้กล้อง</button></div></div><div class="ar-orbit-art" aria-hidden="true"></div><div class="ar-privacy"><span>🔒</span><span>ภาพจากกล้องใช้เป็นพื้นหลังบนอุปกรณ์เท่านั้น ระบบไม่บันทึกและไม่ส่งภาพขึ้นออนไลน์</span></div></div></div>`);
+          game.querySelector(".ar-start-camera").addEventListener("click", () => startArMission(cameraReady));
+          game.querySelector(".ar-start-fallback").addEventListener("click", () => startArMission(false));
           return;
         }
 
@@ -959,7 +1677,7 @@
           frame(contextBody);
           game.querySelectorAll("[data-context-word]").forEach((button) => button.addEventListener("click", () => { state.contextChoice = button.dataset.contextWord; renderGame(); }));
           const contextSubmit = game.querySelector(".context-submit");
-          if (contextSubmit) contextSubmit.addEventListener("click", () => { state.contextSubmitted = true; state.score = state.contextChoice === context.answer ? 100 : 0; if (state.score === 100) forgetMistake(item, state.contextChoice); else rememberMistakes(item, [state.contextChoice]); recordAttempt(item, state.score, modeLabels.context); renderGame(); renderOverview(); renderHistory(); });
+          if (contextSubmit) contextSubmit.addEventListener("click", () => { state.contextSubmitted = true; state.score = state.contextChoice === context.answer ? 100 : 0; if (state.score === 100) forgetMistake(item, state.contextChoice); else rememberMistakes(item, [state.contextChoice]); recordAttempt(item, state.score, modeLabels.context, { correctCount: state.score === 100 ? 1 : 0, totalQuestions: 1, wrongWords: state.score === 100 ? [] : [state.contextChoice] }); renderGame(); renderOverview(); renderHistory(); });
           const contextAgain = game.querySelector(".again-context");
           if (contextAgain) contextAgain.addEventListener("click", () => { state.contextChoice = ""; state.contextSubmitted = false; state.score = 0; renderGame(); });
           return;
@@ -1004,14 +1722,16 @@
               state.matchRight = "";
               if (state.matchMatched.length === pairs.length) {
                 state.matchSubmitted = true;
-                state.score = 100;
-                recordAttempt(item, state.score, modeLabels.match);
+                const matchPenalty = Math.min(pairs.length, state.matchMistakes.length);
+                state.score = Math.round(((pairs.length - matchPenalty) / Math.max(1, pairs.length)) * 100);
+                recordAttempt(item, state.score, modeLabels.match, { correctCount: pairs.length - matchPenalty, totalQuestions: pairs.length, wrongWords: state.matchMistakes });
                 renderGame();
                 renderOverview();
                 renderHistory();
               } else renderGame();
             } else {
               rememberMistakes(item, [state.matchLeft]);
+              state.matchMistakes = [...new Set([...state.matchMistakes, state.matchLeft])];
               state.matchError = "ยังไม่ตรงกัน ลองจับคู่อีกครั้ง";
               state.matchBusy = true;
               renderGame();
@@ -1060,7 +1780,7 @@
           game.querySelectorAll("[data-speed-word]").forEach((button) => button.addEventListener("click", () => {
             const selectedWord = button.dataset.speedWord;
             if (item.correct.includes(selectedWord)) { state.speedHits += 1; forgetMistake(item, selectedWord); }
-            else rememberMistakes(item, [selectedWord]);
+            else { rememberMistakes(item, [selectedWord]); state.speedMistakes = [...new Set([...state.speedMistakes, selectedWord])]; }
             state.speedRound += 1;
             if (state.speedRound >= 5) finishSpeed();
             else { startSpeedRound(); renderGame(); }
@@ -1083,7 +1803,7 @@
         frame(body);
         game.querySelectorAll(".word").forEach((button) => button.addEventListener("click", () => { const word = button.dataset.word; state.selected = state.selected.includes(word) ? state.selected.filter((item) => item !== word) : [...state.selected, word]; renderGame(); }));
         const submit = game.querySelector(".submit");
-        if (submit) submit.addEventListener("click", () => { state.score = Math.max(0, Math.round(((correctSelected - wrongSelected) / item.correct.length) * 100)); state.submitted = true; const wrongWords = state.selected.filter((word) => item.incorrect.includes(word)); if (wrongWords.length) rememberMistakes(item, wrongWords); state.selected.filter((word) => item.correct.includes(word)).forEach((word) => forgetMistake(item, word)); recordAttempt(item, state.score, modeLabels.multi); renderGame(); renderOverview(); renderHistory(); });
+        if (submit) submit.addEventListener("click", () => { state.score = Math.max(0, Math.round(((correctSelected - wrongSelected) / item.correct.length) * 100)); state.submitted = true; const wrongWords = state.selected.filter((word) => item.incorrect.includes(word)); if (wrongWords.length) rememberMistakes(item, wrongWords); state.selected.filter((word) => item.correct.includes(word)).forEach((word) => forgetMistake(item, word)); recordAttempt(item, state.score, modeLabels.multi, { correctCount: correctSelected, totalQuestions: item.correct.length, wrongWords }); renderGame(); renderOverview(); renderHistory(); });
         const again = game.querySelector(".again");
         if (again) again.addEventListener("click", () => { resetMode("multi"); renderGame(); });
       }
@@ -1106,10 +1826,11 @@
         const badges = [
           ["นักสำรวจ", unlockedCount >= 1, "ปลดล็อกคลิปแรก"],
           ["นักสะสม", completedLessons >= 2, "ผ่าน 2 ด่าน"],
+          ["นักล่า AR", state.attempts.some((attempt) => attempt.mode === modeLabels.ar), "ผ่านภารกิจ AR ครั้งแรก"],
           ["ดาวเด่น", average >= 80, "คะแนนเฉลี่ย 80+"],
           ["ผู้พิชิต", unlockedCount === lessons.length && completedLessons === lessons.length, "ครบทุกด่าน"]
         ];
-        overview.innerHTML = `<div class="overview-main"><div class="overview-top"><div><strong>เส้นทางการเรียนรู้</strong><small>ดูคลิปแล้ว ${unlockedCount}/${lessons.length} ด่าน · ผ่านภารกิจแล้ว ${completedLessons}/${lessons.length} ด่าน</small></div><div><div class="overview-score">เฉลี่ย ${average}/100</div><div class="level-chip" title="${levelProgress}/100 XP สู่เลเวลถัดไป">LV.${level} · ${xp} XP</div></div></div><div class="overall-progress" aria-label="ความคืบหน้าการดูคลิป"><div style="width:${progress}%"></div></div><div class="badge-row">${badges.map(([label, earned, hint]) => `<span class="badge ${earned ? "earned" : ""}" title="${hint}">${earned ? "★" : "○"} ${label}</span>`).join("")}</div><div class="daily-mission"><div><span>ภารกิจแนะนำวันนี้</span><strong>${daily.short}</strong><small>โหมดจับคู่ความหมาย · ${daily.pairs.length} คู่</small></div><button id="dailyMission" type="button">ไปที่ภารกิจ →</button></div><div class="mistake-summary"><div><span>คลังคำที่ตอบผิด</span><strong>${wrongTotal} คำที่ยังไม่แม่น</strong><small>${currentWrong ? `ด่านนี้มี ${currentWrong} คำให้ฝึกซ้ำ` : "ระบบจะเก็บคำที่เลือกผิดให้อัตโนมัติ"}</small></div><button id="reviewMistakesButton" type="button" ${wrongTotal ? "" : "disabled"}>${wrongTotal ? "ทบทวนตอนนี้ →" : "ยังไม่มีคำผิด"}</button></div></div><div class="overview-actions"><span class="overview-complete">4 โหมด · 16 ภารกิจ + ห้องทบทวน · ${state.attempts.length} ครั้งฝึก</span><div class="overview-action-buttons"><button id="printReportButton" class="print-report-button" type="button">▣ พิมพ์ผล</button><button id="resetProgress" class="reset-progress" type="button">↺ ล้าง</button></div></div>`;
+        overview.innerHTML = `<div class="overview-main"><div class="overview-top"><div><strong>เส้นทางการเรียนรู้</strong><small>ดูคลิปแล้ว ${unlockedCount}/${lessons.length} ด่าน · ผ่านภารกิจแล้ว ${completedLessons}/${lessons.length} ด่าน</small></div><div><div class="overview-score">เฉลี่ย ${average}/100</div><div class="level-chip" title="${levelProgress}/100 XP สู่เลเวลถัดไป">LV.${level} · ${xp} XP</div></div></div><div class="overall-progress" aria-label="ความคืบหน้าการดูคลิป"><div style="width:${progress}%"></div></div><div class="badge-row">${badges.map(([label, earned, hint]) => `<span class="badge ${earned ? "earned" : ""}" title="${hint}">${earned ? "★" : "○"} ${label}</span>`).join("")}</div><div class="daily-mission"><div><span>ภารกิจแนะนำวันนี้</span><strong>${daily.short}</strong><small>โหมดจับคู่ความหมาย · ${daily.pairs.length} คู่</small></div><button id="dailyMission" type="button">ไปที่ภารกิจ →</button></div><div class="mistake-summary"><div><span>คลังคำที่ตอบผิด</span><strong>${wrongTotal} คำที่ยังไม่แม่น</strong><small>${currentWrong ? `ด่านนี้มี ${currentWrong} คำให้ฝึกซ้ำ` : "ระบบจะเก็บคำที่เลือกผิดให้อัตโนมัติ"}</small></div><button id="reviewMistakesButton" type="button" ${wrongTotal ? "" : "disabled"}>${wrongTotal ? "ทบทวนตอนนี้ →" : "ยังไม่มีคำผิด"}</button></div></div><div class="overview-actions"><span class="overview-complete">5 โหมด · 20 ภารกิจ + ห้องทบทวน · ${state.attempts.length} ครั้งฝึก</span><div class="overview-action-buttons"><button id="printReportButton" class="print-report-button" type="button">▣ พิมพ์ผล</button><button id="resetProgress" class="reset-progress" type="button">↺ ล้าง</button></div></div>`;
         document.getElementById("resetProgress").addEventListener("click", clearAllProgress);
         document.getElementById("printReportButton").addEventListener("click", printReport);
         document.getElementById("dailyMission").addEventListener("click", () => {
@@ -1132,14 +1853,32 @@
 
       function renderHistory() {
         const history = document.getElementById("history");
-        if (!state.attempts.length) { history.hidden = true; return; }
         history.hidden = false;
-        history.innerHTML = `<div class="eyebrow">▣ ผลการเรียนรู้ล่าสุด</div><h3>ประวัติการเล่นบนอุปกรณ์นี้</h3><div class="history-list">${state.attempts.slice(0, 4).map((attempt) => `<div class="history-item"><span class="history-dot"></span><div><strong>${attempt.name}</strong><small>${attempt.classroom} · ${attempt.lesson} · ${attempt.mode || "คลังคำ"}</small></div><b>${attempt.score}/100</b><time>${attempt.date}</time></div>`).join("")}</div>`;
+        const totalAttempts = state.attempts.length;
+        const average = totalAttempts ? Math.round(state.attempts.reduce((sum, attempt) => sum + Number(attempt.score || 0), 0) / totalAttempts) : 0;
+        const best = totalAttempts ? Math.max(...state.attempts.map((attempt) => Number(attempt.score || 0))) : 0;
+        const sent = state.attempts.filter((attempt) => attempt.syncStatus === "sent").length;
+        const pending = state.attempts.filter((attempt) => attempt.syncStatus === "queued" || attempt.syncStatus === "sending").length;
+        const syncClass = scoreApiConfigured() ? (pending ? "pending" : "connected") : "";
+        const syncMessage = scoreApiConfigured()
+          ? (totalAttempts ? `เชื่อม Google Sheets แล้ว · ส่งสำเร็จ ${sent}/${totalAttempts} รายการ` : "เชื่อม Google Sheets แล้ว พร้อมส่งคะแนนอัตโนมัติ")
+          : "ขณะนี้คะแนนเก็บในเครื่องนี้ สามารถดาวน์โหลด CSV หรือส่งไฟล์ให้ครูได้";
+        const historyRows = state.attempts.slice(0, 6).map((attempt) => {
+          const numberText = attempt.studentNumber ? `เลขที่ ${escapeHtml(attempt.studentNumber)} · ` : "";
+          const weakText = attempt.wrongWords?.length ? ` · คำที่ยังไม่แม่น: ${escapeHtml(attempt.wrongWords.join(", "))}` : "";
+          const syncText = attempt.syncStatus === "sent" ? "☁ ส่งชีตแล้ว" : attempt.syncStatus === "queued" ? "⌛ รอส่ง" : attempt.syncStatus === "sending" ? "↻ กำลังส่ง" : "▣ เครื่องนี้";
+          return `<div class="history-item"><span class="history-dot"></span><div><strong>${escapeHtml(attempt.name || "ไม่ระบุชื่อ")}</strong><small>${numberText}${escapeHtml(attempt.classroom || "ไม่ระบุห้อง")} · ${escapeHtml(attempt.lesson)} · ${escapeHtml(attempt.mode || "คลังคำ")} · ${syncText}${weakText}</small></div><b>${Number(attempt.score) || 0}/${Number(attempt.total) || 100}</b><time>${escapeHtml(attempt.date || "")}</time></div>`;
+        }).join("") || `<div class="empty-filter">ยังไม่มีคะแนน เมื่อจบภารกิจครั้งแรก ระบบจะบันทึกข้อมูลให้ทันที</div>`;
+        history.innerHTML = `<div class="history-head"><div><div class="eyebrow">▣ ศูนย์คะแนนนักเรียน</div><h3>บันทึกและส่งออกผลการเรียนรู้</h3></div><div class="score-actions"><button id="downloadScores" class="score-action" type="button" ${totalAttempts ? "" : "disabled"}>⇩ ดาวน์โหลด CSV</button><button id="shareScores" class="score-action primary" type="button" ${totalAttempts ? "" : "disabled"}>↗ ส่งไฟล์ให้ครู</button><button id="syncScores" class="score-action" type="button" ${totalAttempts && scoreApiConfigured() && !scoreSyncBusy ? "" : "disabled"}>☁ ${scoreSyncBusy ? "กำลังส่ง" : "ส่งไปชีต"}</button></div></div><div class="score-summary"><div class="score-summary-item"><span>จำนวนครั้งที่ฝึก</span><strong>${totalAttempts}</strong></div><div class="score-summary-item"><span>คะแนนเฉลี่ย</span><strong>${average}/100</strong></div><div class="score-summary-item"><span>คะแนนสูงสุด</span><strong>${best}/100</strong></div><div class="score-summary-item"><span>คำที่ยังไม่แม่น</span><strong>${mistakeTotal()} คำ</strong></div></div><div class="score-sync-note ${syncClass}"><span>${syncMessage}</span><strong>${pending ? `รอส่ง ${pending} รายการ` : scoreApiConfigured() ? "พร้อมใช้งาน" : "โหมดในเครื่อง"}</strong></div><div class="history-list">${historyRows}</div>`;
+        document.getElementById("downloadScores").addEventListener("click", downloadScores);
+        document.getElementById("shareScores").addEventListener("click", shareScores);
+        document.getElementById("syncScores").addEventListener("click", () => syncPendingScores(true));
       }
 
       function renderAll() { renderTabs(); renderVideo(); renderGame(); renderOverview(); renderHistory(); }
       nameInput.addEventListener("input", () => { localStorage.setItem("thai-game-name", nameInput.value); renderGame(); });
       classInput.addEventListener("input", () => { localStorage.setItem("thai-game-class", classInput.value); renderGame(); });
+      numberInput.addEventListener("input", () => { localStorage.setItem("thai-game-number", numberInput.value); renderGame(); });
       document.getElementById("lessonSearch").addEventListener("input", (event) => {
         state.lessonQuery = event.target.value;
         refreshFilteredLessons();
@@ -1153,8 +1892,10 @@
         state.lessonFilter = button.dataset.filter;
         refreshFilteredLessons();
       }));
+      window.addEventListener("online", () => syncPendingScores(false));
       state.options = shuffle([...lesson().correct, ...lesson().incorrect]);
       renderAll();
+      if (scoreApiConfigured()) window.setTimeout(() => syncPendingScores(false), 600);
     </script>
   </body>
 </html>

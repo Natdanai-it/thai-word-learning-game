@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b74b8" />
+    <title>แดชบอร์ดครู · คลังคำไทย</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --surface: #ffffff;
+        --ink: #172843;
+        --muted: #68778d;
+        --line: #dce6f0;
+        --blue: #087fbd;
+        --deep: #173b67;
+        --gold: #f6bd27;
+        --green: #159968;
+        --red: #df4052;
+        --purple: #7453b8;
+        --shadow: 0 24px 70px rgba(29, 65, 99, .14);
+      }
+      * { box-sizing: border-box; }
+      html { color-scheme: light; }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 7% 2%, rgba(246, 189, 39, .17), transparent 24rem),
+          radial-gradient(circle at 96% 12%, rgba(8, 127, 189, .14), transparent 30rem),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Noto Sans Thai", "Leelawadee UI", Tahoma, Arial, sans-serif;
+      }
+      button, input, select { font: inherit; }
+      button { cursor: pointer; }
+      .shell { width: min(1440px, calc(100% - 32px)); margin: 0 auto; }
+      .topbar { position: sticky; top: 0; z-index: 20; border-bottom: 1px solid rgba(220, 230, 240, .85); background: rgba(255, 255, 255, .9); backdrop-filter: blur(18px); }
+      .topbar::after { content: ""; display: block; height: 3px; background: linear-gradient(90deg, var(--blue) 0 48%, var(--gold) 48% 74%, #ef3340 74%); }
+      .topbar-inner { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+      .emblem { width: 46px; height: 46px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 15px; background: linear-gradient(145deg, #0b8aca, #0b619d); color: #fff; box-shadow: 0 9px 22px rgba(8, 127, 189, .23); font-size: 13px; font-weight: 950; }
+      .brand small, .brand strong { display: block; }
+      .brand small { color: var(--blue); font-size: 12px; font-weight: 900; letter-spacing: .05em; }
+      .brand strong { margin-top: 2px; color: var(--deep); font-size: 20px; }
+      .teacher { color: var(--muted); text-align: right; font-size: 12px; line-height: 1.55; }
+      .teacher strong { display: block; color: #344a67; font-size: 13px; }
+      .login-wrap { min-height: calc(100vh - 78px); display: grid; place-items: center; padding: 32px 0; }
+      .login-card { width: min(480px, 100%); overflow: hidden; border: 1px solid rgba(220, 230, 240, .9); border-radius: 30px; background: rgba(255, 255, 255, .94); box-shadow: var(--shadow); }
+      .login-visual { position: relative; min-height: 150px; display: grid; place-items: center; overflow: hidden; background: linear-gradient(135deg, #123761, #087fbd); color: white; }
+      .login-visual::before, .login-visual::after { content: ""; position: absolute; border-radius: 50%; border: 24px solid rgba(255, 255, 255, .08); }
+      .login-visual::before { width: 190px; height: 190px; left: -70px; top: -100px; }
+      .login-visual::after { width: 120px; height: 120px; right: -32px; bottom: -70px; }
+      .shield { position: relative; width: 66px; height: 66px; display: grid; place-items: center; border: 1px solid rgba(255, 255, 255, .28); border-radius: 22px; background: rgba(255, 255, 255, .14); box-shadow: inset 0 1px rgba(255, 255, 255, .25); font-size: 30px; }
+      .login-body { padding: 27px 30px 30px; }
+      .eyebrow { color: var(--blue); font-size: 12px; font-weight: 950; letter-spacing: .08em; }
+      h1, h2, h3, p { margin-top: 0; }
+      .login-body h1 { margin: 7px 0 7px; color: var(--deep); font-size: 28px; line-height: 1.25; }
+      .login-body p { margin-bottom: 22px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+      .pin-label { display: grid; gap: 7px; color: #42546c; font-size: 13px; font-weight: 850; }
+      .pin-input { width: 100%; height: 54px; padding: 0 16px; border: 1px solid #cfdae6; border-radius: 15px; outline: none; background: #f8fafc; color: var(--deep); font-size: 21px; font-weight: 900; letter-spacing: .2em; transition: .16s ease; }
+      .pin-input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 4px rgba(8, 127, 189, .11); }
+      .primary-button { width: 100%; min-height: 52px; margin-top: 13px; border: 0; border-radius: 15px; background: linear-gradient(135deg, #087fbd, #1265a1); color: #fff; box-shadow: 0 12px 25px rgba(8, 127, 189, .23); font-weight: 900; }
+      .primary-button:hover { transform: translateY(-1px); }
+      .primary-button:disabled { cursor: wait; opacity: .7; transform: none; }
+      .login-error { min-height: 22px; margin-top: 10px; color: var(--red); font-size: 13px; font-weight: 750; text-align: center; }
+      .privacy-note { display: flex; gap: 8px; margin: 16px 0 0; padding: 11px 12px; border-radius: 12px; background: #f2f7fb; color: #64758b; font-size: 12px; line-height: 1.5; }
+      .dashboard { padding: 27px 0 48px; }
+      .dashboard-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+      .dashboard-head h1 { margin: 6px 0 4px; color: var(--deep); font-size: clamp(27px, 4vw, 42px); letter-spacing: -.03em; }
+      .dashboard-head p { margin-bottom: 0; color: var(--muted); font-size: 14px; }
+      .head-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+      .action-button { min-height: 40px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.9); color: #53647a; font-size: 13px; font-weight: 850; box-shadow: 0 5px 16px rgba(29, 65, 99, .07); }
+      .action-button:hover { border-color: #a9c4d8; color: var(--blue); }
+      .action-button.blue { border-color: var(--blue); background: var(--blue); color: white; }
+      .action-button:disabled { cursor: wait; opacity: .55; }
+      .live-note { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 14px; border: 1px solid #cce9dc; border-radius: 14px; background: #effaf5; color: #176a4d; font-size: 12px; font-weight: 800; }
+      .live-dot { width: 8px; height: 8px; display: inline-block; margin-right: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px rgba(21,153,104,.12); }
+      .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-top: 16px; }
+      .stat { position: relative; overflow: hidden; min-height: 132px; padding: 18px; border: 1px solid var(--line); border-radius: 21px; background: rgba(255,255,255,.94); box-shadow: 0 15px 40px rgba(29,65,99,.09); }
+      .stat::after { content: ""; position: absolute; width: 90px; height: 90px; right: -36px; bottom: -42px; border-radius: 50%; background: var(--stat-color); opacity: .1; }
+      .stat-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .stat span { color: #6b798c; font-size: 12px; font-weight: 850; }
+      .stat-icon { width: 35px; height: 35px; display: grid; place-items: center; border-radius: 11px; background: color-mix(in srgb, var(--stat-color) 12%, white); color: var(--stat-color); font-size: 16px; }
+      .stat strong { display: block; margin-top: 12px; color: var(--deep); font-size: 30px; line-height: 1; }
+      .stat small { display: block; margin-top: 8px; color: #8a96a6; font-size: 11px; }
+      .panel { border: 1px solid var(--line); border-radius: 22px; background: rgba(255,255,255,.94); box-shadow: 0 15px 42px rgba(29,65,99,.08); }
+      .filters { display: grid; grid-template-columns: minmax(220px, 1.45fr) repeat(4, minmax(130px, .7fr)); gap: 9px; margin-top: 15px; padding: 13px; }
+      .field { display: grid; gap: 5px; min-width: 0; }
+      .field label { color: #758296; font-size: 11px; font-weight: 900; }
+      .field input, .field select { width: 100%; min-width: 0; height: 42px; padding: 0 12px; border: 1px solid #d7e1eb; border-radius: 11px; outline: 0; background: #f8fafc; color: #34465e; font-size: 13px; }
+      .field input:focus, .field select:focus { border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(8,127,189,.09); }
+      .analytics { display: grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 13px; margin-top: 13px; }
+      .analytics .panel { min-height: 275px; padding: 18px; }
+      .panel-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 17px; }
+      .panel-title h2 { margin: 0; color: var(--deep); font-size: 17px; }
+      .panel-title span { color: #8a96a6; font-size: 11px; }
+      .bars { display: grid; gap: 13px; }
+      .bar-row { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(110px, 2fr) 42px; align-items: center; gap: 9px; }
+      .bar-label { overflow: hidden; color: #55657b; font-size: 12px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+      .bar-track { height: 10px; overflow: hidden; border-radius: 99px; background: #edf2f6; }
+      .bar-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--blue), #18a3d7); transition: width .3s ease; }
+      .bar-value { color: var(--deep); font-size: 12px; font-weight: 900; text-align: right; }
+      .distribution { height: 178px; display: flex; align-items: flex-end; justify-content: space-around; gap: 10px; padding-top: 10px; }
+      .column { height: 100%; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 7px; }
+      .column b { color: var(--deep); font-size: 12px; }
+      .column-bar { width: min(45px, 75%); min-height: 5px; border-radius: 10px 10px 4px 4px; background: var(--column-color); opacity: .9; transition: height .3s ease; }
+      .column small { color: #7d899a; font-size: 10px; text-align: center; }
+      .weak-list { display: grid; gap: 10px; }
+      .weak-item { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 9px; padding-bottom: 9px; border-bottom: 1px solid #edf1f5; }
+      .weak-item:last-child { border-bottom: 0; }
+      .weak-rank { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 9px; background: #fff2f4; color: var(--red); font-size: 11px; font-weight: 950; }
+      .weak-item strong { overflow: hidden; color: #43546b; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+      .weak-item span { color: #8a96a6; font-size: 11px; font-weight: 800; }
+      .table-panel { margin-top: 13px; overflow: hidden; }
+      .table-head { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 17px 18px; border-bottom: 1px solid #e6edf4; }
+      .table-head h2 { margin: 0; color: var(--deep); font-size: 18px; }
+      .table-head span { color: #7d8999; font-size: 12px; font-weight: 750; }
+      .table-wrap { overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; }
+      th { padding: 12px 13px; background: #f4f7fa; color: #718096; text-align: left; font-size: 11px; font-weight: 900; white-space: nowrap; }
+      td { padding: 13px; border-top: 1px solid #edf1f5; color: #4e6077; font-size: 12px; vertical-align: middle; }
+      tbody tr:hover { background: #f8fbfd; }
+      .student-cell strong, .student-cell small { display: block; }
+      .student-cell strong { color: #2f435f; font-size: 13px; }
+      .student-cell small { margin-top: 3px; color: #8995a5; }
+      .score-pill { min-width: 66px; display: inline-flex; justify-content: center; padding: 6px 8px; border-radius: 9px; background: #eef8f4; color: #16704f; font-weight: 950; }
+      .score-pill.mid { background: #fff7e8; color: #9a6710; }
+      .score-pill.low { background: #fff0f2; color: #aa3040; }
+      .weak-text { max-width: 230px; overflow: hidden; color: #8a5960; text-overflow: ellipsis; white-space: nowrap; }
+      .empty { padding: 50px 20px; color: #7b899b; text-align: center; }
+      .empty-icon { width: 56px; height: 56px; display: grid; place-items: center; margin: 0 auto 12px; border-radius: 18px; background: #edf4f9; color: var(--blue); font-size: 24px; }
+      .loading-overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(244,247,251,.74); backdrop-filter: blur(5px); }
+      .loader { width: 58px; height: 58px; border: 5px solid #d9e7f1; border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      [hidden] { display: none !important; }
+      @media (max-width: 1050px) {
+        .stats { grid-template-columns: repeat(2, 1fr); }
+        .filters { grid-template-columns: repeat(3, 1fr); }
+        .field.search-field { grid-column: span 2; }
+        .analytics { grid-template-columns: 1fr 1fr; }
+        .analytics .panel:first-child { grid-column: 1 / -1; }
+      }
+      @media (max-width: 700px) {
+        .shell { width: min(100% - 20px, 1440px); }
+        .topbar-inner { min-height: 65px; }
+        .teacher { display: none; }
+        .emblem { width: 40px; height: 40px; border-radius: 12px; }
+        .brand strong { font-size: 17px; }
+        .dashboard { padding-top: 20px; }
+        .dashboard-head { align-items: flex-start; flex-direction: column; }
+        .head-actions { width: 100%; justify-content: flex-start; }
+        .action-button { flex: 1; padding-inline: 8px; }
+        .live-note { align-items: flex-start; flex-direction: column; }
+        .stats { gap: 9px; }
+        .stat { min-height: 116px; padding: 14px; border-radius: 17px; }
+        .stat strong { font-size: 25px; }
+        .filters { grid-template-columns: 1fr 1fr; }
+        .field.search-field { grid-column: 1 / -1; }
+        .field.date-field { grid-column: 1 / -1; }
+        .analytics { grid-template-columns: 1fr; }
+        .analytics .panel:first-child { grid-column: auto; }
+        .login-card { border-radius: 23px; }
+        .login-body { padding: 23px 20px 24px; }
+        .table-wrap { overflow: visible; }
+        table, thead, tbody, tr, td { display: block; }
+        thead { display: none; }
+        tbody { padding: 7px 11px 12px; }
+        tbody tr { margin-top: 9px; padding: 12px 13px; border: 1px solid #e2eaf2; border-radius: 14px; background: #fbfcfe; }
+        td { display: grid; grid-template-columns: 92px 1fr; gap: 9px; padding: 6px 0; border: 0; font-size: 12px; }
+        td::before { content: attr(data-label); color: #8a96a6; font-size: 10px; font-weight: 900; }
+        .weak-text { max-width: none; white-space: normal; }
+      }
+      @media (max-width: 420px) {
+        .stats { grid-template-columns: 1fr; }
+        .filters { grid-template-columns: 1fr; }
+        .field.search-field, .field.date-field { grid-column: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <div class="brand">
+          <div class="emblem">ขรภ</div>
+          <div><small>ห้องเรียนภาษาไทย ม.4</small><strong>คลังคำไทย</strong></div>
+        </div>
+        <div class="teacher"><strong>นางสาวกรรณาภรณ์ พุฒชงค์</strong>โรงเรียนขลุงรัชดาภิเษก จังหวัดจันทบุรี</div>
+      </div>
+    </header>
+
+    <main>
+      <section id="loginView" class="login-wrap shell">
+        <div class="login-card">
+          <div class="login-visual"><div class="shield" aria-hidden="true">▦</div></div>
+          <div class="login-body">
+            <div class="eyebrow">พื้นที่สำหรับครูผู้สอน</div>
+            <h1>แดชบอร์ดผลการเรียนรู้</h1>
+            <p>ดูคะแนนจากนักเรียนทุกเครื่อง วิเคราะห์คำที่ยังไม่แม่น และดาวน์โหลดรายงานได้ในหน้าเดียว</p>
+            <form id="loginForm">
+              <label class="pin-label" for="teacherPin">PIN สำหรับครู
+                <input id="teacherPin" class="pin-input" type="password" inputmode="numeric" autocomplete="current-password" maxlength="30" placeholder="••••" required />
+              </label>
+              <button id="loginButton" class="primary-button" type="submit">เข้าสู่แดชบอร์ด →</button>
+              <div id="loginError" class="login-error" role="alert"></div>
+            </form>
+            <p class="privacy-note"><span aria-hidden="true">🔒</span><span>ข้อมูลคะแนนอ่านได้เฉพาะเมื่อใส่ PIN ถูกต้อง และ Google Sheet ยังคงเป็นส่วนตัวของครู</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboardView" class="dashboard shell" hidden>
+        <div class="dashboard-head">
+          <div>
+            <div class="eyebrow">ภาพรวมชั้นเรียน</div>
+            <h1>แดชบอร์ดครู</h1>
+            <p id="updatedAt">กำลังอ่านข้อมูลล่าสุด…</p>
+          </div>
+          <div class="head-actions">
+            <button id="refreshButton" class="action-button" type="button">↻ อัปเดต</button>
+            <button id="exportButton" class="action-button blue" type="button">⇩ ดาวน์โหลด CSV</button>
+            <button id="logoutButton" class="action-button" type="button">ออกจากระบบ</button>
+          </div>
+        </div>
+
+        <div class="live-note"><span><i class="live-dot"></i>เชื่อมกับ Google Sheet แล้ว · คะแนนใหม่จะปรากฏเมื่อกดอัปเดต</span><span id="recordScope">0 รายการ</span></div>
+
+        <div class="stats">
+          <article class="stat" style="--stat-color:var(--blue)"><div class="stat-top"><span>นักเรียนทั้งหมด</span><i class="stat-icon">♟</i></div><strong id="studentCount">0</strong><small>นับจากชื่อ ชั้น และเลขที่</small></article>
+          <article class="stat" style="--stat-color:var(--purple)"><div class="stat-top"><span>จำนวนครั้งที่ฝึก</span><i class="stat-icon">▤</i></div><strong id="attemptCount">0</strong><small>เฉพาะข้อมูลตามตัวกรอง</small></article>
+          <article class="stat" style="--stat-color:var(--gold)"><div class="stat-top"><span>คะแนนเฉลี่ย</span><i class="stat-icon">★</i></div><strong id="averageScore">0</strong><small>คะแนนเต็ม 100</small></article>
+          <article class="stat" style="--stat-color:var(--green)"><div class="stat-top"><span>ผ่านเกณฑ์ 70%</span><i class="stat-icon">✓</i></div><strong id="passRate">0%</strong><small id="passDetail">0 จาก 0 ครั้ง</small></article>
+        </div>
+
+        <section class="panel filters" aria-label="ตัวกรองคะแนน">
+          <div class="field search-field"><label for="searchInput">ค้นหานักเรียน</label><input id="searchInput" type="search" placeholder="ชื่อ เลขที่ หรือชั้น/ห้อง" /></div>
+          <div class="field"><label for="classFilter">ชั้น/ห้อง</label><select id="classFilter"><option value="">ทุกห้อง</option></select></div>
+          <div class="field"><label for="lessonFilter">บทเรียน</label><select id="lessonFilter"><option value="">ทุกบทเรียน</option></select></div>
+          <div class="field"><label for="modeFilter">โหมดเกม</label><select id="modeFilter"><option value="">ทุกโหมด</option></select></div>
+          <div class="field date-field"><label for="dateFilter">วันที่ทำ</label><input id="dateFilter" type="date" /></div>
+        </section>
+
+        <div class="analytics">
+          <section class="panel"><div class="panel-title"><h2>คะแนนเฉลี่ยรายบทเรียน</h2><span>เทียบจาก 100 คะแนน</span></div><div id="lessonBars" class="bars"></div></section>
+          <section class="panel"><div class="panel-title"><h2>ช่วงคะแนน</h2><span>จำนวนครั้ง</span></div><div id="distribution" class="distribution"></div></section>
+          <section class="panel"><div class="panel-title"><h2>คำที่ยังไม่แม่น</h2><span>5 อันดับแรก</span></div><div id="weakWords" class="weak-list"></div></section>
+        </div>
+
+        <section class="panel table-panel">
+          <div class="table-head"><h2>รายการคะแนนล่าสุด</h2><span id="tableCount">แสดง 0 รายการ</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>วัน–เวลา</th><th>นักเรียน</th><th>บทเรียน</th><th>โหมดเกม</th><th>คะแนน</th><th>คำที่ยังไม่แม่น</th></tr></thead>
+              <tbody id="scoreRows"></tbody>
+            </table>
+            <div id="emptyState" class="empty" hidden><div class="empty-icon">⌕</div><strong>ยังไม่พบคะแนน</strong><p>ลองเปลี่ยนตัวกรอง หรือรอให้นักเรียนทำภารกิจแรกสำเร็จ</p></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="loadingOverlay" class="loading-overlay" hidden><div class="loader" aria-label="กำลังโหลด"></div></div>
+
+    <script>
+      (() => {
+        "use strict";
+        let teacherPin = sessionStorage.getItem("thai-game-teacher-pin") || "";
+        let allRows = [];
+        let filteredRows = [];
+        const $ = (id) => document.getElementById(id);
+        const loginView = $("loginView");
+        const dashboardView = $("dashboardView");
+        const loginForm = $("loginForm");
+        const pinInput = $("teacherPin");
+        const loginButton = $("loginButton");
+        const loginError = $("loginError");
+        const loadingOverlay = $("loadingOverlay");
+        const filters = ["searchInput", "classFilter", "lessonFilter", "modeFilter", "dateFilter"].map($);
+
+        const escapeHtml = (value) => String(value == null ? "" : value)
+          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        const percentScore = (row) => Math.max(0, Math.min(100, Math.round((Number(row.score) || 0) / Math.max(1, Number(row.total) || 100) * 100)));
+        const formatNumber = (value) => new Intl.NumberFormat("th-TH").format(Number(value) || 0);
+        const formatDateTime = (value) => {
+          const date = new Date(value);
+          return isNaN(date.getTime()) ? String(value || "-") : new Intl.DateTimeFormat("th-TH", { dateStyle: "short", timeStyle: "short" }).format(date);
+        };
+        const localDateKey = (value) => {
+          const date = new Date(value);
+          if (isNaN(date.getTime())) return "";
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        };
+        const uniqueValues = (key) => [...new Set(allRows.map((row) => String(row[key] || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "th"));
+        const scoreClass = (score) => score >= 70 ? "" : score >= 50 ? "mid" : "low";
+
+        const setLoading = (loading) => {
+          loadingOverlay.hidden = !loading;
+          loginButton.disabled = loading;
+          $("refreshButton").disabled = loading;
+        };
+
+        const showLogin = (message = "") => {
+          dashboardView.hidden = true;
+          loginView.hidden = false;
+          loginError.textContent = message;
+          pinInput.value = "";
+          window.setTimeout(() => pinInput.focus(), 50);
+        };
+
+        const loadData = (fromLogin = false) => {
+          if (!teacherPin) return showLogin();
+          setLoading(true);
+          loginError.textContent = "";
+          google.script.run
+            .withSuccessHandler((data) => {
+              setLoading(false);
+              sessionStorage.setItem("thai-game-teacher-pin", teacherPin);
+              allRows = Array.isArray(data && data.rows) ? data.rows : [];
+              loginView.hidden = true;
+              dashboardView.hidden = false;
+              populateFilters();
+              applyFilters();
+              const updated = data && data.generatedAt ? formatDateTime(data.generatedAt) : "ขณะนี้";
+              $("updatedAt").textContent = `ข้อมูลล่าสุด ${updated}${data && data.truncated ? " · แสดง 5,000 รายการล่าสุด" : ""}`;
+            })
+            .withFailureHandler((error) => {
+              setLoading(false);
+              if (fromLogin || String(error && error.message || error).includes("PIN")) {
+                teacherPin = "";
+                sessionStorage.removeItem("thai-game-teacher-pin");
+                showLogin("PIN ไม่ถูกต้อง กรุณาลองอีกครั้ง");
+              } else {
+                alert("อ่านข้อมูลไม่สำเร็จ กรุณาลองกดอัปเดตอีกครั้ง");
+              }
+            })
+            .getDashboardData(teacherPin);
+        };
+
+        const populateSelect = (id, key, emptyLabel) => {
+          const select = $(id);
+          const current = select.value;
+          select.innerHTML = `<option value="">${emptyLabel}</option>${uniqueValues(key).map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("")}`;
+          if ([...select.options].some((option) => option.value === current)) select.value = current;
+        };
+        const populateFilters = () => {
+          populateSelect("classFilter", "classroom", "ทุกห้อง");
+          populateSelect("lessonFilter", "lesson", "ทุกบทเรียน");
+          populateSelect("modeFilter", "mode", "ทุกโหมด");
+        };
+
+        const applyFilters = () => {
+          const query = $("searchInput").value.trim().toLocaleLowerCase("th");
+          const classroom = $("classFilter").value;
+          const lesson = $("lessonFilter").value;
+          const mode = $("modeFilter").value;
+          const date = $("dateFilter").value;
+          filteredRows = allRows.filter((row) => {
+            const haystack = `${row.studentName || ""} ${row.studentNumber || ""} ${row.classroom || ""}`.toLocaleLowerCase("th");
+            return (!query || haystack.includes(query))
+              && (!classroom || row.classroom === classroom)
+              && (!lesson || row.lesson === lesson)
+              && (!mode || row.mode === mode)
+              && (!date || localDateKey(row.receivedAt || row.clientTime) === date);
+          });
+          renderDashboard();
+        };
+
+        const renderDashboard = () => {
+          const count = filteredRows.length;
+          const scores = filteredRows.map(percentScore);
+          const average = count ? Math.round(scores.reduce((sum, score) => sum + score, 0) / count) : 0;
+          const passed = scores.filter((score) => score >= 70).length;
+          const students = new Set(filteredRows.map((row) => `${row.studentName}|${row.classroom}|${row.studentNumber}`));
+          $("studentCount").textContent = formatNumber(students.size);
+          $("attemptCount").textContent = formatNumber(count);
+          $("averageScore").textContent = `${average}/100`;
+          $("passRate").textContent = `${count ? Math.round(passed / count * 100) : 0}%`;
+          $("passDetail").textContent = `${formatNumber(passed)} จาก ${formatNumber(count)} ครั้ง`;
+          $("recordScope").textContent = count === allRows.length ? `${formatNumber(count)} รายการทั้งหมด` : `${formatNumber(count)} จาก ${formatNumber(allRows.length)} รายการ`;
+          renderLessonBars();
+          renderDistribution(scores);
+          renderWeakWords();
+          renderTable();
+        };
+
+        const renderLessonBars = () => {
+          const groups = {};
+          filteredRows.forEach((row) => {
+            const key = row.lesson || "ไม่ระบุบทเรียน";
+            groups[key] = groups[key] || [];
+            groups[key].push(percentScore(row));
+          });
+          const entries = Object.entries(groups).map(([label, scores]) => [label, Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)]).sort((a, b) => b[1] - a[1]);
+          $("lessonBars").innerHTML = entries.length ? entries.map(([label, score]) => `<div class="bar-row"><span class="bar-label" title="${escapeHtml(label)}">${escapeHtml(label)}</span><div class="bar-track"><div class="bar-fill" style="width:${score}%"></div></div><strong class="bar-value">${score}</strong></div>`).join("") : `<div class="empty">ยังไม่มีข้อมูลตามตัวกรอง</div>`;
+        };
+
+        const renderDistribution = (scores) => {
+          const bands = [
+            { label: "0–49", count: scores.filter((x) => x < 50).length, color: "var(--red)" },
+            { label: "50–69", count: scores.filter((x) => x >= 50 && x < 70).length, color: "var(--gold)" },
+            { label: "70–79", count: scores.filter((x) => x >= 70 && x < 80).length, color: "var(--blue)" },
+            { label: "80–100", count: scores.filter((x) => x >= 80).length, color: "var(--green)" }
+          ];
+          const max = Math.max(1, ...bands.map((band) => band.count));
+          $("distribution").innerHTML = bands.map((band) => `<div class="column"><b>${formatNumber(band.count)}</b><div class="column-bar" style="--column-color:${band.color};height:${Math.max(5, Math.round(band.count / max * 130))}px"></div><small>${band.label}</small></div>`).join("");
+        };
+
+        const renderWeakWords = () => {
+          const counts = {};
+          filteredRows.forEach((row) => String(row.wrongWords || "").split(/\s*\|\s*/).filter(Boolean).forEach((word) => { counts[word] = (counts[word] || 0) + 1; }));
+          const words = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+          $("weakWords").innerHTML = words.length ? words.map(([word, count], index) => `<div class="weak-item"><i class="weak-rank">${index + 1}</i><strong title="${escapeHtml(word)}">${escapeHtml(word)}</strong><span>${formatNumber(count)} ครั้ง</span></div>`).join("") : `<div class="empty">ยังไม่มีคำที่ตอบผิด</div>`;
+        };
+
+        const renderTable = () => {
+          const rows = filteredRows.slice(0, 250);
+          $("tableCount").textContent = filteredRows.length > 250 ? `แสดง 250 จาก ${formatNumber(filteredRows.length)} รายการ` : `แสดง ${formatNumber(filteredRows.length)} รายการ`;
+          $("emptyState").hidden = rows.length > 0;
+          $("scoreRows").innerHTML = rows.map((row) => {
+            const score = percentScore(row);
+            const weak = row.wrongWords ? escapeHtml(String(row.wrongWords).replace(/\s*\|\s*/g, ", ")) : "—";
+            return `<tr><td data-label="วัน–เวลา">${escapeHtml(formatDateTime(row.receivedAt || row.clientTime))}</td><td data-label="นักเรียน" class="student-cell"><strong>${escapeHtml(row.studentName || "ไม่ระบุชื่อ")}</strong><small>${escapeHtml(row.classroom || "-")} · เลขที่ ${escapeHtml(row.studentNumber || "-")}</small></td><td data-label="บทเรียน">${escapeHtml(row.lesson || "-")}</td><td data-label="โหมดเกม">${escapeHtml(row.mode || "-")}</td><td data-label="คะแนน"><span class="score-pill ${scoreClass(score)}">${score}/100</span></td><td data-label="คำที่ยังไม่แม่น" class="weak-text" title="${weak}">${weak}</td></tr>`;
+          }).join("");
+        };
+
+        const csvCell = (value) => {
+          let text = String(value == null ? "" : value);
+          if (/^[=+\-@]/.test(text)) text = "'" + text;
+          return `"${text.replace(/"/g, '""')}"`;
+        };
+        const exportCsv = () => {
+          if (!filteredRows.length) return alert("ยังไม่มีคะแนนตามตัวกรองสำหรับดาวน์โหลด");
+          const header = ["วัน–เวลา", "ชื่อ-นามสกุล", "ชั้น/ห้อง", "เลขที่", "บทเรียน", "โหมดเกม", "คะแนน", "คะแนนเต็ม", "คำที่ยังไม่แม่น"];
+          const body = filteredRows.map((row) => [formatDateTime(row.receivedAt || row.clientTime), row.studentName, row.classroom, row.studentNumber, row.lesson, row.mode, row.score, row.total, String(row.wrongWords || "").replace(/\s*\|\s*/g, ", ")]);
+          const csv = "\ufeff" + [header, ...body].map((line) => line.map(csvCell).join(",")).join("\r\n");
+          const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = `คะแนนคลังคำไทย-${new Date().toISOString().slice(0, 10)}.csv`;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        };
+
+        loginForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          teacherPin = pinInput.value.trim();
+          if (!teacherPin) return;
+          loadData(true);
+        });
+        filters.forEach((element) => element.addEventListener(element.tagName === "INPUT" && element.type === "search" ? "input" : "change", applyFilters));
+        $("refreshButton").addEventListener("click", () => loadData(false));
+        $("exportButton").addEventListener("click", exportCsv);
+        $("logoutButton").addEventListener("click", () => {
+          teacherPin = "";
+          allRows = [];
+          filteredRows = [];
+          sessionStorage.removeItem("thai-game-teacher-pin");
+          showLogin();
+        });
+
+        if (teacherPin) loadData(false); else showLogin();
+      })();
+    </script>
+  </body>
+</html>
