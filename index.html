@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#087fbd" />
     <title>คลังคำไทย | วิดีโอและเกมคำไวพจน์ ม.4</title>
-    <meta name="description" content="เรียนรู้คำไวพจน์ผ่านวิดีโอ เกมฝึกทักษะ และ WebAR ล่าคำด้วยกล้องมือถือ" />
+    <meta name="description" content="เรียนรู้คำไวพจน์ผ่านวิดีโอ เกมฝึกทักษะ และ WebAR Hand Tracking โครงมือ 21 จุด คีบนิ้วหยิบคำด้วยกล้องมือถือ" />
     <style>
       :root {
         --bg: #f5f7fb;
@@ -183,7 +183,7 @@
       body.ar-open { overflow: hidden; overscroll-behavior: none; }
       .ar-experience { position: fixed; inset: 0; z-index: 100; height: 100vh; height: 100dvh; overflow: hidden; background: #07131f; color: white; touch-action: none; user-select: none; }
       .ar-experience[hidden] { display: none; }
-      .ar-camera-stage, .ar-camera, .ar-camera-fallback, .ar-camera-tint, .ar-scan-grid { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .ar-camera-stage, .ar-camera, .ar-camera-fallback, .ar-camera-tint, .ar-scan-grid, .ar-hand-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
       .ar-camera { object-fit: cover; background: #07131f; }
       .ar-camera.mirror { transform: scaleX(-1); }
       .ar-camera-fallback { display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #126988 0, #0b3c5c 30%, #071928 68%, #050d16 100%); }
@@ -193,6 +193,8 @@
       .ar-scan-grid { opacity: .2; background-image: linear-gradient(#8ce8ff22 1px, transparent 1px), linear-gradient(90deg, #8ce8ff22 1px, transparent 1px); background-size: 54px 54px; mask-image: radial-gradient(circle, #000 15%, transparent 77%); pointer-events: none; }
       .ar-scan-grid::after { content: ""; position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #7eeaff, transparent); box-shadow: 0 0 18px #62dcff; animation: arScan 3.6s ease-in-out infinite; }
       @keyframes arScan { 0%, 100% { top: 14%; opacity: 0; } 20%, 80% { opacity: .7; } 50% { top: 84%; } }
+      .ar-hand-canvas { z-index: 4; pointer-events: none; opacity: 1; transition: opacity .2s ease; }
+      .ar-hand-canvas.lines-hidden { opacity: 0; }
       .ar-topbar { position: absolute; z-index: 8; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
       .ar-topbar > * { pointer-events: auto; }
       .ar-stage-label { display: flex; align-items: center; gap: 9px; min-width: 0; padding: 8px 11px 8px 8px; border: 1px solid #ffffff31; border-radius: 15px; background: #071a2bc9; box-shadow: 0 8px 30px #0005; backdrop-filter: blur(12px); }
@@ -203,6 +205,8 @@
       .ar-top-actions { display: flex; gap: 7px; }
       .ar-icon-button { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid #ffffff35; border-radius: 13px; background: #071a2bc9; color: white; box-shadow: 0 8px 30px #0005; font-size: 17px; backdrop-filter: blur(12px); }
       .ar-icon-button:hover { border-color: #88e7ff; color: #aeeeff; }
+      .ar-icon-button.active { border-color: #7ff7c9; background: #0d735dd9; color: #d8fff0; box-shadow: 0 0 0 4px #5af0bd20, 0 8px 30px #0005; }
+      .ar-icon-button:disabled { cursor: not-allowed; opacity: .42; }
       .ar-hud { position: absolute; z-index: 7; top: max(70px, calc(env(safe-area-inset-top) + 67px)); left: 12px; display: flex; gap: 7px; }
       .ar-hud-chip { min-width: 74px; padding: 7px 10px; border: 1px solid #ffffff2c; border-radius: 12px; background: #071a2bbd; box-shadow: 0 8px 24px #0004; backdrop-filter: blur(10px); }
       .ar-hud-chip small, .ar-hud-chip strong { display: block; }
@@ -221,7 +225,9 @@
       .ar-word-bubble:nth-child(3n+2) { background: linear-gradient(145deg, #e67a2ce8, #c84c43e8); border-color: #ffe7c8; box-shadow: 0 10px 30px #2109007a, inset 0 1px #ffffff70, 0 0 0 5px #ffc06e1c; }
       .ar-word-bubble:nth-child(3n) { background: linear-gradient(145deg, #7b60d4e8, #4f4bb9e8); border-color: #eee6ff; box-shadow: 0 10px 30px #10082880, inset 0 1px #ffffff70, 0 0 0 5px #d2c3ff1c; }
       .ar-word-bubble:focus-visible { outline: 4px solid #ffe168; outline-offset: 4px; }
+      .ar-word-bubble.hand-near { border-color: #7df4ff; box-shadow: 0 14px 38px #00102194, 0 0 0 7px #50e9ff2b, 0 0 28px #4deaff5e; filter: brightness(1.12); }
       .ar-word-bubble.dragging { z-index: 12; animation: none; box-shadow: 0 18px 44px #0009, 0 0 0 7px #ffe2713d; transform: translate(-50%, -50%) scale(1.08); }
+      .ar-word-bubble.hand-grabbed { border-color: #fff09b; box-shadow: 0 20px 52px #000a, 0 0 0 8px #ffe27142, 0 0 34px #74f9d966; transform: translate(-50%, -50%) scale(1.14); transition: left .032s linear, top .032s linear, opacity .2s ease, filter .18s ease; }
       .ar-word-bubble.collected { pointer-events: none; animation: arCollect .48s ease forwards; background: #159968; border-color: #c6ffe5; }
       .ar-word-bubble.wrong { pointer-events: none; animation: arReject .55s ease forwards; background: #df4052; border-color: #ffd2d8; }
       @keyframes arFloat { 0%, 100% { transform: translate(-50%, -50%) translateY(-4px) rotate(-1deg); } 50% { transform: translate(-50%, -50%) translateY(7px) rotate(1deg); } }
@@ -230,6 +236,23 @@
       .ar-feedback { position: absolute; z-index: 14; left: 50%; bottom: calc(116px + env(safe-area-inset-bottom)); max-width: calc(100% - 32px); padding: 10px 15px; border: 1px solid #bfffe0; border-radius: 999px; background: #0d624de8; color: white; box-shadow: 0 10px 35px #0007; font-size: 12px; font-weight: 900; opacity: 0; pointer-events: none; transform: translate(-50%, 12px); transition: .2s ease; white-space: nowrap; }
       .ar-feedback.show { opacity: 1; transform: translate(-50%, 0); }
       .ar-feedback.error { border-color: #ffc5cd; background: #962d3de8; }
+      .ar-session-note { margin: 12px 0 2px; padding: 9px 11px; border: 1px solid #67e4bd55; border-radius: 12px; background: #0c70572b; color: #cffff0; font-size: 10px; font-weight: 800; }
+      .ar-hand-status { position: absolute; z-index: 15; top: max(68px, calc(env(safe-area-inset-top) + 66px)); right: 12px; max-width: min(270px, calc(100% - 200px)); display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid #ffffff2f; border-radius: 999px; background: #071a2bce; color: #b9dbe6; box-shadow: 0 8px 28px #0005; font-size: 10px; line-height: 1.25; font-weight: 850; pointer-events: none; backdrop-filter: blur(12px); }
+      .ar-hand-status::before { content: ""; width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: #8ca2ae; box-shadow: 0 0 0 4px #8ca2ae1f; }
+      .ar-hand-status.loading::before { background: #ffe06d; box-shadow: 0 0 0 4px #ffe06d1f; animation: arStatusPulse 1s ease-in-out infinite; }
+      .ar-hand-status.detected { border-color: #79f2c580; color: #d9fff1; }
+      .ar-hand-status.detected::before { background: #52e4b0; box-shadow: 0 0 0 4px #52e4b026; }
+      .ar-hand-status.error { border-color: #ff9cab6b; color: #ffdbe1; }
+      .ar-hand-status.error::before { background: #ff6f83; box-shadow: 0 0 0 4px #ff6f8323; }
+      @keyframes arStatusPulse { 50% { opacity: .35; transform: scale(.72); } }
+      .ar-hand-cursor { --ar-hand-x: 50vw; --ar-hand-y: 54vh; --ar-pinch-progress: 0; position: fixed; z-index: 22; left: var(--ar-hand-x); top: var(--ar-hand-y); width: 48px; height: 48px; display: grid; place-items: center; border: 2px solid #6deaff; border-radius: 50%; background: #071a2b8f; box-shadow: 0 0 0 5px #42ddff20, 0 0 20px #39dcff4d, 0 8px 28px #0008; pointer-events: none; will-change: left, top, transform; transform: translate(-50%, -50%); transition: left .035s linear, top .035s linear, width .12s ease, height .12s ease, border-color .12s ease, background .12s ease, box-shadow .12s ease; backdrop-filter: blur(4px); }
+      .ar-hand-cursor::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; background: conic-gradient(#ffe47d calc(var(--ar-pinch-progress) * 1turn), #ffffff1a 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0); mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0); }
+      .ar-hand-cursor::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #39e3ff; box-shadow: 0 0 12px #39e3ff; }
+      .ar-hand-cursor[hidden] { display: none; }
+      .ar-hand-cursor.pinching { width: 42px; height: 42px; border-color: #ffe47d; background: #80600c9c; box-shadow: 0 0 0 7px #ffe27128, 0 0 26px #ffe47d73, 0 8px 28px #0008; }
+      .ar-hand-cursor.pinching::after { background: #ffe47d; box-shadow: 0 0 13px #ffe47d; }
+      .ar-hand-cursor.grabbing { width: 56px; height: 56px; border-color: #75f2c5; background: #08765ca6; box-shadow: 0 0 0 9px #64f1bd2b, 0 0 35px #5ef1bd78, 0 8px 28px #0008; }
+      .ar-hand-cursor.grabbing::after { width: 11px; height: 11px; background: #75f2c5; box-shadow: 0 0 15px #75f2c5; }
       .ar-bottom-bar { position: absolute; z-index: 8; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); left: 12px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #ffffff2d; border-radius: 17px; background: #071a2bd9; box-shadow: 0 10px 38px #0007; backdrop-filter: blur(12px); }
       .ar-progress-label { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #b3d7e3; font-size: 10px; font-weight: 850; }
       .ar-progress-label strong { color: #fff; font-size: 12px; }
@@ -505,13 +528,20 @@
         .ar-launch-actions { align-items: stretch; flex-direction: column; }
         .ar-start-camera, .ar-start-fallback { width: 100%; }
         .ar-stage-label strong { max-width: 125px; }
+        .ar-top-actions { gap: 4px; }
+        .ar-icon-button { width: 38px; height: 38px; border-radius: 11px; font-size: 15px; }
         .ar-hud-chip { min-width: 64px; padding-inline: 8px; }
         .ar-target-card { top: 19%; width: calc(100% - 24px); padding: 11px 12px 13px; border-radius: 18px; }
         .ar-target-word { min-height: 44px; }
         .ar-word-bubble { min-width: 78px; min-height: 49px; padding: 8px 12px; }
         .ar-bottom-bar { grid-template-columns: 1fr; gap: 6px; padding: 10px 12px; }
         .ar-camera-note { display: none; }
-        .ar-feedback { bottom: calc(100px + env(safe-area-inset-bottom)); font-size: 11px; }
+        .ar-feedback { bottom: calc(132px + env(safe-area-inset-bottom)); font-size: 11px; }
+        .ar-hand-status { top: auto; right: auto; bottom: calc(92px + env(safe-area-inset-bottom)); left: 50%; max-width: calc(100% - 24px); overflow: hidden; padding: 7px 10px; text-overflow: ellipsis; white-space: nowrap; transform: translateX(-50%); }
+        .ar-hand-cursor { width: 44px; height: 44px; }
+        .ar-hand-cursor.pinching { width: 39px; height: 39px; }
+        .ar-hand-cursor.grabbing { width: 52px; height: 52px; }
+        #arFullscreenButton { display: none; }
         .ar-complete-card { padding: 24px 18px; }
         .history-item { grid-template-columns: 8px 1fr auto; }
         .history-item time { display: none; }
@@ -524,6 +554,14 @@
       @media (max-width: 420px) {
         .profile { grid-template-columns: minmax(90px, 1fr) 72px 56px; }
         .profile-icon { display: none; }
+        .ar-topbar { right: 8px; left: 8px; gap: 6px; }
+        .ar-top-actions { gap: 3px; }
+        .ar-icon-button { width: 34px; height: 34px; border-radius: 10px; font-size: 14px; }
+        .ar-stage-label { gap: 6px; padding: 5px 7px 5px 5px; }
+        .ar-stage-number { width: 30px; height: 30px; border-radius: 9px; }
+        .ar-stage-label small { display: none; }
+        .ar-stage-label strong { max-width: 70px; }
+        .ar-hand-status { max-width: calc(100% - 24px); }
       }
       @media (orientation: landscape) and (max-height: 620px) {
         .ar-target-card { top: 14%; width: min(500px, 52vw); padding-block: 9px 10px; }
@@ -563,7 +601,7 @@
     <main class="shell">
       <section class="intro">
         <div>
-          <div class="eyebrow">✦ 4 คลิป · 20 ภารกิจ + WebAR และห้องทบทวนเฉพาะบุคคล</div>
+          <div class="eyebrow">✦ 4 คลิป · 20 ภารกิจ + WebAR โครงมือ 21 จุด และห้องทบทวนเฉพาะบุคคล</div>
           <h2>ดูคลิป แล้วจิ้มคำตอบที่ถูกให้ครบ</h2>
           <p>ดูคลิปให้จบ แล้วเลือกโหมดฝึกที่เหมาะกับตัวเอง</p>
         </div>
@@ -621,10 +659,13 @@
         <div id="arCameraFallback" class="ar-camera-fallback"><div class="ar-fallback-core">AR</div></div>
         <div class="ar-camera-tint"></div>
         <div class="ar-scan-grid"></div>
+        <canvas id="arHandCanvas" class="ar-hand-canvas" aria-hidden="true"></canvas>
       </div>
       <div class="ar-topbar">
         <div class="ar-stage-label"><span id="arStageNumber" class="ar-stage-number">01</span><div><small>WEBAR · คลังคำไทย</small><strong id="arStageTitle">ฉ่อยม้า</strong></div></div>
         <div class="ar-top-actions">
+          <button id="arHandButton" class="ar-icon-button" type="button" aria-label="เปิดหรือปิดเซนเซอร์คีบนิ้ว" aria-pressed="false" title="เปิดหรือปิดเซนเซอร์คีบนิ้ว">🤏</button>
+          <button id="arSkeletonButton" class="ar-icon-button active" type="button" aria-label="แสดงหรือซ่อนเส้นโครงมือ" aria-pressed="true" title="แสดงหรือซ่อนเส้นโครงมือ" disabled>✋</button>
           <button id="arSoundButton" class="ar-icon-button" type="button" aria-label="เปิดหรือปิดเสียง" title="เปิดหรือปิดเสียง">🔊</button>
           <button id="arFlipCameraButton" class="ar-icon-button" type="button" aria-label="สลับกล้องหน้าและกล้องหลัง" title="สลับกล้องหน้าและกล้องหลัง">⇄</button>
           <button id="arFullscreenButton" class="ar-icon-button" type="button" aria-label="แสดงเต็มหน้าจอ" title="แสดงเต็มหน้าจอ">⛶</button>
@@ -638,15 +679,17 @@
       </div>
       <div id="arTargetCard" class="ar-target-card">
         <div class="ar-target-kicker">ภารกิจค้นหาคำ</div>
-        <p>แตะคำ หรือโยนคำลงช่องที่มีความหมายว่า</p>
+        <p id="arTargetInstruction">คีบนิ้วหยิบคำ แล้วคลายนิ้วเหนือช่องที่มีความหมายว่า</p>
         <div id="arTargetMeaning" class="ar-target-word">“ม้า”</div>
-        <span class="ar-target-hint">หมุนหรือเอียงโทรศัพท์เพื่อสำรวจคำรอบตัว</span>
+        <span id="arTargetHint" class="ar-target-hint">รอให้เส้นโครงมือ 21 จุดนิ่ง แล้วคีบใกล้คำ</span>
       </div>
       <div id="arWordField" class="ar-word-field" aria-live="polite"></div>
+      <div id="arHandCursor" class="ar-hand-cursor" aria-hidden="true" hidden></div>
+      <div id="arHandStatus" class="ar-hand-status" role="status" aria-live="polite">กำลังเตรียมเซนเซอร์มือ</div>
       <div id="arFeedback" class="ar-feedback" role="status"></div>
       <div class="ar-bottom-bar">
         <div><div class="ar-progress-label"><span>รวบรวมคำไวพจน์ที่ถูกต้อง</span><strong id="arProgressText">0/4 คำ</strong></div><div class="ar-progress-track"><div id="arProgressFill" class="ar-progress-fill"></div></div></div>
-        <div id="arCameraNote" class="ar-camera-note">กล้องใช้แสดงผลบนเครื่องเท่านั้น<br>ไม่มีการบันทึกหรือส่งภาพ</div>
+        <div id="arCameraNote" class="ar-camera-note">กล้องพร้อมใช้ต่อเนื่องเฉพาะหน้า AR<br>ไม่มีการบันทึกหรือส่งภาพ</div>
       </div>
       <div id="arComplete" class="ar-complete" hidden>
         <div class="ar-complete-card">
@@ -655,6 +698,7 @@
           <p id="arCompleteText">รวบรวมคำไวพจน์ครบแล้ว</p>
           <div class="ar-result-score"><span id="arFinalScore">100</span><small>/100</small></div>
           <div class="ar-result-meta"><div><span>คำที่เก็บได้</span><strong id="arFinalHits">4/4</strong></div><div><span>คำที่เลือกผิด</span><strong id="arFinalMisses">0</strong></div></div>
+          <div id="arCompleteCameraNote" class="ar-session-note" hidden>กล้องยังพร้อมสำหรับเล่นซ้ำ · กด “กลับหน้าเกม” เพื่อปิดกล้อง</div>
           <div class="ar-complete-actions"><button id="arReturnButton" type="button">กลับหน้าเกม</button><button id="arReplayButton" type="button">เล่น AR อีกครั้ง</button></div>
         </div>
       </div>
@@ -803,12 +847,49 @@
       const arCameraFallback = document.getElementById("arCameraFallback");
       const arWordField = document.getElementById("arWordField");
       const arTargetCard = document.getElementById("arTargetCard");
+      const arHandCanvas = document.getElementById("arHandCanvas");
+      const arHandCursor = document.getElementById("arHandCursor");
+      const arHandStatus = document.getElementById("arHandStatus");
+      const arHandButton = document.getElementById("arHandButton");
+      const arSkeletonButton = document.getElementById("arSkeletonButton");
       let arStream = null;
       let arOrientationHandler = null;
       let arFeedbackTimer = null;
       let arSoundEnabled = true;
       let arAudioContext = null;
       let arFacingMode = "user";
+      let arHands = null;
+      let arHandsScriptPromise = null;
+      let arHandEnabled = false;
+      let arHandFrame = 0;
+      let arHandProcessing = false;
+      let arLastHandSend = 0;
+      let arHandMissingFrames = 0;
+      let arPinchClosed = false;
+      let arPinchRatioSmoothed = 1;
+      let arPinchCloseFrames = 0;
+      let arPinchOpenFrames = 0;
+      let arPinchCooldownUntil = 0;
+      let arGrabbedButton = null;
+      let arHoverButton = null;
+      let arHandX = window.innerWidth / 2;
+      let arHandY = window.innerHeight / 2;
+      let arSmoothedLandmarks = null;
+      let arLastRawWrist = null;
+      let arHandSkeletonVisible = localStorage.getItem("thai-ar-hand-lines") !== "false";
+      const arHandsCdnBases = [
+        "https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/",
+        "https://unpkg.com/@mediapipe/hands@0.4.1675469240/"
+      ];
+      let arHandsAssetBase = arHandsCdnBases[0];
+      const arHandConnections = [
+        [0, 1], [1, 2], [2, 3], [3, 4],
+        [0, 5], [5, 6], [6, 7], [7, 8],
+        [5, 9], [9, 10], [10, 11], [11, 12],
+        [9, 13], [13, 14], [14, 15], [15, 16],
+        [13, 17], [17, 18], [18, 19], [19, 20], [17, 0]
+      ];
+      const arHandFingertips = new Set([4, 8, 12, 16, 20]);
       const videoRates = JSON.parse(localStorage.getItem("thai-video-rates") || "{}");
       const scoreApiUrl = String(window.THAI_GAME_SCORE_API_URL || "").trim();
       const scoreApiConfigured = () => /^https:\/\//i.test(scoreApiUrl);
@@ -1096,6 +1177,420 @@
           // เสียงเป็นลูกเล่นเสริม เกมยังเล่นต่อได้หากเบราว์เซอร์ไม่รองรับ
         }
       };
+      const setArHandStatus = (message, tone = "") => {
+        if (arHandStatus.textContent !== message) arHandStatus.textContent = message;
+        arHandStatus.classList.toggle("loading", tone === "loading");
+        arHandStatus.classList.toggle("detected", tone === "detected");
+        arHandStatus.classList.toggle("error", tone === "error");
+      };
+      const setArHandSkeletonVisible = (visible, remember = true) => {
+        arHandSkeletonVisible = Boolean(visible);
+        arHandCanvas.classList.toggle("lines-hidden", !arHandSkeletonVisible);
+        arSkeletonButton.classList.toggle("active", arHandSkeletonVisible);
+        arSkeletonButton.setAttribute("aria-pressed", String(arHandSkeletonVisible));
+        arSkeletonButton.textContent = arHandSkeletonVisible ? "✋" : "◌";
+        if (!arHandSkeletonVisible) clearArHandCanvas();
+        if (remember) localStorage.setItem("thai-ar-hand-lines", String(arHandSkeletonVisible));
+      };
+      const pointInsideArTarget = (x, y, padding = 0) => {
+        const target = arTargetCard.getBoundingClientRect();
+        return x >= target.left - padding && x <= target.right + padding && y >= target.top - padding && y <= target.bottom + padding;
+      };
+      const resetArWordPosition = (button) => {
+        if (!button || button.dataset.resolved) return;
+        button.style.setProperty("--ar-x", `${button.dataset.originX}%`);
+        button.style.setProperty("--ar-y", `${button.dataset.originY}%`);
+        button.classList.remove("dragging", "hand-grabbed");
+      };
+      const releaseArHandGrab = (tryDrop = false) => {
+        const button = arGrabbedButton;
+        arGrabbedButton = null;
+        arWordField.classList.remove("dragging-active");
+        arTargetCard.classList.remove("target-hover");
+        arHandCursor.classList.remove("grabbing");
+        if (!button || !button.isConnected || button.dataset.resolved) return false;
+        button.classList.remove("dragging", "hand-grabbed");
+        if (tryDrop && pointInsideArTarget(arHandX, arHandY, 18)) {
+          resolveArWord(button, button.dataset.arWord);
+          return true;
+        }
+        resetArWordPosition(button);
+        if (tryDrop) showArFeedback("คลายนิ้วเหนือช่องคำตอบเพื่อปล่อยคำ");
+        return false;
+      };
+      const nearestArWord = (x, y) => {
+        const maximumDistance = Math.max(96, Math.min(145, window.innerWidth * .26));
+        let nearest = null;
+        let nearestDistance = maximumDistance;
+        arWordField.querySelectorAll(".ar-word-bubble:not([data-resolved])").forEach((button) => {
+          const rect = button.getBoundingClientRect();
+          const distance = Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height / 2));
+          if (distance < nearestDistance) {
+            nearest = button;
+            nearestDistance = distance;
+          }
+        });
+        return nearest;
+      };
+      const setArHandHover = (button = null) => {
+        if (arHoverButton === button) return;
+        arHoverButton?.classList.remove("hand-near");
+        arHoverButton = button && button.isConnected && !button.dataset.resolved ? button : null;
+        arHoverButton?.classList.add("hand-near");
+      };
+      const beginArHandGrab = () => {
+        const button = nearestArWord(arHandX, arHandY);
+        if (!button) {
+          setArHandStatus("คีบแล้ว · เลื่อนวงกลมไปใกล้คำ", "detected");
+          return false;
+        }
+        setArHandHover(null);
+        arGrabbedButton = button;
+        button.classList.add("dragging", "hand-grabbed");
+        arWordField.classList.add("dragging-active");
+        arHandCursor.classList.add("grabbing");
+        setArHandStatus(`หยิบ “${button.dataset.arWord}” แล้ว · ย้ายไปช่อง`, "detected");
+        navigator.vibrate?.(24);
+        return true;
+      };
+      const moveArHandGrab = () => {
+        if (!arGrabbedButton || !arGrabbedButton.isConnected || arGrabbedButton.dataset.resolved) return;
+        arGrabbedButton.style.setProperty("--ar-x", `${arHandX / window.innerWidth * 100}%`);
+        arGrabbedButton.style.setProperty("--ar-y", `${arHandY / window.innerHeight * 100}%`);
+        arTargetCard.classList.toggle("target-hover", pointInsideArTarget(arHandX, arHandY, 18));
+      };
+      const mapArHandPoint = (point, clampToViewport = true) => {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const videoWidth = arCamera.videoWidth || viewportWidth;
+        const videoHeight = arCamera.videoHeight || viewportHeight;
+        const coverScale = Math.max(viewportWidth / videoWidth, viewportHeight / videoHeight);
+        const renderedWidth = videoWidth * coverScale;
+        const renderedHeight = videoHeight * coverScale;
+        const cropX = (renderedWidth - viewportWidth) / 2;
+        const cropY = (renderedHeight - viewportHeight) / 2;
+        const normalizedX = arFacingMode === "user" ? 1 - point.x : point.x;
+        const x = normalizedX * renderedWidth - cropX;
+        const y = point.y * renderedHeight - cropY;
+        if (!clampToViewport) return { x, y };
+        return { x: Math.max(0, Math.min(viewportWidth, x)), y: Math.max(0, Math.min(viewportHeight, y)) };
+      };
+      const arLandmarkDistance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+      const clearArHandCanvas = () => {
+        const context = arHandCanvas.getContext("2d");
+        if (context) context.clearRect(0, 0, arHandCanvas.width, arHandCanvas.height);
+      };
+      const prepareArHandCanvas = () => {
+        const pixelBudgetRatio = Math.sqrt(5000000 / Math.max(1, window.innerWidth * window.innerHeight));
+        const pixelRatio = Math.max(1, Math.min(2, window.devicePixelRatio || 1, pixelBudgetRatio));
+        const pixelWidth = Math.round(window.innerWidth * pixelRatio);
+        const pixelHeight = Math.round(window.innerHeight * pixelRatio);
+        if (arHandCanvas.width !== pixelWidth || arHandCanvas.height !== pixelHeight) {
+          arHandCanvas.width = pixelWidth;
+          arHandCanvas.height = pixelHeight;
+        }
+        const context = arHandCanvas.getContext("2d");
+        context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        return context;
+      };
+      const smoothArHandLandmarks = (landmarks) => {
+        const rawWrist = landmarks[0];
+        const motion = arLastRawWrist ? arLandmarkDistance(rawWrist, arLastRawWrist) : .08;
+        const alpha = Math.max(.44, Math.min(.78, .44 + motion * 5));
+        arLastRawWrist = { x: rawWrist.x, y: rawWrist.y, z: rawWrist.z || 0 };
+        if (!arSmoothedLandmarks || arSmoothedLandmarks.length !== landmarks.length) {
+          arSmoothedLandmarks = landmarks.map((point) => ({ x: point.x, y: point.y, z: point.z || 0 }));
+          return arSmoothedLandmarks;
+        }
+        arSmoothedLandmarks = landmarks.map((point, index) => {
+          const previous = arSmoothedLandmarks[index];
+          return {
+            x: previous.x + (point.x - previous.x) * alpha,
+            y: previous.y + (point.y - previous.y) * alpha,
+            z: previous.z + ((point.z || 0) - previous.z) * alpha
+          };
+        });
+        return arSmoothedLandmarks;
+      };
+      const drawArHandSkeleton = (landmarks, pinchRatio) => {
+        arHandCanvas.classList.toggle("lines-hidden", !arHandSkeletonVisible);
+        const context = prepareArHandCanvas();
+        if (!context) return;
+        context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        if (!arHandSkeletonVisible) return;
+        const points = landmarks.map((point) => mapArHandPoint(point, false));
+        const drawConnections = (strokeStyle, lineWidth, shadowBlur = 0) => {
+          context.beginPath();
+          arHandConnections.forEach(([start, end]) => {
+            context.moveTo(points[start].x, points[start].y);
+            context.lineTo(points[end].x, points[end].y);
+          });
+          context.strokeStyle = strokeStyle;
+          context.lineWidth = lineWidth;
+          context.shadowColor = "#35dfff";
+          context.shadowBlur = shadowBlur;
+          context.stroke();
+        };
+        context.save();
+        context.lineCap = "round";
+        context.lineJoin = "round";
+        drawConnections("#06111db8", 5.2, 0);
+        drawConnections("#786cffdf", 2.2, 7);
+        if (pinchRatio < .82) {
+          context.beginPath();
+          context.moveTo(points[4].x, points[4].y);
+          context.lineTo(points[8].x, points[8].y);
+          context.strokeStyle = pinchRatio < .48 ? "#ffe067" : "#62e9ff";
+          context.lineWidth = 3.2;
+          context.shadowColor = pinchRatio < .48 ? "#ffe067" : "#62e9ff";
+          context.shadowBlur = 13;
+          context.stroke();
+        }
+        points.forEach((point, index) => {
+          context.beginPath();
+          context.arc(point.x, point.y, arHandFingertips.has(index) ? 4.6 : 3.4, 0, Math.PI * 2);
+          context.fillStyle = index === 4 || index === 8 ? "#ffc83d" : "#2de5ff";
+          context.shadowColor = index === 4 || index === 8 ? "#ffc83d" : "#2de5ff";
+          context.shadowBlur = 10;
+          context.fill();
+          context.lineWidth = 1.4;
+          context.strokeStyle = "#e9fdff";
+          context.stroke();
+        });
+        context.restore();
+      };
+      const updateArPinchState = (pinchRatio) => {
+        const now = performance.now();
+        let pinchStarted = false;
+        let pinchReleased = false;
+        if (!arPinchClosed) {
+          arPinchOpenFrames = 0;
+          if (pinchRatio < .40 && now >= arPinchCooldownUntil) arPinchCloseFrames += 1;
+          else arPinchCloseFrames = Math.max(0, arPinchCloseFrames - 1);
+          if (arPinchCloseFrames >= 2) {
+            arPinchClosed = true;
+            arPinchCloseFrames = 0;
+            pinchStarted = true;
+          }
+        } else {
+          arPinchCloseFrames = 0;
+          if (pinchRatio > .61) arPinchOpenFrames += 1;
+          else arPinchOpenFrames = 0;
+          if (arPinchOpenFrames >= 2) {
+            arPinchClosed = false;
+            arPinchOpenFrames = 0;
+            arPinchCooldownUntil = now + 240;
+            pinchReleased = true;
+          }
+        }
+        return { pinchStarted, pinchReleased };
+      };
+      const handleArHandsResults = (results) => {
+        if (!arHandEnabled || !state.arStarted || state.arFinished || arExperience.hidden) return;
+        const rawLandmarks = results.multiHandLandmarks?.[0];
+        if (!rawLandmarks) {
+          arHandMissingFrames += 1;
+          if (arHandMissingFrames >= 4) {
+            arHandCursor.hidden = true;
+            clearArHandCanvas();
+            setArHandHover(null);
+            setArHandStatus("ยกมือให้กล้องเห็นทั้งฝ่ามือ", "");
+          }
+          if (arHandMissingFrames >= 9) {
+            releaseArHandGrab(false);
+            arPinchClosed = false;
+            arPinchRatioSmoothed = 1;
+            arPinchCloseFrames = 0;
+            arPinchOpenFrames = 0;
+            arPinchCooldownUntil = performance.now() + 280;
+            arSmoothedLandmarks = null;
+            arLastRawWrist = null;
+          }
+          return;
+        }
+        const landmarks = smoothArHandLandmarks(rawLandmarks);
+        const handWasHidden = arHandCursor.hidden;
+        arHandMissingFrames = 0;
+        const thumbTip = landmarks[4];
+        const indexTip = landmarks[8];
+        const pinchMidpoint = { x: (thumbTip.x + indexTip.x) / 2, y: (thumbTip.y + indexTip.y) / 2 };
+        const mapped = mapArHandPoint(pinchMidpoint);
+        if (handWasHidden) {
+          arHandX = mapped.x;
+          arHandY = mapped.y;
+        } else {
+          const cursorDistance = Math.hypot(mapped.x - arHandX, mapped.y - arHandY);
+          if (cursorDistance > 1.4) {
+            const cursorAlpha = Math.max(.52, Math.min(.84, .52 + cursorDistance / 360));
+            arHandX += (mapped.x - arHandX) * cursorAlpha;
+            arHandY += (mapped.y - arHandY) * cursorAlpha;
+          }
+        }
+        arHandCursor.hidden = false;
+        arHandCursor.style.setProperty("--ar-hand-x", `${arHandX}px`);
+        arHandCursor.style.setProperty("--ar-hand-y", `${arHandY}px`);
+        const handScale = Math.max(.035, arLandmarkDistance(landmarks[0], landmarks[9]));
+        const rawPinchRatio = arLandmarkDistance(thumbTip, indexTip) / handScale;
+        arPinchRatioSmoothed += (rawPinchRatio - arPinchRatioSmoothed) * .52;
+        const pinchProgress = Math.max(0, Math.min(1, (.74 - arPinchRatioSmoothed) / .42));
+        arHandCursor.style.setProperty("--ar-pinch-progress", pinchProgress.toFixed(3));
+        drawArHandSkeleton(landmarks, arPinchRatioSmoothed);
+        const { pinchStarted, pinchReleased } = updateArPinchState(arPinchRatioSmoothed);
+        arHandCursor.classList.toggle("pinching", arPinchClosed);
+        if (pinchStarted || (arPinchClosed && !arGrabbedButton)) beginArHandGrab();
+        if (arPinchClosed && arGrabbedButton) moveArHandGrab();
+        if (pinchReleased) {
+          releaseArHandGrab(true);
+          setArHandStatus("มือพร้อม · คีบนิ้วเพื่อหยิบคำ", "detected");
+        } else if (!arPinchClosed && !arGrabbedButton) {
+          setArHandHover(nearestArWord(arHandX, arHandY));
+          setArHandStatus("มือพร้อม · ระบบกันสั่นทำงาน", "detected");
+        }
+      };
+      const loadArHandsLibrary = () => {
+        if (window.Hands) return Promise.resolve();
+        if (arHandsScriptPromise) return arHandsScriptPromise;
+        arHandsScriptPromise = new Promise((resolve, reject) => {
+          const loadCandidate = (index) => {
+            if (index >= arHandsCdnBases.length) {
+              reject(new Error("โหลดระบบตรวจจับมือไม่สำเร็จ"));
+              return;
+            }
+            const script = document.createElement("script");
+            script.src = `${arHandsCdnBases[index]}hands.js`;
+            script.crossOrigin = "anonymous";
+            script.onload = () => {
+              if (window.Hands) {
+                arHandsAssetBase = arHandsCdnBases[index];
+                resolve();
+              } else {
+                script.remove();
+                loadCandidate(index + 1);
+              }
+            };
+            script.onerror = () => {
+              script.remove();
+              loadCandidate(index + 1);
+            };
+            document.head.appendChild(script);
+          };
+          loadCandidate(0);
+        }).catch((error) => {
+          arHandsScriptPromise = null;
+          throw error;
+        });
+        return arHandsScriptPromise;
+      };
+      const createArHandsEngine = async () => {
+        let lastError = null;
+        const candidates = [arHandsAssetBase, ...arHandsCdnBases.filter((base) => base !== arHandsAssetBase)];
+        for (const base of candidates) {
+          const instance = new window.Hands({ locateFile: (file) => `${base}${file}` });
+          instance.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: .62, minTrackingConfidence: .6, selfieMode: false });
+          instance.onResults(handleArHandsResults);
+          try {
+            if (typeof instance.initialize === "function") await instance.initialize();
+            arHandsAssetBase = base;
+            arHands = instance;
+            return instance;
+          } catch (error) {
+            lastError = error;
+            const closing = instance.close?.();
+            closing?.catch?.(() => {});
+          }
+        }
+        throw lastError || new Error("เริ่มระบบตรวจจับมือไม่สำเร็จ");
+      };
+      const runArHandLoop = async (timestamp) => {
+        if (!arHandEnabled) return;
+        arHandFrame = window.requestAnimationFrame(runArHandLoop);
+        if (!state.arStarted || state.arFinished || arExperience.hidden || !arStreamIsLive() || arCamera.readyState < 2 || arHandProcessing || timestamp - arLastHandSend < 30) return;
+        arLastHandSend = timestamp;
+        arHandProcessing = true;
+        try {
+          await arHands.send({ image: arCamera });
+        } catch (error) {
+          if (arHandEnabled) setArHandStatus("เซนเซอร์สะดุด · ยังแตะหรือลากได้", "error");
+        } finally {
+          arHandProcessing = false;
+        }
+      };
+      const startArHandTracking = async () => {
+        if (!state.arStarted || state.arFinished || !state.arUseCamera || !arStream) {
+          arHandButton.disabled = true;
+          arSkeletonButton.disabled = true;
+          setArHandStatus("เซนเซอร์มือใช้ได้เมื่อเปิดกล้อง", "error");
+          return false;
+        }
+        arHandButton.disabled = true;
+        arHandButton.classList.add("active");
+        arHandButton.setAttribute("aria-pressed", "true");
+        setArHandStatus("กำลังโหลดเซนเซอร์มือ…", "loading");
+        try {
+          await loadArHandsLibrary();
+          if (!arHands) await createArHandsEngine();
+          if (!state.arStarted || state.arFinished || !state.arUseCamera || !arStream) {
+            stopArHandTracking();
+            return false;
+          }
+          arHandEnabled = true;
+          arHandButton.disabled = false;
+          arSkeletonButton.disabled = false;
+          arHandMissingFrames = 0;
+          arPinchClosed = false;
+          arPinchRatioSmoothed = 1;
+          arPinchCloseFrames = 0;
+          arPinchOpenFrames = 0;
+          arPinchCooldownUntil = 0;
+          arSmoothedLandmarks = null;
+          arLastRawWrist = null;
+          arLastHandSend = 0;
+          if (arHandFrame) window.cancelAnimationFrame(arHandFrame);
+          arHandFrame = window.requestAnimationFrame(runArHandLoop);
+          setArHandStatus("ยกมือให้กล้องเห็นทั้งฝ่ามือ", "");
+          return true;
+        } catch (error) {
+          arHandEnabled = false;
+          arHandButton.disabled = false;
+          arSkeletonButton.disabled = true;
+          arHandButton.classList.remove("active");
+          arHandButton.setAttribute("aria-pressed", "false");
+          setArHandStatus("เซนเซอร์ไม่พร้อม · ใช้แตะหรือลากได้", "error");
+          showArFeedback("เปิดเซนเซอร์มือไม่ได้ แต่ยังแตะหรือลากคำได้", true);
+          return false;
+        }
+      };
+      const stopArHandTracking = (message = "เซนเซอร์มือหยุดแล้ว") => {
+        arHandEnabled = false;
+        arPinchClosed = false;
+        arPinchRatioSmoothed = 1;
+        arPinchCloseFrames = 0;
+        arPinchOpenFrames = 0;
+        arPinchCooldownUntil = 0;
+        arHandMissingFrames = 0;
+        arSmoothedLandmarks = null;
+        arLastRawWrist = null;
+        if (arHandFrame) window.cancelAnimationFrame(arHandFrame);
+        arHandFrame = 0;
+        releaseArHandGrab(false);
+        setArHandHover(null);
+        arHandCursor.hidden = true;
+        arHandCursor.classList.remove("pinching", "grabbing");
+        arHandCursor.style.setProperty("--ar-pinch-progress", "0");
+        clearArHandCanvas();
+        arHandButton.classList.remove("active");
+        arHandButton.setAttribute("aria-pressed", "false");
+        arSkeletonButton.disabled = true;
+        setArHandStatus(message, "");
+      };
+      const disposeArHands = () => {
+        stopArHandTracking();
+        if (arHands && typeof arHands.close === "function") {
+          const closing = arHands.close();
+          closing?.catch?.(() => {});
+        }
+        arHands = null;
+      };
       const stopArStream = () => {
         if (arStream) {
           arStream.getTracks().forEach((track) => track.stop());
@@ -1105,8 +1600,10 @@
         arCamera.srcObject = null;
         arCameraFallback.hidden = false;
       };
-      const stopArHardware = () => {
-        stopArStream();
+      const arStreamIsLive = () => Boolean(
+        arStream && arStream.active && arStream.getVideoTracks().some((track) => track.readyState === "live")
+      );
+      const stopArOrientation = () => {
         if (arOrientationHandler) {
           window.removeEventListener("deviceorientation", arOrientationHandler);
           arOrientationHandler = null;
@@ -1114,7 +1611,13 @@
         arWordField.style.setProperty("--ar-shift-x", "0px");
         arWordField.style.setProperty("--ar-shift-y", "0px");
       };
+      const stopArHardware = () => {
+        stopArHandTracking();
+        stopArStream();
+        stopArOrientation();
+      };
       const enableArOrientation = async () => {
+        if (arOrientationHandler) return true;
         try {
           const OrientationEvent = window.DeviceOrientationEvent;
           if (!OrientationEvent) return false;
@@ -1123,6 +1626,11 @@
             if (permission !== "granted") return false;
           }
           arOrientationHandler = (event) => {
+            if (arHandEnabled) {
+              arWordField.style.setProperty("--ar-shift-x", "0px");
+              arWordField.style.setProperty("--ar-shift-y", "0px");
+              return;
+            }
             const gamma = Math.max(-30, Math.min(30, Number(event.gamma) || 0));
             const beta = Math.max(-30, Math.min(30, (Number(event.beta) || 0) - 45));
             arWordField.style.setProperty("--ar-shift-x", `${gamma * -.7}px`);
@@ -1144,6 +1652,19 @@
           }
           arCamera.classList.toggle("mirror", arFacingMode === "user");
           arCamera.srcObject = arStream;
+          await arCamera.play();
+          arCameraFallback.hidden = true;
+          return true;
+        } catch (error) {
+          stopArStream();
+          return false;
+        }
+      };
+      const resumeArCamera = async () => {
+        if (!arStreamIsLive()) return false;
+        try {
+          arCamera.classList.toggle("mirror", arFacingMode === "user");
+          if (arCamera.srcObject !== arStream) arCamera.srcObject = arStream;
           await arCamera.play();
           arCameraFallback.hidden = true;
           return true;
@@ -1234,6 +1755,9 @@
           button.type = "button";
           button.className = "ar-word-bubble";
           button.textContent = word;
+          button.dataset.arWord = word;
+          button.dataset.originX = String(origin[0]);
+          button.dataset.originY = String(origin[1]);
           button.setAttribute("aria-label", `เลือกคำ ${word}`);
           button.style.setProperty("--ar-x", `${origin[0]}%`);
           button.style.setProperty("--ar-y", `${origin[1]}%`);
@@ -1273,13 +1797,14 @@
         clearArTimer();
         state.arFinished = true;
         state.score = currentArScore();
-        stopArHardware();
+        stopArHandTracking("จบรอบแล้ว · กล้องยังพร้อมสำหรับเล่นซ้ำ");
         recordAttempt(lesson(), state.score, modeLabels.ar, { correctCount: state.arHits, totalQuestions: state.arTargetWords.length, wrongWords: state.arMistakes });
         document.getElementById("arCompleteTitle").textContent = completed ? "ภารกิจ AR สำเร็จ!" : "หมดเวลาแล้ว";
         document.getElementById("arCompleteText").textContent = completed ? `คุณรวบรวมคำที่หมายถึง “${lesson().meaning}” ได้ครบ` : `รวบรวมได้ ${state.arHits} จาก ${state.arTargetWords.length} คำ ลองฝึกอีกครั้งได้เลย`;
         document.getElementById("arFinalScore").textContent = state.score;
         document.getElementById("arFinalHits").textContent = `${state.arHits}/${state.arTargetWords.length}`;
         document.getElementById("arFinalMisses").textContent = state.arWrongCount;
+        document.getElementById("arCompleteCameraNote").hidden = !arStreamIsLive();
         document.getElementById("arComplete").hidden = false;
         if (completed) {
           playArTone(true);
@@ -1305,8 +1830,13 @@
       };
       const startArMission = async (useCamera = true) => {
         const item = lesson();
+        const reuseCamera = Boolean(useCamera && arStreamIsLive());
         clearArTimer();
-        stopArHardware();
+        stopArHandTracking();
+        if (!reuseCamera) {
+          stopArStream();
+          stopArOrientation();
+        }
         state.arStarted = true;
         state.arFinished = false;
         state.arSeconds = 45;
@@ -1321,24 +1851,39 @@
         document.getElementById("arStageNumber").textContent = item.number;
         document.getElementById("arStageTitle").textContent = item.title;
         document.getElementById("arTargetMeaning").textContent = `“${item.meaning}”`;
+        document.getElementById("arTargetInstruction").textContent = state.arUseCamera ? "คีบนิ้วหยิบคำ แล้วคลายนิ้วเหนือช่องที่มีความหมายว่า" : "แตะคำ หรือโยนคำลงช่องที่มีความหมายว่า";
+        document.getElementById("arTargetHint").textContent = state.arUseCamera ? "รอให้เส้นโครงมือ 21 จุดนิ่ง แล้วคีบใกล้คำ" : "โหมดจำลองไม่ใช้กล้อง · แตะหรือลากคำเพื่อเล่น";
         document.getElementById("arComplete").hidden = true;
-        document.getElementById("arCameraNote").innerHTML = state.arUseCamera ? "กล้องใช้แสดงผลบนเครื่องเท่านั้น<br>ไม่มีการบันทึกหรือส่งภาพ" : "โหมด AR จำลอง<br>ไม่ใช้กล้อง";
+        arHandButton.disabled = !state.arUseCamera;
+        arSkeletonButton.disabled = true;
+        setArHandStatus(state.arUseCamera ? "กำลังเตรียมเซนเซอร์มือ" : "โหมดแตะ/ลาก · ไม่ใช้กล้อง", state.arUseCamera ? "loading" : "");
+        document.getElementById("arCameraNote").innerHTML = state.arUseCamera ? "กล้องพร้อมใช้ต่อเนื่องเฉพาะหน้า AR<br>กด × เพื่อปิดกล้องทันที" : "โหมด AR จำลอง<br>ไม่ใช้กล้อง";
         arCameraFallback.hidden = false;
         arExperience.hidden = false;
         document.body.classList.add("ar-open");
         renderArWords();
         updateArHud();
-        await enableArOrientation();
+        if (!arOrientationHandler) await enableArOrientation();
         if (state.arUseCamera) {
-          if (await openArCamera()) {
-            showArFeedback("เปิดกล้องแล้ว เริ่มล่าคำได้เลย");
+          const cameraReady = reuseCamera ? await resumeArCamera() : await openArCamera();
+          if (cameraReady) {
+            showArFeedback(reuseCamera ? "ใช้กล้องเดิมแล้ว · ไม่ต้องอนุญาตใหม่" : "เปิดกล้องแล้ว ยกมือและคีบนิ้วเพื่อหยิบคำ");
+            startArHandTracking();
           } else {
             state.arUseCamera = false;
+            arHandButton.disabled = true;
+            arSkeletonButton.disabled = true;
             arCameraFallback.hidden = false;
+            document.getElementById("arTargetInstruction").textContent = "แตะคำ หรือโยนคำลงช่องที่มีความหมายว่า";
+            document.getElementById("arTargetHint").textContent = "โหมดจำลองไม่ใช้กล้อง · แตะหรือลากคำเพื่อเล่น";
             document.getElementById("arCameraNote").innerHTML = "เปิดโหมด AR จำลองแล้ว<br>กล้องไม่ได้รับอนุญาต";
+            setArHandStatus("โหมดแตะ/ลาก · กล้องไม่ได้รับอนุญาต", "error");
             showArFeedback("เปิดกล้องไม่ได้ จึงเปลี่ยนเป็นโหมด AR จำลอง", true);
           }
         } else {
+          arHandButton.disabled = true;
+          arSkeletonButton.disabled = true;
+          setArHandStatus("โหมดแตะ/ลาก · ไม่ใช้กล้อง", "");
           showArFeedback("โหมด AR จำลองพร้อมแล้ว");
         }
         state.arTimer = window.setInterval(() => {
@@ -1451,6 +1996,23 @@
       document.getElementById("arCloseButton").addEventListener("click", () => closeArExperience());
       document.getElementById("arReturnButton").addEventListener("click", () => closeArExperience(true));
       document.getElementById("arReplayButton").addEventListener("click", () => startArMission(state.arUseCamera));
+      arHandButton.addEventListener("click", async () => {
+        if (!state.arStarted || state.arFinished || !state.arUseCamera || !arStream) {
+          showArFeedback("เซนเซอร์คีบนิ้วต้องใช้โหมดกล้อง", true);
+          return;
+        }
+        if (arHandEnabled) {
+          stopArHandTracking("ปิดเซนเซอร์มือแล้ว · ใช้แตะหรือลากได้");
+          showArFeedback("ปิดเซนเซอร์มือแล้ว");
+        } else {
+          await startArHandTracking();
+        }
+      });
+      setArHandSkeletonVisible(arHandSkeletonVisible, false);
+      arSkeletonButton.addEventListener("click", () => {
+        setArHandSkeletonVisible(!arHandSkeletonVisible);
+        showArFeedback(arHandSkeletonVisible ? "เปิดเส้นโครงมือ 21 จุดแล้ว" : "ซ่อนเส้นโครงมือแล้ว");
+      });
       document.getElementById("arSoundButton").addEventListener("click", (event) => {
         arSoundEnabled = !arSoundEnabled;
         event.currentTarget.textContent = arSoundEnabled ? "🔊" : "🔇";
@@ -1458,11 +2020,21 @@
       });
       document.getElementById("arFlipCameraButton").addEventListener("click", async () => {
         if (!state.arStarted || state.arFinished || !state.arUseCamera || !arStream || !arSupportsCamera()) return showArFeedback("สลับกล้องได้เมื่อเปิดโหมดกล้อง", true);
+        releaseArHandGrab(false);
+        arSmoothedLandmarks = null;
+        arLastRawWrist = null;
+        arPinchClosed = false;
+        arPinchCloseFrames = 0;
+        arPinchOpenFrames = 0;
+        clearArHandCanvas();
         arFacingMode = arFacingMode === "user" ? "environment" : "user";
         state.arUseCamera = true;
         if (await openArCamera()) showArFeedback(arFacingMode === "user" ? "เปลี่ยนเป็นกล้องหน้าแล้ว" : "เปลี่ยนเป็นกล้องหลังแล้ว");
         else {
           state.arUseCamera = false;
+          stopArHandTracking("สลับกล้องไม่สำเร็จ · ใช้แตะหรือลากได้");
+          arHandButton.disabled = true;
+          arSkeletonButton.disabled = true;
           showArFeedback("อุปกรณ์ไม่สามารถสลับกล้องได้", true);
         }
       });
@@ -1474,7 +2046,10 @@
           showArFeedback("อุปกรณ์นี้ไม่รองรับปุ่มเต็มหน้าจอ", true);
         }
       });
-      window.addEventListener("beforeunload", stopArHardware);
+      window.addEventListener("beforeunload", () => {
+        stopArHardware();
+        disposeArHands();
+      });
       const printReport = () => {
         const report = document.getElementById("printReport");
         const player = escapeHtml(nameInput.value.trim() || "ไม่ได้ระบุชื่อ");
@@ -1617,7 +2192,7 @@
             return;
           }
           const cameraReady = arSupportsCamera();
-          frame(`<div class="game-body"><div class="ar-launch-card"><div class="ar-launch-content"><div class="ar-launch-badge">◉ WEBAR MISSION</div><h4>ล่าคำไวพจน์ในพื้นที่จริง</h4><p>ค้นหาคำลอยรอบตัว แตะคำเพื่อเก็บทันที หรือลากคำลงช่องภารกิจให้ครบก่อนหมดเวลา 45 วินาที</p><div class="ar-feature-row"><span class="ar-feature">📷 กล้องสด</span><span class="ar-feature">↗ เอียงเครื่องสำรวจ</span><span class="ar-feature">☝ แตะหรือลากคำ</span><span class="ar-feature">☁ ส่งคะแนนออนไลน์</span></div><div class="ar-launch-actions"><button class="ar-start-camera" type="button">${cameraReady ? "◉ เปิดกล้องและเริ่ม AR" : "◉ เริ่มโหมด AR จำลอง"}</button><button class="ar-start-fallback" type="button">เล่นโดยไม่ใช้กล้อง</button></div></div><div class="ar-orbit-art" aria-hidden="true"></div><div class="ar-privacy"><span>🔒</span><span>ภาพจากกล้องใช้เป็นพื้นหลังบนอุปกรณ์เท่านั้น ระบบไม่บันทึกและไม่ส่งภาพขึ้นออนไลน์</span></div></div></div>`);
+          frame(`<div class="game-body"><div class="ar-launch-card"><div class="ar-launch-content"><div class="ar-launch-badge">◉ WEBAR · 21-POINT HAND TRACKING</div><h4>คีบนิ้วล่าคำด้วยโครงมือเสมือนจริง</h4><p>ระบบวาดเส้นโครงมือ 21 จุดแบบในตัวอย่าง พร้อมกรองการสั่นและยืนยันจังหวะคีบหลายเฟรม คีบใกล้คำเพื่อหยิบ แล้วคลายนิ้วเหนือช่องภารกิจภายใน 45 วินาที</p><div class="ar-feature-row"><span class="ar-feature">✋ โครงมือ 21 จุด</span><span class="ar-feature">◎ ระบบกันสั่น</span><span class="ar-feature">🤏 คีบ–ลาก–ปล่อย</span><span class="ar-feature">◌ เปิด/ปิดเส้นได้</span><span class="ar-feature">☝ แตะ/ลากสำรอง</span><span class="ar-feature">☁ ส่งคะแนนออนไลน์</span></div><div class="ar-launch-actions"><button class="ar-start-camera" type="button">${cameraReady ? "🤏 เปิดกล้องและเริ่มคีบคำ" : "◉ เริ่มโหมด AR จำลอง"}</button><button class="ar-start-fallback" type="button">เล่นโดยไม่ใช้กล้อง</button></div></div><div class="ar-orbit-art" aria-hidden="true"></div><div class="ar-privacy"><span>🔒</span><span>ภาพกล้องประมวลผลบนอุปกรณ์เพื่อหาตำแหน่งมือเท่านั้น ระบบไม่บันทึกและไม่ส่งภาพขึ้นออนไลน์</span></div></div></div>`);
           game.querySelector(".ar-start-camera").addEventListener("click", () => startArMission(cameraReady));
           game.querySelector(".ar-start-fallback").addEventListener("click", () => startArMission(false));
           return;
