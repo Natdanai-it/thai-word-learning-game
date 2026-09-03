@@ -2,7 +2,7 @@
 <html lang="th">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#087fbd" />
     <title>คลังคำไทย | วิดีโอและเกมคำไวพจน์ ม.4</title>
     <meta name="description" content="เรียนรู้คำไวพจน์ผ่านวิดีโอ เกมฝึกทักษะ และ WebAR Hand Tracking โครงมือ 21 จุด คีบนิ้วหยิบคำด้วยกล้องมือถือ" />
@@ -173,6 +173,8 @@
       .ar-launch-card p { max-width: 400px; margin-bottom: 0; color: #ccebf6; font-size: 13px; line-height: 1.65; }
       .ar-feature-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
       .ar-feature { padding: 7px 9px; border: 1px solid #ffffff30; border-radius: 10px; background: #ffffff12; color: #e4f8ff; font-size: 11px; font-weight: 800; }
+      button.ar-feature { cursor: pointer; }
+      button.ar-feature:hover { border-color: #8cecff; background: #ffffff20; }
       .ar-launch-actions { display: flex; gap: 8px; margin-top: 20px; }
       .ar-start-camera, .ar-start-fallback { min-height: 48px; padding: 10px 15px; border-radius: 13px; font-size: 13px; font-weight: 950; }
       .ar-start-camera { flex: 1; border: 0; background: linear-gradient(135deg, #f6c534, #ffdd69); color: #423000; box-shadow: 0 11px 24px #061b2e52; }
@@ -216,6 +218,7 @@
       .ar-hud-chip small { color: #91c7d8; font-size: 8px; font-weight: 900; letter-spacing: .05em; }
       .ar-hud-chip strong { margin-top: 2px; font-size: 15px; }
       .ar-hud-chip.time strong { color: #ffe27a; }
+      .ar-hud-chip.performance strong { color: #7ff0c6; font-size: 12px; }
       .ar-target-card { position: absolute; z-index: 6; top: 18%; left: 50%; width: min(580px, calc(100% - 42px)); padding: 13px 16px 15px; border: 1px solid #81e5ff84; border-radius: 22px; background: linear-gradient(135deg, #071b2fe8, #0a4662dc); box-shadow: 0 18px 50px #0007, inset 0 1px #ffffff2c; text-align: center; backdrop-filter: blur(13px); transform: translateX(-50%); transition: .18s ease; }
       .ar-target-card.target-hover { border-color: #ffe166; box-shadow: 0 0 0 5px #ffd95b24, 0 18px 50px #0007; transform: translateX(-50%) scale(1.025); }
       .ar-target-kicker { color: #82ddf4; font-size: 9px; font-weight: 950; letter-spacing: .1em; }
@@ -248,7 +251,11 @@
       .ar-ready-count.loading span { animation: arReadyCounterSpin 1s linear infinite; }
       .ar-ready-card strong { display: block; color: white; font-size: 21px; }
       .ar-ready-card p { margin: 7px 0 0; color: #bae0eb; font-size: 12px; line-height: 1.55; }
-      .ar-ready-card button { min-height: 43px; margin-top: 17px; padding: 0 18px; border: 1px solid #ffffff31; border-radius: 12px; background: #ffffff10; color: #d9f5fc; font-size: 11px; font-weight: 900; }
+      .ar-ready-actions { display: flex; justify-content: center; gap: 8px; margin-top: 17px; }
+      .ar-ready-card button { min-height: 43px; padding: 0 18px; border: 1px solid #ffffff31; border-radius: 12px; background: #ffffff10; color: #d9f5fc; font-size: 11px; font-weight: 900; }
+      .ar-ready-card button.primary { border-color: #ffe17b; background: #ffe067; color: #453300; }
+      .ar-pause-card { border-color: #ffd9787d; background: linear-gradient(145deg, #24233cf2, #5d4821f2); }
+      .ar-pause-card .ar-ready-count { border-color: #ffe173; background: #ffdd6020; color: #ffe990; box-shadow: 0 0 0 9px #ffdd5514, 0 0 38px #ffc83d33; }
       @keyframes arReadySpin { to { transform: rotate(360deg); } }
       @keyframes arReadyCounterSpin { to { transform: rotate(-360deg); } }
       .ar-hand-status { position: absolute; z-index: 15; top: max(68px, calc(env(safe-area-inset-top) + 66px)); right: 12px; max-width: min(270px, calc(100% - 200px)); display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid #ffffff2f; border-radius: 999px; background: #071a2bce; color: #b9dbe6; box-shadow: 0 8px 28px #0005; font-size: 10px; line-height: 1.25; font-weight: 850; pointer-events: none; backdrop-filter: blur(12px); }
@@ -568,6 +575,8 @@
       @media (max-width: 420px) {
         .profile { grid-template-columns: minmax(90px, 1fr) 72px 56px; }
         .profile-icon { display: none; }
+        .ar-ready-actions { flex-direction: column; }
+        .ar-ready-card button { width: 100%; }
         .ar-topbar { right: 8px; left: 8px; gap: 6px; }
         .ar-top-actions { gap: 3px; }
         .ar-icon-button { width: 34px; height: 34px; border-radius: 10px; font-size: 14px; }
@@ -690,6 +699,7 @@
         <div class="ar-hud-chip time"><small>เวลาที่เหลือ</small><strong id="arTime">45</strong></div>
         <div class="ar-hud-chip"><small>คะแนนสด</small><strong id="arLiveScore">0</strong></div>
         <div class="ar-hud-chip"><small>พลาด</small><strong id="arMisses">0</strong></div>
+        <div class="ar-hud-chip performance"><small>ความลื่น</small><strong id="arFps">AUTO</strong></div>
       </div>
       <div id="arTargetCard" class="ar-target-card">
         <div class="ar-target-kicker">ภารกิจค้นหาคำ</div>
@@ -710,7 +720,15 @@
           <div id="arReadyCount" class="ar-ready-count loading"><span>✋</span></div>
           <strong id="arReadyTitle">กำลังเตรียมเซนเซอร์มือ</strong>
           <p id="arReadyText">เวลาภารกิจ 45 วินาทียังไม่เริ่มนับ</p>
-          <button id="arReadyCancelButton" type="button">ยกเลิกและปิดกล้อง</button>
+          <div class="ar-ready-actions"><button id="arReadyFallbackButton" class="primary" type="button">เล่นด้วยการแตะ/ลาก</button><button id="arReadyCancelButton" type="button">ยกเลิก</button></div>
+        </div>
+      </div>
+      <div id="arPauseOverlay" class="ar-ready-overlay" role="status" aria-live="polite" hidden>
+        <div class="ar-ready-card ar-pause-card">
+          <div class="ar-ready-count">⏸</div>
+          <strong>หยุดเวลาไว้แล้ว</strong>
+          <p id="arPauseText">ไม่พบมือนานเกิน 2 วินาที ยกมือกลับเข้ากล้องเพื่อเล่นต่อ</p>
+          <div class="ar-ready-actions"><button id="arPauseFallbackButton" class="primary" type="button">เล่นต่อด้วยการแตะ/ลาก</button></div>
         </div>
       </div>
       <div id="arComplete" class="ar-complete" hidden>
@@ -857,6 +875,8 @@
         arTimer: null,
         arUseCamera: true,
         arPreparing: false,
+        arPaused: false,
+        arSensorFallback: false,
         arSessionToken: 0,
         lessonQuery: "",
         lessonFilter: "all"
@@ -880,6 +900,9 @@
       const arReadyCount = document.getElementById("arReadyCount");
       const arReadyTitle = document.getElementById("arReadyTitle");
       const arReadyText = document.getElementById("arReadyText");
+      const arPauseOverlay = document.getElementById("arPauseOverlay");
+      const arPauseText = document.getElementById("arPauseText");
+      const arFps = document.getElementById("arFps");
       let arStream = null;
       let arOrientationHandler = null;
       let arFeedbackTimer = null;
@@ -907,6 +930,35 @@
       let arSmoothedLandmarks = null;
       let arLastRawWrist = null;
       let arHandSkeletonVisible = localStorage.getItem("thai-ar-hand-lines") !== "false";
+      let arTargetFrameInterval = 30;
+      let arInferenceEma = 0;
+      let arLastPerformanceAdjust = 0;
+      let arFpsFrameCount = 0;
+      let arFpsSampleStartedAt = 0;
+      let arLastHandSeenAt = 0;
+      let arHandReturnStartedAt = 0;
+      let arSetupMode = "idle";
+      let arSetupSamples = [];
+      let arSetupOpenRatio = 0;
+      let arSetupStableFrames = 0;
+      let arSetupStableStartedAt = 0;
+      let arSetupResolve = null;
+      let arSetupSessionToken = 0;
+      const defaultArCalibration = { close: .40, open: .61, calibrated: false };
+      const loadArCalibration = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem("thai-ar-calibration") || "null");
+          if (saved && Number.isFinite(saved.close) && Number.isFinite(saved.open) && saved.open - saved.close >= .1) {
+            return { close: saved.close, open: saved.open, calibrated: true };
+          }
+        } catch (error) {
+          // ใช้ค่าเริ่มต้นหากข้อมูลเดิมเสียหาย
+        }
+        return { ...defaultArCalibration };
+      };
+      let arCalibration = loadArCalibration();
+      let arPinchCloseThreshold = arCalibration.close;
+      let arPinchOpenThreshold = arCalibration.open;
       const arHandsCdnBases = [
         "https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/",
         "https://unpkg.com/@mediapipe/hands@0.4.1675469240/"
@@ -1140,6 +1192,8 @@
         state.arMistakes = [];
         state.arUseCamera = true;
         state.arPreparing = false;
+        state.arPaused = false;
+        state.arSensorFallback = false;
         state.options = shuffle([...lesson().correct, ...lesson().incorrect]);
       };
       const startSpeedRound = () => {
@@ -1213,6 +1267,188 @@
         arHandStatus.classList.toggle("loading", tone === "loading");
         arHandStatus.classList.toggle("detected", tone === "detected");
         arHandStatus.classList.toggle("error", tone === "error");
+      };
+      const median = (values) => {
+        const sorted = [...values].sort((first, second) => first - second);
+        const middle = Math.floor(sorted.length / 2);
+        return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+      };
+      const resetArCalibration = () => {
+        arCalibration = { ...defaultArCalibration };
+        arPinchCloseThreshold = arCalibration.close;
+        arPinchOpenThreshold = arCalibration.open;
+        localStorage.removeItem("thai-ar-calibration");
+      };
+      const completeArHandSetup = (success) => {
+        const resolve = arSetupResolve;
+        arSetupResolve = null;
+        arSetupMode = "idle";
+        arSetupSamples = [];
+        arSetupStableFrames = 0;
+        arSetupStableStartedAt = 0;
+        resolve?.(Boolean(success));
+      };
+      const cancelArHandSetup = () => completeArHandSetup(false);
+      const resetArSetupOnMissingHand = () => {
+        arSetupStableStartedAt = 0;
+        arSetupStableFrames = 0;
+        if (arSetupMode === "open" || arSetupMode === "pinch" || arSetupMode === "release") arSetupSamples = [];
+        if (arSetupMode === "wait") {
+          arReadyCount.textContent = "✋";
+          arReadyTitle.textContent = "ยกมือให้กล้องเห็นทั้งฝ่ามือ";
+          arReadyText.textContent = "เวลาจะยังไม่เริ่ม จนกว่าจะตรวจพบมือต่อเนื่อง 1 วินาที";
+        }
+      };
+      const processArHandSetupFrame = (rawPinchRatio) => {
+        if (arSetupMode === "idle" || arSetupSessionToken !== state.arSessionToken) return;
+        const now = performance.now();
+        if (arSetupMode === "wait") {
+          const readyThreshold = Math.max(arPinchCloseThreshold + .08, arPinchOpenThreshold * .85);
+          if (rawPinchRatio > readyThreshold) {
+            arSetupStableStartedAt = arSetupStableStartedAt || now;
+            const progress = Math.min(100, Math.round((now - arSetupStableStartedAt) / 9));
+            arReadyCount.textContent = `${progress}%`;
+            arReadyTitle.textContent = "พบมือแล้ว · กางมือไว้นิ่ง ๆ";
+            arReadyText.textContent = "กำลังตรวจความต่อเนื่องก่อนเริ่มจับเวลา";
+            if (now - arSetupStableStartedAt >= 900) completeArHandSetup(true);
+          } else {
+            arSetupStableStartedAt = 0;
+            arReadyCount.textContent = "✋";
+            arReadyTitle.textContent = "กางนิ้วโป้งและนิ้วชี้ออก";
+            arReadyText.textContent = "ระบบพบมือแล้ว แต่ยังรอท่าเปิดมือก่อนเริ่ม";
+          }
+          return;
+        }
+        if (arSetupMode === "open") {
+          if (rawPinchRatio < .62) {
+            arSetupSamples = [];
+            arReadyCount.textContent = "✋";
+            arReadyText.textContent = "กางนิ้วโป้งและนิ้วชี้ให้ห่าง แล้วค้างไว้";
+            return;
+          }
+          arSetupSamples.push(rawPinchRatio);
+          arReadyCount.textContent = `${Math.min(100, Math.round(arSetupSamples.length / 18 * 100))}%`;
+          if (arSetupSamples.length >= 18) {
+            arSetupOpenRatio = median(arSetupSamples);
+            arSetupMode = "pinch";
+            arSetupSamples = [];
+            arReadyCount.textContent = "🤏";
+            arReadyTitle.textContent = "ขั้นที่ 2/2 · คีบนิ้วเข้าหากัน";
+            arReadyText.textContent = "ให้นิ้วโป้งแตะนิ้วชี้ แล้วค้างไว้สักครู่";
+            navigator.vibrate?.(30);
+          }
+          return;
+        }
+        if (arSetupMode === "pinch") {
+          const pinchLimit = Math.min(.58, arSetupOpenRatio * .56);
+          if (rawPinchRatio > pinchLimit) {
+            arSetupSamples = [];
+            arReadyCount.textContent = "🤏";
+            arReadyText.textContent = "คีบนิ้วโป้งกับนิ้วชี้ให้ชิดกันมากขึ้น";
+            return;
+          }
+          arSetupSamples.push(rawPinchRatio);
+          arReadyCount.textContent = `${Math.min(100, Math.round(arSetupSamples.length / 12 * 100))}%`;
+          if (arSetupSamples.length >= 12) {
+            const closedRatio = median(arSetupSamples);
+            const gap = arSetupOpenRatio - closedRatio;
+            if (gap < .16) {
+              arSetupMode = "open";
+              arSetupSamples = [];
+              arReadyCount.textContent = "↺";
+              arReadyTitle.textContent = "ระยะคีบยังไม่ชัด · ลองอีกครั้ง";
+              arReadyText.textContent = "กางนิ้วโป้งและนิ้วชี้ให้ห่างชัดเจน แล้วค้างไว้";
+              return;
+            }
+            arPinchCloseThreshold = Math.max(.22, Math.min(.55, closedRatio + gap * .32));
+            arPinchOpenThreshold = Math.max(arPinchCloseThreshold + .12, Math.min(.92, closedRatio + gap * .62));
+            arSetupMode = "release";
+            arSetupSamples = [];
+            arSetupStableStartedAt = 0;
+            arReadyCount.textContent = "🖐";
+            arReadyTitle.textContent = "ปรับเทียบสำเร็จ · คลายนิ้ว";
+            arReadyText.textContent = "กางมืออีกครั้งเพื่อยืนยันและเริ่มภารกิจ";
+            navigator.vibrate?.([30, 35, 45]);
+          }
+          return;
+        }
+        if (arSetupMode === "release") {
+          if (rawPinchRatio > arPinchOpenThreshold) {
+            arSetupStableStartedAt = arSetupStableStartedAt || now;
+            const progress = Math.min(100, Math.round((now - arSetupStableStartedAt) / 5));
+            arReadyCount.textContent = `${progress}%`;
+            if (now - arSetupStableStartedAt >= 500) {
+              arCalibration = {
+                close: Number(arPinchCloseThreshold.toFixed(3)),
+                open: Number(arPinchOpenThreshold.toFixed(3)),
+                calibrated: true,
+                calibratedAt: new Date().toISOString()
+              };
+              localStorage.setItem("thai-ar-calibration", JSON.stringify(arCalibration));
+              completeArHandSetup(true);
+            }
+          } else {
+            arSetupStableStartedAt = 0;
+            arReadyCount.textContent = "🖐";
+          }
+        }
+      };
+      const beginArHandSetup = (sessionToken) => {
+        cancelArHandSetup();
+        arSetupSessionToken = sessionToken;
+        arSetupSamples = [];
+        arSetupStableFrames = 0;
+        arSetupStableStartedAt = 0;
+        arReadyCount.classList.remove("loading");
+        if (arCalibration.calibrated) {
+          arSetupMode = "wait";
+          arReadyCount.textContent = "✋";
+          arReadyTitle.textContent = "ยกมือให้กล้องเห็นทั้งฝ่ามือ";
+          arReadyText.textContent = "เวลาจะเริ่มหลังตรวจพบมือต่อเนื่อง 1 วินาที";
+        } else {
+          arSetupMode = "open";
+          arReadyCount.textContent = "✋";
+          arReadyTitle.textContent = "ขั้นที่ 1/2 · กางนิ้วออก";
+          arReadyText.textContent = "ปรับเทียบครั้งแรก: กางนิ้วโป้งและนิ้วชี้ให้ห่าง แล้วค้างไว้";
+        }
+        return new Promise((resolve) => { arSetupResolve = resolve; });
+      };
+      const pauseArForMissingHand = () => {
+        if (!state.arStarted || state.arFinished || state.arPreparing || state.arPaused || state.arSensorFallback || !arHandEnabled) return;
+        clearArTimer();
+        state.arPaused = true;
+        arHandReturnStartedAt = 0;
+        releaseArHandGrab(false);
+        setArHandHover(null);
+        arPauseText.textContent = "ไม่พบมือนานเกิน 2 วินาที ยกมือกลับเข้ากล้องเพื่อเล่นต่อ";
+        arPauseOverlay.hidden = false;
+        document.getElementById("arTime").textContent = `⏸ ${state.arSeconds}`;
+        setArHandStatus("หยุดเวลาไว้แล้ว · รอพบมือ", "error");
+        navigator.vibrate?.([30, 45, 30]);
+      };
+      const resumeArAfterHandReturn = () => {
+        if (!state.arPaused || state.arPreparing || state.arFinished) return;
+        state.arPaused = false;
+        arPauseOverlay.hidden = true;
+        arHandReturnStartedAt = 0;
+        arPinchClosed = false;
+        arPinchCloseFrames = 0;
+        arPinchOpenFrames = 0;
+        setArHandStatus("พบมือแล้ว · เล่นต่อได้", "detected");
+        showArFeedback("พบมือแล้ว · เริ่มจับเวลาต่อ");
+        updateArHud();
+        startArRoundTimer();
+      };
+      const continueArWithTouch = () => {
+        if (!state.arStarted || state.arFinished) return;
+        state.arSensorFallback = true;
+        state.arPaused = false;
+        arPauseOverlay.hidden = true;
+        stopArHandTracking("โหมดแตะ/ลาก · ปิดการพักเมื่อมือหลุดแล้ว");
+        arFps.textContent = "แตะ";
+        showArFeedback("เล่นต่อด้วยการแตะหรือลากคำ");
+        updateArHud();
+        startArRoundTimer();
       };
       const setArHandSkeletonVisible = (visible, remember = true) => {
         arHandSkeletonVisible = Boolean(visible);
@@ -1367,13 +1603,13 @@
         context.lineJoin = "round";
         drawConnections("#06111db8", 5.2, 0);
         drawConnections("#786cffdf", 2.2, 7);
-        if (pinchRatio < .82) {
+        if (pinchRatio < arPinchOpenThreshold + .2) {
           context.beginPath();
           context.moveTo(points[4].x, points[4].y);
           context.lineTo(points[8].x, points[8].y);
-          context.strokeStyle = pinchRatio < .48 ? "#ffe067" : "#62e9ff";
+          context.strokeStyle = pinchRatio < arPinchCloseThreshold ? "#ffe067" : "#62e9ff";
           context.lineWidth = 3.2;
-          context.shadowColor = pinchRatio < .48 ? "#ffe067" : "#62e9ff";
+          context.shadowColor = pinchRatio < arPinchCloseThreshold ? "#ffe067" : "#62e9ff";
           context.shadowBlur = 13;
           context.stroke();
         }
@@ -1396,7 +1632,7 @@
         let pinchReleased = false;
         if (!arPinchClosed) {
           arPinchOpenFrames = 0;
-          if (pinchRatio < .40 && now >= arPinchCooldownUntil) arPinchCloseFrames += 1;
+          if (pinchRatio < arPinchCloseThreshold && now >= arPinchCooldownUntil) arPinchCloseFrames += 1;
           else arPinchCloseFrames = Math.max(0, arPinchCloseFrames - 1);
           if (arPinchCloseFrames >= 2) {
             arPinchClosed = true;
@@ -1405,7 +1641,7 @@
           }
         } else {
           arPinchCloseFrames = 0;
-          if (pinchRatio > .61) arPinchOpenFrames += 1;
+          if (pinchRatio > arPinchOpenThreshold) arPinchOpenFrames += 1;
           else arPinchOpenFrames = 0;
           if (arPinchOpenFrames >= 2) {
             arPinchClosed = false;
@@ -1418,9 +1654,14 @@
       };
       const handleArHandsResults = (results) => {
         if (!arHandEnabled || !state.arStarted || state.arFinished || arExperience.hidden) return;
+        recordArResultFrame();
+        const frameNow = performance.now();
         const rawLandmarks = results.multiHandLandmarks?.[0];
         if (!rawLandmarks) {
           arHandMissingFrames += 1;
+          arHandReturnStartedAt = 0;
+          if (state.arPreparing && arHandMissingFrames >= 4) resetArSetupOnMissingHand();
+          if (!state.arPreparing && !state.arPaused && !state.arSensorFallback && arLastHandSeenAt && frameNow - arLastHandSeenAt >= 2000) pauseArForMissingHand();
           if (arHandMissingFrames >= 4) {
             arHandCursor.hidden = true;
             clearArHandCanvas();
@@ -1442,6 +1683,7 @@
         const landmarks = smoothArHandLandmarks(rawLandmarks);
         const handWasHidden = arHandCursor.hidden;
         arHandMissingFrames = 0;
+        arLastHandSeenAt = frameNow;
         const thumbTip = landmarks[4];
         const indexTip = landmarks[8];
         const pinchMidpoint = { x: (thumbTip.x + indexTip.x) / 2, y: (thumbTip.y + indexTip.y) / 2 };
@@ -1462,11 +1704,32 @@
         arHandCursor.style.setProperty("--ar-hand-y", `${arHandY}px`);
         const handScale = Math.max(.035, arLandmarkDistance(landmarks[0], landmarks[9]));
         const rawPinchRatio = arLandmarkDistance(thumbTip, indexTip) / handScale;
+        if (state.arPaused && !state.arSensorFallback) {
+          const readyThreshold = Math.max(arPinchCloseThreshold + .08, arPinchOpenThreshold * .85);
+          if (rawPinchRatio > readyThreshold) {
+            arHandReturnStartedAt = arHandReturnStartedAt || frameNow;
+            const resumeProgress = Math.min(100, Math.round((frameNow - arHandReturnStartedAt) / 6));
+            arPauseText.textContent = `พบมือแล้ว ${resumeProgress}% · กางมือไว้นิ่ง ๆ เพื่อเล่นต่อ`;
+            if (frameNow - arHandReturnStartedAt >= 600) resumeArAfterHandReturn();
+          } else {
+            arHandReturnStartedAt = 0;
+            arPauseText.textContent = "พบมือแล้ว · กรุณากางนิ้วโป้งและนิ้วชี้เพื่อเล่นต่อ";
+          }
+        } else {
+          arHandReturnStartedAt = 0;
+        }
         arPinchRatioSmoothed += (rawPinchRatio - arPinchRatioSmoothed) * .52;
-        const pinchProgress = Math.max(0, Math.min(1, (.74 - arPinchRatioSmoothed) / .42));
+        const pinchRange = Math.max(.12, arPinchOpenThreshold - arPinchCloseThreshold);
+        const pinchProgress = Math.max(0, Math.min(1, (arPinchOpenThreshold - arPinchRatioSmoothed) / pinchRange));
         arHandCursor.style.setProperty("--ar-pinch-progress", pinchProgress.toFixed(3));
         drawArHandSkeleton(landmarks, arPinchRatioSmoothed);
         if (state.arPreparing) {
+          processArHandSetupFrame(rawPinchRatio);
+          setArHandHover(null);
+          arHandCursor.classList.remove("pinching", "grabbing");
+          return;
+        }
+        if (state.arPaused) {
           setArHandHover(null);
           arHandCursor.classList.remove("pinching", "grabbing");
           return;
@@ -1574,17 +1837,52 @@
         updateArPreloadBadge("loading");
         ensureArHandsEngine().then(() => updateArPreloadBadge("ready")).catch(() => updateArPreloadBadge("error"));
       };
+      const resetArPerformance = () => {
+        const cores = Number(navigator.hardwareConcurrency) || 4;
+        const memory = Number(navigator.deviceMemory) || 4;
+        arTargetFrameInterval = cores <= 4 || memory <= 3 ? 42 : 30;
+        arInferenceEma = 0;
+        arLastPerformanceAdjust = performance.now();
+        arFpsFrameCount = 0;
+        arFpsSampleStartedAt = performance.now();
+        arFps.textContent = arTargetFrameInterval >= 40 ? "AUTO 24" : "AUTO 30";
+      };
+      const recordArInferencePerformance = (duration) => {
+        const now = performance.now();
+        arInferenceEma = arInferenceEma ? arInferenceEma * .82 + duration * .18 : duration;
+        if (now - arLastPerformanceAdjust < 2000) return;
+        arLastPerformanceAdjust = now;
+        let nextInterval = arTargetFrameInterval;
+        if (arInferenceEma > 58) nextInterval = 60;
+        else if (arInferenceEma > 38) nextInterval = 42;
+        else if (arInferenceEma < 31) nextInterval = 30;
+        arTargetFrameInterval = nextInterval;
+      };
+      const recordArResultFrame = () => {
+        const now = performance.now();
+        arFpsFrameCount += 1;
+        const elapsed = now - arFpsSampleStartedAt;
+        if (elapsed < 1000) return;
+        const measuredFps = Math.max(1, Math.round(arFpsFrameCount * 1000 / elapsed));
+        const quality = arTargetFrameInterval >= 55 ? "ประหยัด" : arTargetFrameInterval >= 40 ? "สมดุล" : "ลื่น";
+        arFps.textContent = `${measuredFps} FPS`;
+        arFps.title = `โหมดอัตโนมัติ: ${quality}`;
+        arFpsFrameCount = 0;
+        arFpsSampleStartedAt = now;
+      };
       const runArHandLoop = async (timestamp) => {
         if (!arHandEnabled) return;
         arHandFrame = window.requestAnimationFrame(runArHandLoop);
-        if (!state.arStarted || state.arFinished || arExperience.hidden || !arStreamIsLive() || arCamera.readyState < 2 || arHandProcessing || timestamp - arLastHandSend < 30) return;
+        if (!state.arStarted || state.arFinished || arExperience.hidden || !arStreamIsLive() || arCamera.readyState < 2 || arHandProcessing || timestamp - arLastHandSend < arTargetFrameInterval) return;
         arLastHandSend = timestamp;
         arHandProcessing = true;
+        const inferenceStartedAt = performance.now();
         try {
           await arHands.send({ image: arCamera });
         } catch (error) {
           if (arHandEnabled) setArHandStatus("เซนเซอร์สะดุด · ยังแตะหรือลากได้", "error");
         } finally {
+          recordArInferencePerformance(performance.now() - inferenceStartedAt);
           arHandProcessing = false;
         }
       };
@@ -1617,6 +1915,9 @@
           arSmoothedLandmarks = null;
           arLastRawWrist = null;
           arLastHandSend = 0;
+          arLastHandSeenAt = 0;
+          arHandReturnStartedAt = 0;
+          resetArPerformance();
           if (arHandFrame) window.cancelAnimationFrame(arHandFrame);
           arHandFrame = window.requestAnimationFrame(runArHandLoop);
           setArHandStatus("ยกมือให้กล้องเห็นทั้งฝ่ามือ", "");
@@ -1633,6 +1934,7 @@
         }
       };
       const stopArHandTracking = (message = "เซนเซอร์มือหยุดแล้ว") => {
+        if (arSetupMode !== "idle") cancelArHandSetup();
         arHandEnabled = false;
         arPinchClosed = false;
         arPinchRatioSmoothed = 1;
@@ -1642,6 +1944,8 @@
         arHandMissingFrames = 0;
         arSmoothedLandmarks = null;
         arLastRawWrist = null;
+        arLastHandSeenAt = 0;
+        arHandReturnStartedAt = 0;
         if (arHandFrame) window.cancelAnimationFrame(arHandFrame);
         arHandFrame = 0;
         releaseArHandGrab(false);
@@ -1653,6 +1957,7 @@
         arHandButton.classList.remove("active");
         arHandButton.setAttribute("aria-pressed", "false");
         arSkeletonButton.disabled = true;
+        arFps.textContent = "AUTO";
         setArHandStatus(message, "");
       };
       const disposeArHands = () => {
@@ -1718,7 +2023,8 @@
       const openArCamera = async () => {
         stopArStream();
         try {
-          arStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: arFacingMode }, width: { ideal: 1280 }, height: { ideal: 720 } } });
+          const lowPowerDevice = (Number(navigator.hardwareConcurrency) || 4) <= 4 || (Number(navigator.deviceMemory) || 4) <= 3;
+          arStream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: arFacingMode }, width: { ideal: lowPowerDevice ? 960 : 1280 }, height: { ideal: lowPowerDevice ? 540 : 720 }, frameRate: { ideal: 30, max: 30 } } });
           if (!state.arStarted || arExperience.hidden) {
             stopArStream();
             return false;
@@ -1869,7 +2175,9 @@
         if (state.arFinished || !state.arStarted) return;
         clearArTimer();
         state.arPreparing = false;
+        state.arPaused = false;
         arReadyOverlay.hidden = true;
+        arPauseOverlay.hidden = true;
         state.arFinished = true;
         state.score = currentArScore();
         stopArHandTracking("จบรอบแล้ว · กล้องยังพร้อมสำหรับเล่นซ้ำ");
@@ -1892,7 +2200,9 @@
         if (!force && state.arStarted && !state.arFinished && (state.arHits > 0 || state.arWrongCount > 0) && !window.confirm("ออกจากภารกิจ AR ตอนนี้หรือไม่? ความคืบหน้ารอบนี้จะไม่ถูกบันทึก")) return;
         state.arSessionToken += 1;
         state.arPreparing = false;
+        state.arPaused = false;
         arReadyOverlay.hidden = true;
+        arPauseOverlay.hidden = true;
         clearArTimer();
         stopArHardware();
         arExperience.hidden = true;
@@ -1908,9 +2218,13 @@
       };
       const startArRoundTimer = () => {
         clearArTimer();
-        if (!state.arStarted || state.arFinished || state.arPreparing || arExperience.hidden) return;
+        if (!state.arStarted || state.arFinished || state.arPreparing || state.arPaused || arExperience.hidden) return;
         state.arTimer = window.setInterval(() => {
-          if (state.arFinished || state.arPreparing) return;
+          if (state.arFinished || state.arPreparing || state.arPaused) return;
+          if (arHandEnabled && !state.arSensorFallback && arLastHandSeenAt && performance.now() - arLastHandSeenAt >= 2000) {
+            pauseArForMissingHand();
+            return;
+          }
           state.arSeconds = Math.max(0, state.arSeconds - 1);
           updateArHud();
           if (state.arSeconds <= 0) finishArMission(false);
@@ -1937,6 +2251,7 @@
         if (!sessionActive()) return false;
         arReadyOverlay.hidden = true;
         state.arPreparing = false;
+        state.arPaused = false;
         updateArHud();
         startArRoundTimer();
         showArFeedback(sensorReady ? "เริ่มภารกิจ · คีบนิ้วเพื่อหยิบคำ" : "เริ่มภารกิจ · แตะหรือลากคำได้เลย", !sensorReady && state.arUseCamera);
@@ -1957,6 +2272,8 @@
         state.arStarted = true;
         state.arFinished = false;
         state.arPreparing = true;
+        state.arPaused = false;
+        state.arSensorFallback = false;
         state.arSeconds = 45;
         state.arHits = 0;
         state.arWrongCount = 0;
@@ -1972,11 +2289,14 @@
         document.getElementById("arTargetInstruction").textContent = state.arUseCamera ? "คีบนิ้วหยิบคำ แล้วคลายนิ้วเหนือช่องที่มีความหมายว่า" : "แตะคำ หรือโยนคำลงช่องที่มีความหมายว่า";
         document.getElementById("arTargetHint").textContent = state.arUseCamera ? "รอให้เส้นโครงมือ 21 จุดนิ่ง แล้วคีบใกล้คำ" : "โหมดจำลองไม่ใช้กล้อง · แตะหรือลากคำเพื่อเล่น";
         document.getElementById("arComplete").hidden = true;
+        arPauseOverlay.hidden = true;
+        arFps.textContent = state.arUseCamera ? "AUTO" : "แตะ";
         arReadyOverlay.hidden = false;
         arReadyCount.classList.add("loading");
         arReadyCount.innerHTML = "<span>✋</span>";
         arReadyTitle.textContent = state.arUseCamera ? "กำลังเตรียมกล้องและเซนเซอร์มือ" : "กำลังเตรียมโหมด AR จำลอง";
         arReadyText.textContent = "เวลาภารกิจ 45 วินาทียังไม่เริ่มนับ";
+        document.getElementById("arReadyFallbackButton").hidden = !state.arUseCamera;
         arHandButton.disabled = !state.arUseCamera;
         arSkeletonButton.disabled = true;
         setArHandStatus(state.arUseCamera ? "กำลังเตรียมเซนเซอร์มือ" : "โหมดแตะ/ลาก · ไม่ใช้กล้อง", state.arUseCamera ? "loading" : "");
@@ -2000,6 +2320,7 @@
             sensorReady = await startArHandTracking(sensorWarmupPromise);
           } else {
             state.arUseCamera = false;
+            document.getElementById("arReadyFallbackButton").hidden = true;
             arHandButton.disabled = true;
             arSkeletonButton.disabled = true;
             arCameraFallback.hidden = false;
@@ -2015,7 +2336,15 @@
           setArHandStatus("โหมดแตะ/ลาก · ไม่ใช้กล้อง", "");
         }
         if (state.arSessionToken !== sessionToken || arExperience.hidden) return;
-        await runArReadyCountdown(sessionToken, sensorReady);
+        let handReady = false;
+        if (sensorReady) handReady = await beginArHandSetup(sessionToken);
+        if (state.arSessionToken !== sessionToken || arExperience.hidden) return;
+        if (!handReady && sensorReady) {
+          state.arSensorFallback = true;
+          stopArHandTracking("โหมดแตะ/ลาก · ข้ามการตรวจจับมือ");
+        }
+        if (!sensorReady || !handReady) arFps.textContent = "แตะ";
+        await runArReadyCountdown(sessionToken, sensorReady && handReady);
       };
       const shareResult = async (item, score, mode) => {
         const player = nameInput.value.trim() || "ผู้เล่น";
@@ -2118,7 +2447,12 @@
         if (modalWord) speakText(modalWord);
       });
       document.getElementById("arCloseButton").addEventListener("click", () => closeArExperience());
+      document.getElementById("arReadyFallbackButton").addEventListener("click", () => {
+        closeArExperience(true);
+        window.setTimeout(() => startArMission(false), 0);
+      });
       document.getElementById("arReadyCancelButton").addEventListener("click", () => closeArExperience(true));
+      document.getElementById("arPauseFallbackButton").addEventListener("click", continueArWithTouch);
       document.getElementById("arReturnButton").addEventListener("click", () => closeArExperience(true));
       document.getElementById("arReplayButton").addEventListener("click", () => startArMission(state.arUseCamera));
       arHandButton.addEventListener("click", async () => {
@@ -2318,8 +2652,12 @@
             return;
           }
           const cameraReady = arSupportsCamera();
-          frame(`<div class="game-body"><div class="ar-launch-card"><div class="ar-launch-content"><div class="ar-launch-badge">◉ WEBAR · 21-POINT HAND TRACKING</div><h4>คีบนิ้วล่าคำด้วยโครงมือเสมือนจริง</h4><p>ระบบโหลดเซนเซอร์ล่วงหน้า และจะเริ่มเวลา 45 วินาทีต่อเมื่อกล้องกับระบบควบคุมพร้อมแล้ว คีบใกล้คำเพื่อหยิบ แล้วคลายนิ้วเหนือช่องภารกิจ</p><div class="ar-feature-row"><span id="arPreloadStatus" class="ar-feature">${arHands ? "✓ เซนเซอร์พร้อม" : "⚡ โหลดล่วงหน้าอัตโนมัติ"}</span><span class="ar-feature">✋ โครงมือ 21 จุด</span><span class="ar-feature">◎ ระบบกันสั่น</span><span class="ar-feature">🤏 คีบ–ลาก–ปล่อย</span><span class="ar-feature">☝ แตะ/ลากสำรอง</span><span class="ar-feature">☁ ส่งคะแนนออนไลน์</span></div><div class="ar-launch-actions"><button class="ar-start-camera" type="button">${cameraReady ? "🤏 เปิดกล้องและเริ่มคีบคำ" : "◉ เริ่มโหมด AR จำลอง"}</button><button class="ar-start-fallback" type="button">เล่นโดยไม่ใช้กล้อง</button></div></div><div class="ar-orbit-art" aria-hidden="true"></div><div class="ar-privacy"><span>🔒</span><span>ภาพกล้องประมวลผลบนอุปกรณ์เพื่อหาตำแหน่งมือเท่านั้น ระบบไม่บันทึกและไม่ส่งภาพขึ้นออนไลน์</span></div></div></div>`);
+          frame(`<div class="game-body"><div class="ar-launch-card"><div class="ar-launch-content"><div class="ar-launch-badge">◉ WEBAR · STABLE CLASSROOM</div><h4>คีบนิ้วล่าคำด้วยโครงมือเสมือนจริง</h4><p>ระบบปรับระยะคีบให้เหมาะกับมือของผู้เล่น รอพบมือก่อนเริ่มเวลา หยุดเวลาเมื่อมือหลุด และปรับความลื่นอัตโนมัติตามโทรศัพท์</p><div class="ar-feature-row"><span id="arPreloadStatus" class="ar-feature">${arHands ? "✓ เซนเซอร์พร้อม" : "⚡ โหลดล่วงหน้าอัตโนมัติ"}</span>${arCalibration.calibrated ? `<button class="ar-feature ar-reset-calibration" type="button">◎ ปรับเทียบใหม่</button>` : `<span class="ar-feature">◎ ปรับเทียบครั้งแรก</span>`}<span class="ar-feature">✋ รอพบมือก่อนเริ่ม</span><span class="ar-feature">⏸ พักเมื่อมือหลุด</span><span class="ar-feature">⚙ FPS อัตโนมัติ</span><span class="ar-feature">☝ แตะ/ลากสำรอง</span><span class="ar-feature">☁ ส่งคะแนนออนไลน์</span></div><div class="ar-launch-actions"><button class="ar-start-camera" type="button">${cameraReady ? "🤏 เปิดกล้องและเริ่มคีบคำ" : "◉ เริ่มโหมด AR จำลอง"}</button><button class="ar-start-fallback" type="button">เล่นโดยไม่ใช้กล้อง</button></div></div><div class="ar-orbit-art" aria-hidden="true"></div><div class="ar-privacy"><span>🔒</span><span>ภาพกล้องประมวลผลบนอุปกรณ์เพื่อหาตำแหน่งมือเท่านั้น ระบบไม่บันทึกและไม่ส่งภาพขึ้นออนไลน์</span></div></div></div>`);
           warmArHandsEngine();
+          game.querySelector(".ar-reset-calibration")?.addEventListener("click", () => {
+            resetArCalibration();
+            renderGame();
+          });
           game.querySelector(".ar-start-camera").addEventListener("click", () => startArMission(cameraReady));
           game.querySelector(".ar-start-fallback").addEventListener("click", () => startArMission(false));
           return;
