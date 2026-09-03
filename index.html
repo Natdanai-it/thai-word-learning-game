@@ -6,6 +6,9 @@
     <meta name="theme-color" content="#087fbd" />
     <title>คลังคำไทย | วิดีโอและเกมคำไวพจน์ ม.4</title>
     <meta name="description" content="เรียนรู้คำไวพจน์ผ่านวิดีโอ เกมฝึกทักษะ และ WebAR Hand Tracking โครงมือ 21 จุด คีบนิ้วหยิบคำด้วยกล้องมือถือ" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" as="script" crossorigin="anonymous" />
     <style>
       :root {
         --bg: #f5f7fb;
@@ -237,6 +240,17 @@
       .ar-feedback.show { opacity: 1; transform: translate(-50%, 0); }
       .ar-feedback.error { border-color: #ffc5cd; background: #962d3de8; }
       .ar-session-note { margin: 12px 0 2px; padding: 9px 11px; border: 1px solid #67e4bd55; border-radius: 12px; background: #0c70572b; color: #cffff0; font-size: 10px; font-weight: 800; }
+      .ar-ready-overlay { position: absolute; z-index: 25; inset: 0; display: grid; place-items: center; padding: 20px; background: #04101bba; backdrop-filter: blur(10px); }
+      .ar-ready-overlay[hidden] { display: none; }
+      .ar-ready-card { width: min(390px, 100%); padding: 25px 22px 21px; border: 1px solid #7ce9ff73; border-radius: 25px; background: linear-gradient(145deg, #09263ff2, #0a5068f2); box-shadow: 0 28px 90px #000a, inset 0 1px #ffffff2b; text-align: center; }
+      .ar-ready-count { width: 78px; height: 78px; display: grid; place-items: center; margin: 0 auto 14px; border: 2px solid #74eaff; border-radius: 50%; background: #2bd5f21c; color: #e2fbff; box-shadow: 0 0 0 9px #55dcff14, 0 0 38px #32dcff42; font-size: 34px; font-weight: 950; }
+      .ar-ready-count.loading { border-top-color: #ffe16b; animation: arReadySpin 1s linear infinite; }
+      .ar-ready-count.loading span { animation: arReadyCounterSpin 1s linear infinite; }
+      .ar-ready-card strong { display: block; color: white; font-size: 21px; }
+      .ar-ready-card p { margin: 7px 0 0; color: #bae0eb; font-size: 12px; line-height: 1.55; }
+      .ar-ready-card button { min-height: 43px; margin-top: 17px; padding: 0 18px; border: 1px solid #ffffff31; border-radius: 12px; background: #ffffff10; color: #d9f5fc; font-size: 11px; font-weight: 900; }
+      @keyframes arReadySpin { to { transform: rotate(360deg); } }
+      @keyframes arReadyCounterSpin { to { transform: rotate(-360deg); } }
       .ar-hand-status { position: absolute; z-index: 15; top: max(68px, calc(env(safe-area-inset-top) + 66px)); right: 12px; max-width: min(270px, calc(100% - 200px)); display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid #ffffff2f; border-radius: 999px; background: #071a2bce; color: #b9dbe6; box-shadow: 0 8px 28px #0005; font-size: 10px; line-height: 1.25; font-weight: 850; pointer-events: none; backdrop-filter: blur(12px); }
       .ar-hand-status::before { content: ""; width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: #8ca2ae; box-shadow: 0 0 0 4px #8ca2ae1f; }
       .ar-hand-status.loading::before { background: #ffe06d; box-shadow: 0 0 0 4px #ffe06d1f; animation: arStatusPulse 1s ease-in-out infinite; }
@@ -691,6 +705,14 @@
         <div><div class="ar-progress-label"><span>รวบรวมคำไวพจน์ที่ถูกต้อง</span><strong id="arProgressText">0/4 คำ</strong></div><div class="ar-progress-track"><div id="arProgressFill" class="ar-progress-fill"></div></div></div>
         <div id="arCameraNote" class="ar-camera-note">กล้องพร้อมใช้ต่อเนื่องเฉพาะหน้า AR<br>ไม่มีการบันทึกหรือส่งภาพ</div>
       </div>
+      <div id="arReadyOverlay" class="ar-ready-overlay" role="status" aria-live="polite" hidden>
+        <div class="ar-ready-card">
+          <div id="arReadyCount" class="ar-ready-count loading"><span>✋</span></div>
+          <strong id="arReadyTitle">กำลังเตรียมเซนเซอร์มือ</strong>
+          <p id="arReadyText">เวลาภารกิจ 45 วินาทียังไม่เริ่มนับ</p>
+          <button id="arReadyCancelButton" type="button">ยกเลิกและปิดกล้อง</button>
+        </div>
+      </div>
       <div id="arComplete" class="ar-complete" hidden>
         <div class="ar-complete-card">
           <div class="ar-complete-mark">★</div>
@@ -834,6 +856,8 @@
         arMistakes: [],
         arTimer: null,
         arUseCamera: true,
+        arPreparing: false,
+        arSessionToken: 0,
         lessonQuery: "",
         lessonFilter: "all"
       };
@@ -852,6 +876,10 @@
       const arHandStatus = document.getElementById("arHandStatus");
       const arHandButton = document.getElementById("arHandButton");
       const arSkeletonButton = document.getElementById("arSkeletonButton");
+      const arReadyOverlay = document.getElementById("arReadyOverlay");
+      const arReadyCount = document.getElementById("arReadyCount");
+      const arReadyTitle = document.getElementById("arReadyTitle");
+      const arReadyText = document.getElementById("arReadyText");
       let arStream = null;
       let arOrientationHandler = null;
       let arFeedbackTimer = null;
@@ -860,6 +888,8 @@
       let arFacingMode = "user";
       let arHands = null;
       let arHandsScriptPromise = null;
+      let arHandsEnginePromise = null;
+      let arHandsWarmupAttempted = false;
       let arHandEnabled = false;
       let arHandFrame = 0;
       let arHandProcessing = false;
@@ -1109,6 +1139,7 @@
         state.arCollected = [];
         state.arMistakes = [];
         state.arUseCamera = true;
+        state.arPreparing = false;
         state.options = shuffle([...lesson().correct, ...lesson().incorrect]);
       };
       const startSpeedRound = () => {
@@ -1394,7 +1425,7 @@
             arHandCursor.hidden = true;
             clearArHandCanvas();
             setArHandHover(null);
-            setArHandStatus("ยกมือให้กล้องเห็นทั้งฝ่ามือ", "");
+            if (!state.arPreparing) setArHandStatus("ยกมือให้กล้องเห็นทั้งฝ่ามือ", "");
           }
           if (arHandMissingFrames >= 9) {
             releaseArHandGrab(false);
@@ -1435,6 +1466,11 @@
         const pinchProgress = Math.max(0, Math.min(1, (.74 - arPinchRatioSmoothed) / .42));
         arHandCursor.style.setProperty("--ar-pinch-progress", pinchProgress.toFixed(3));
         drawArHandSkeleton(landmarks, arPinchRatioSmoothed);
+        if (state.arPreparing) {
+          setArHandHover(null);
+          arHandCursor.classList.remove("pinching", "grabbing");
+          return;
+        }
         const { pinchStarted, pinchReleased } = updateArPinchState(arPinchRatioSmoothed);
         arHandCursor.classList.toggle("pinching", arPinchClosed);
         if (pinchStarted || (arPinchClosed && !arGrabbedButton)) beginArHandGrab();
@@ -1501,6 +1537,43 @@
         }
         throw lastError || new Error("เริ่มระบบตรวจจับมือไม่สำเร็จ");
       };
+      const ensureArHandsEngine = () => {
+        if (arHands) return Promise.resolve(arHands);
+        if (arHandsEnginePromise) return arHandsEnginePromise;
+        arHandsEnginePromise = (async () => {
+          await loadArHandsLibrary();
+          if (!arHands) await createArHandsEngine();
+          return arHands;
+        })().catch((error) => {
+          arHandsEnginePromise = null;
+          throw error;
+        });
+        return arHandsEnginePromise;
+      };
+      const withArSensorTimeout = (promise, timeoutMs = 12000) => new Promise((resolve, reject) => {
+        const timeout = window.setTimeout(() => reject(new Error("เตรียมเซนเซอร์นานเกินไป")), timeoutMs);
+        Promise.resolve(promise).then((value) => {
+          window.clearTimeout(timeout);
+          resolve(value);
+        }, (error) => {
+          window.clearTimeout(timeout);
+          reject(error);
+        });
+      });
+      const updateArPreloadBadge = (status) => {
+        const badge = document.getElementById("arPreloadStatus");
+        if (!badge) return;
+        badge.textContent = status === "ready" ? "✓ เซนเซอร์พร้อม" : status === "error" ? "○ โหลดเมื่อเริ่มเกม" : "⚡ กำลังโหลดล่วงหน้า";
+      };
+      const warmArHandsEngine = () => {
+        if (!arSupportsCamera() || arHands || arHandsWarmupAttempted) {
+          if (arHands) updateArPreloadBadge("ready");
+          return;
+        }
+        arHandsWarmupAttempted = true;
+        updateArPreloadBadge("loading");
+        ensureArHandsEngine().then(() => updateArPreloadBadge("ready")).catch(() => updateArPreloadBadge("error"));
+      };
       const runArHandLoop = async (timestamp) => {
         if (!arHandEnabled) return;
         arHandFrame = window.requestAnimationFrame(runArHandLoop);
@@ -1515,7 +1588,7 @@
           arHandProcessing = false;
         }
       };
-      const startArHandTracking = async () => {
+      const startArHandTracking = async (enginePromise = null) => {
         if (!state.arStarted || state.arFinished || !state.arUseCamera || !arStream) {
           arHandButton.disabled = true;
           arSkeletonButton.disabled = true;
@@ -1527,8 +1600,7 @@
         arHandButton.setAttribute("aria-pressed", "true");
         setArHandStatus("กำลังโหลดเซนเซอร์มือ…", "loading");
         try {
-          await loadArHandsLibrary();
-          if (!arHands) await createArHandsEngine();
+          await withArSensorTimeout(enginePromise || ensureArHandsEngine());
           if (!state.arStarted || state.arFinished || !state.arUseCamera || !arStream) {
             stopArHandTracking();
             return false;
@@ -1590,6 +1662,7 @@
           closing?.catch?.(() => {});
         }
         arHands = null;
+        arHandsEnginePromise = null;
       };
       const stopArStream = () => {
         if (arStream) {
@@ -1795,6 +1868,8 @@
       const finishArMission = (completed) => {
         if (state.arFinished || !state.arStarted) return;
         clearArTimer();
+        state.arPreparing = false;
+        arReadyOverlay.hidden = true;
         state.arFinished = true;
         state.score = currentArScore();
         stopArHandTracking("จบรอบแล้ว · กล้องยังพร้อมสำหรับเล่นซ้ำ");
@@ -1815,6 +1890,9 @@
       };
       const closeArExperience = (force = false) => {
         if (!force && state.arStarted && !state.arFinished && (state.arHits > 0 || state.arWrongCount > 0) && !window.confirm("ออกจากภารกิจ AR ตอนนี้หรือไม่? ความคืบหน้ารอบนี้จะไม่ถูกบันทึก")) return;
+        state.arSessionToken += 1;
+        state.arPreparing = false;
+        arReadyOverlay.hidden = true;
         clearArTimer();
         stopArHardware();
         arExperience.hidden = true;
@@ -1828,9 +1906,48 @@
         else state.arStarted = false;
         renderGame();
       };
+      const startArRoundTimer = () => {
+        clearArTimer();
+        if (!state.arStarted || state.arFinished || state.arPreparing || arExperience.hidden) return;
+        state.arTimer = window.setInterval(() => {
+          if (state.arFinished || state.arPreparing) return;
+          state.arSeconds = Math.max(0, state.arSeconds - 1);
+          updateArHud();
+          if (state.arSeconds <= 0) finishArMission(false);
+        }, 1000);
+      };
+      const runArReadyCountdown = async (sessionToken, sensorReady) => {
+        const sessionActive = () => state.arSessionToken === sessionToken && state.arStarted && !state.arFinished && !arExperience.hidden;
+        if (!sessionActive()) return false;
+        arReadyCount.classList.remove("loading");
+        arReadyTitle.textContent = sensorReady ? "กล้องและเซนเซอร์มือพร้อมแล้ว" : state.arUseCamera ? "กล้องพร้อม · ใช้แตะหรือลากแทนได้" : "โหมด AR จำลองพร้อมแล้ว";
+        arReadyText.textContent = "เริ่มนับเวลา 45 วินาทีหลังสัญญาณเริ่ม";
+        for (const count of [3, 2, 1]) {
+          if (!sessionActive()) return false;
+          arReadyCount.textContent = count;
+          setArHandStatus(sensorReady ? `เซนเซอร์พร้อม · เริ่มใน ${count}` : state.arUseCamera ? `เซนเซอร์มือไม่พร้อม · เริ่มใน ${count}` : `โหมดแตะ/ลาก · เริ่มใน ${count}`, sensorReady ? "detected" : state.arUseCamera ? "error" : "");
+          navigator.vibrate?.(18);
+          await new Promise((resolve) => window.setTimeout(resolve, 720));
+        }
+        if (!sessionActive()) return false;
+        arReadyCount.textContent = "ไป!";
+        playArTone(true);
+        navigator.vibrate?.(35);
+        await new Promise((resolve) => window.setTimeout(resolve, 320));
+        if (!sessionActive()) return false;
+        arReadyOverlay.hidden = true;
+        state.arPreparing = false;
+        updateArHud();
+        startArRoundTimer();
+        showArFeedback(sensorReady ? "เริ่มภารกิจ · คีบนิ้วเพื่อหยิบคำ" : "เริ่มภารกิจ · แตะหรือลากคำได้เลย", !sensorReady && state.arUseCamera);
+        return true;
+      };
       const startArMission = async (useCamera = true) => {
+        if (state.arPreparing) return;
         const item = lesson();
         const reuseCamera = Boolean(useCamera && arStreamIsLive());
+        const sessionToken = state.arSessionToken + 1;
+        state.arSessionToken = sessionToken;
         clearArTimer();
         stopArHandTracking();
         if (!reuseCamera) {
@@ -1839,6 +1956,7 @@
         }
         state.arStarted = true;
         state.arFinished = false;
+        state.arPreparing = true;
         state.arSeconds = 45;
         state.arHits = 0;
         state.arWrongCount = 0;
@@ -1854,6 +1972,11 @@
         document.getElementById("arTargetInstruction").textContent = state.arUseCamera ? "คีบนิ้วหยิบคำ แล้วคลายนิ้วเหนือช่องที่มีความหมายว่า" : "แตะคำ หรือโยนคำลงช่องที่มีความหมายว่า";
         document.getElementById("arTargetHint").textContent = state.arUseCamera ? "รอให้เส้นโครงมือ 21 จุดนิ่ง แล้วคีบใกล้คำ" : "โหมดจำลองไม่ใช้กล้อง · แตะหรือลากคำเพื่อเล่น";
         document.getElementById("arComplete").hidden = true;
+        arReadyOverlay.hidden = false;
+        arReadyCount.classList.add("loading");
+        arReadyCount.innerHTML = "<span>✋</span>";
+        arReadyTitle.textContent = state.arUseCamera ? "กำลังเตรียมกล้องและเซนเซอร์มือ" : "กำลังเตรียมโหมด AR จำลอง";
+        arReadyText.textContent = "เวลาภารกิจ 45 วินาทียังไม่เริ่มนับ";
         arHandButton.disabled = !state.arUseCamera;
         arSkeletonButton.disabled = true;
         setArHandStatus(state.arUseCamera ? "กำลังเตรียมเซนเซอร์มือ" : "โหมดแตะ/ลาก · ไม่ใช้กล้อง", state.arUseCamera ? "loading" : "");
@@ -1863,12 +1986,18 @@
         document.body.classList.add("ar-open");
         renderArWords();
         updateArHud();
+        const sensorWarmupPromise = state.arUseCamera ? ensureArHandsEngine() : null;
+        sensorWarmupPromise?.catch(() => {});
         if (!arOrientationHandler) await enableArOrientation();
+        if (state.arSessionToken !== sessionToken || arExperience.hidden) return;
+        let sensorReady = false;
         if (state.arUseCamera) {
           const cameraReady = reuseCamera ? await resumeArCamera() : await openArCamera();
+          if (state.arSessionToken !== sessionToken || arExperience.hidden) return;
           if (cameraReady) {
-            showArFeedback(reuseCamera ? "ใช้กล้องเดิมแล้ว · ไม่ต้องอนุญาตใหม่" : "เปิดกล้องแล้ว ยกมือและคีบนิ้วเพื่อหยิบคำ");
-            startArHandTracking();
+            arReadyTitle.textContent = "กล้องพร้อม · กำลังเปิดเซนเซอร์มือ";
+            arReadyText.textContent = "ยังไม่หักเวลา รอสักครู่ในครั้งแรก";
+            sensorReady = await startArHandTracking(sensorWarmupPromise);
           } else {
             state.arUseCamera = false;
             arHandButton.disabled = true;
@@ -1884,14 +2013,9 @@
           arHandButton.disabled = true;
           arSkeletonButton.disabled = true;
           setArHandStatus("โหมดแตะ/ลาก · ไม่ใช้กล้อง", "");
-          showArFeedback("โหมด AR จำลองพร้อมแล้ว");
         }
-        state.arTimer = window.setInterval(() => {
-          if (state.arFinished) return;
-          state.arSeconds = Math.max(0, state.arSeconds - 1);
-          updateArHud();
-          if (state.arSeconds <= 0) finishArMission(false);
-        }, 1000);
+        if (state.arSessionToken !== sessionToken || arExperience.hidden) return;
+        await runArReadyCountdown(sessionToken, sensorReady);
       };
       const shareResult = async (item, score, mode) => {
         const player = nameInput.value.trim() || "ผู้เล่น";
@@ -1994,6 +2118,7 @@
         if (modalWord) speakText(modalWord);
       });
       document.getElementById("arCloseButton").addEventListener("click", () => closeArExperience());
+      document.getElementById("arReadyCancelButton").addEventListener("click", () => closeArExperience(true));
       document.getElementById("arReturnButton").addEventListener("click", () => closeArExperience(true));
       document.getElementById("arReplayButton").addEventListener("click", () => startArMission(state.arUseCamera));
       arHandButton.addEventListener("click", async () => {
@@ -2145,6 +2270,7 @@
           const bar = document.querySelector("#videoCard .progress > div");
           if (label) label.textContent = state.unlocked[item.id] ? "ปลดล็อกแล้ว" : `${state.progress[item.id]}%`;
           if (bar) bar.style.width = `${state.unlocked[item.id] ? 100 : state.progress[item.id]}%`;
+          if (next >= 50) warmArHandsEngine();
           if (newlyUnlocked) { renderTabs(); renderGame(); }
         });
         video.addEventListener("ended", () => { state.unlocked[item.id] = true; saveProgress(); renderAll(); });
@@ -2192,7 +2318,8 @@
             return;
           }
           const cameraReady = arSupportsCamera();
-          frame(`<div class="game-body"><div class="ar-launch-card"><div class="ar-launch-content"><div class="ar-launch-badge">◉ WEBAR · 21-POINT HAND TRACKING</div><h4>คีบนิ้วล่าคำด้วยโครงมือเสมือนจริง</h4><p>ระบบวาดเส้นโครงมือ 21 จุดแบบในตัวอย่าง พร้อมกรองการสั่นและยืนยันจังหวะคีบหลายเฟรม คีบใกล้คำเพื่อหยิบ แล้วคลายนิ้วเหนือช่องภารกิจภายใน 45 วินาที</p><div class="ar-feature-row"><span class="ar-feature">✋ โครงมือ 21 จุด</span><span class="ar-feature">◎ ระบบกันสั่น</span><span class="ar-feature">🤏 คีบ–ลาก–ปล่อย</span><span class="ar-feature">◌ เปิด/ปิดเส้นได้</span><span class="ar-feature">☝ แตะ/ลากสำรอง</span><span class="ar-feature">☁ ส่งคะแนนออนไลน์</span></div><div class="ar-launch-actions"><button class="ar-start-camera" type="button">${cameraReady ? "🤏 เปิดกล้องและเริ่มคีบคำ" : "◉ เริ่มโหมด AR จำลอง"}</button><button class="ar-start-fallback" type="button">เล่นโดยไม่ใช้กล้อง</button></div></div><div class="ar-orbit-art" aria-hidden="true"></div><div class="ar-privacy"><span>🔒</span><span>ภาพกล้องประมวลผลบนอุปกรณ์เพื่อหาตำแหน่งมือเท่านั้น ระบบไม่บันทึกและไม่ส่งภาพขึ้นออนไลน์</span></div></div></div>`);
+          frame(`<div class="game-body"><div class="ar-launch-card"><div class="ar-launch-content"><div class="ar-launch-badge">◉ WEBAR · 21-POINT HAND TRACKING</div><h4>คีบนิ้วล่าคำด้วยโครงมือเสมือนจริง</h4><p>ระบบโหลดเซนเซอร์ล่วงหน้า และจะเริ่มเวลา 45 วินาทีต่อเมื่อกล้องกับระบบควบคุมพร้อมแล้ว คีบใกล้คำเพื่อหยิบ แล้วคลายนิ้วเหนือช่องภารกิจ</p><div class="ar-feature-row"><span id="arPreloadStatus" class="ar-feature">${arHands ? "✓ เซนเซอร์พร้อม" : "⚡ โหลดล่วงหน้าอัตโนมัติ"}</span><span class="ar-feature">✋ โครงมือ 21 จุด</span><span class="ar-feature">◎ ระบบกันสั่น</span><span class="ar-feature">🤏 คีบ–ลาก–ปล่อย</span><span class="ar-feature">☝ แตะ/ลากสำรอง</span><span class="ar-feature">☁ ส่งคะแนนออนไลน์</span></div><div class="ar-launch-actions"><button class="ar-start-camera" type="button">${cameraReady ? "🤏 เปิดกล้องและเริ่มคีบคำ" : "◉ เริ่มโหมด AR จำลอง"}</button><button class="ar-start-fallback" type="button">เล่นโดยไม่ใช้กล้อง</button></div></div><div class="ar-orbit-art" aria-hidden="true"></div><div class="ar-privacy"><span>🔒</span><span>ภาพกล้องประมวลผลบนอุปกรณ์เพื่อหาตำแหน่งมือเท่านั้น ระบบไม่บันทึกและไม่ส่งภาพขึ้นออนไลน์</span></div></div></div>`);
+          warmArHandsEngine();
           game.querySelector(".ar-start-camera").addEventListener("click", () => startArMission(cameraReady));
           game.querySelector(".ar-start-fallback").addEventListener("click", () => startArMission(false));
           return;
